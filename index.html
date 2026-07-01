@@ -1,1931 +1,1418 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#efede7">
-  <meta name="description" content="伍建忠的个人主页。来自工业现场的设备管理者与 AI 实践者，把真实问题做成真正能用的工具。">
-  <title>伍建忠｜工业现场 × AI 实践</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111213'/%3E%3Cpath d='M16 17h8l8 28 8-28h8L36 50h-8z' fill='%23ef5b2a'/%3E%3C/svg%3E">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050705">
+  <meta name="description" content="小伍工作室：把现场经验变成真正能用的 AI 与 Web 工具，也保留编程的浪漫。">
+  <title>小伍工作室｜交互首页概念</title>
   <style>
     :root {
-      --paper: #efede7;
-      --paper-deep: #dedbd2;
-      --ink: #111213;
-      --ink-soft: #242729;
-      --steel: #73787a;
-      --line: rgba(17, 18, 19, .18);
-      --signal: #ef5b2a;
-      --signal-dark: #bd3a13;
-      --phosphor: #a8ffd4;
-      --display: "Songti SC", "STSong", "SimSun", serif;
-      --body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-      --mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
+      color-scheme: dark;
+      --ink: #050705;
+      --paper: #f2f0e8;
+      --muted: rgba(242, 240, 232, .58);
+      --gold: #e7c66b;
+      --jade: #48d9a3;
+      --energy: 0;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html {
+      background: var(--ink);
       scroll-behavior: smooth;
-      background: var(--paper);
     }
 
     body {
       margin: 0;
+      min-width: 320px;
       overflow-x: hidden;
-      color: var(--ink);
+      color: var(--paper);
       background:
-        linear-gradient(90deg, transparent calc(50% - .5px), rgba(17, 18, 19, .035) 50%, transparent calc(50% + .5px)),
-        var(--paper);
-      font-family: var(--body);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+        radial-gradient(circle at 50% 38%, rgba(35, 104, 78, .08), transparent 34rem),
+        var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
     }
 
-    body::before {
-      position: fixed;
-      z-index: 50;
-      inset: 0;
-      pointer-events: none;
-      content: "";
-      opacity: .055;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
+    button, a { color: inherit; font: inherit; }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button,
-    a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    ::selection {
-      color: white;
-      background: var(--signal);
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--signal);
-      outline-offset: 4px;
-    }
-
-    .progress {
-      position: fixed;
-      z-index: 80;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      pointer-events: none;
-      transform: scaleX(0);
-      transform-origin: left;
-      background: var(--signal);
-    }
-
-    .shell {
-      width: min(1440px, calc(100% - 64px));
-      margin-inline: auto;
-    }
-
-    .nav {
-      position: fixed;
-      z-index: 70;
-      top: 0;
-      left: 0;
-      display: grid;
-      width: 100%;
-      min-height: 72px;
-      padding: 0 32px;
-      border-bottom: 1px solid transparent;
-      background: rgba(239, 237, 231, 0);
-      transition: background .25s ease, border-color .25s ease;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      backdrop-filter: blur(0);
-    }
-
-    .nav.scrolled {
-      border-color: var(--line);
-      background: rgba(239, 237, 231, .9);
-      backdrop-filter: blur(16px);
-    }
-
-    .brand {
-      display: inline-flex;
-      width: max-content;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .brand-mark {
-      display: grid;
-      width: 26px;
-      height: 26px;
-      color: white;
-      background: var(--ink);
-      place-items: center;
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .nav-center {
-      color: var(--steel);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .12em;
-    }
-
-    .nav-links {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      padding: 9px 12px;
-      font-size: 12px;
-      font-weight: 650;
-    }
-
-    .nav-links a::after {
-      display: block;
-      width: 0;
-      height: 1px;
-      margin-top: 3px;
-      content: "";
-      background: var(--ink);
-      transition: width .25s ease;
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    .nav-links .contact-link {
-      padding: 10px 14px;
-      color: white;
-      background: var(--ink);
-    }
-
-    .nav-links .contact-link::after {
-      display: none;
-    }
-
-    .hero {
-      display: grid;
-      min-height: 100svh;
-      padding-top: 72px;
-      border-bottom: 1px solid var(--line);
-      grid-template-columns: minmax(0, 1.15fr) minmax(420px, .85fr);
-    }
-
-    .hero-copy {
+    .stage {
       position: relative;
-      display: flex;
-      min-height: calc(100svh - 72px);
-      padding: clamp(48px, 6vw, 92px);
-      border-right: 1px solid var(--line);
-      flex-direction: column;
-      justify-content: space-between;
+      height: 185svh;
     }
 
-    .identity {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 18px;
-      align-items: center;
-      font-family: var(--mono);
-      font-size: 10px;
-      line-height: 1.6;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-
-    .identity::before {
-      width: 46px;
-      height: 1px;
-      content: "";
-      background: var(--signal);
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    h1 {
-      max-width: 900px;
-      margin: 72px 0 48px;
-      font-family: var(--display);
-      font-size: clamp(64px, 8vw, 126px);
-      font-weight: 700;
-      line-height: .98;
-      letter-spacing: -.08em;
-    }
-
-    h1 span {
-      display: block;
+    .world {
+      position: sticky;
+      top: 0;
+      height: 100svh;
       overflow: hidden;
-    }
-
-    h1 i {
-      display: block;
-      font-style: normal;
-      transform: translateY(110%);
-      animation: headline-in .9s cubic-bezier(.2, .8, .2, 1) forwards;
-    }
-
-    h1 span:nth-child(2) i {
-      color: var(--signal);
-      animation-delay: .12s;
-    }
-
-    @keyframes headline-in {
-      to { transform: translateY(0); }
-    }
-
-    .hero-bottom {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 40px;
-      align-items: end;
-    }
-
-    .hero-lead {
-      max-width: 560px;
-      margin-bottom: 0;
-      color: #464b4d;
-      font-size: clamp(16px, 1.35vw, 20px);
-      line-height: 1.9;
-    }
-
-    .hero-lead strong {
-      color: var(--ink);
-      font-weight: 750;
-    }
-
-    .round-link {
-      display: grid;
-      width: 108px;
-      height: 108px;
-      border: 1px solid var(--ink);
-      border-radius: 50%;
-      place-items: center;
-      font-family: var(--mono);
-      font-size: 10px;
-      line-height: 1.5;
-      text-align: center;
-      transition: color .3s ease, background .3s ease, transform .3s ease;
-    }
-
-    .round-link:hover {
-      color: white;
-      background: var(--ink);
-      transform: rotate(8deg);
-    }
-
-    .sword-lab {
-      position: relative;
-      min-height: calc(100svh - 72px);
-      overflow: hidden;
-      color: white;
-      background: #0a0d0e;
       isolation: isolate;
+      cursor: crosshair;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
     }
 
-    .sword-lab::before {
+    .world::before {
       position: absolute;
-      z-index: -1;
+      z-index: 1;
       inset: 0;
       content: "";
+      pointer-events: none;
       background:
-        radial-gradient(circle at 50% 46%, rgba(83, 150, 126, .24), transparent 30%),
-        linear-gradient(180deg, rgba(255, 255, 255, .02), transparent 46%),
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 72px);
+        radial-gradient(circle at 50% 48%, transparent 0 22%, rgba(5, 7, 5, .16) 48%, rgba(5, 7, 5, .82) 100%),
+        linear-gradient(180deg, rgba(5, 7, 5, .3), transparent 24%, transparent 68%, rgba(5, 7, 5, .76));
     }
 
-    .sword-lab-head {
+    .world::after {
       position: absolute;
-      z-index: 3;
-      top: 28px;
-      left: 28px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: rgba(255, 255, 255, .66);
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
+      z-index: 2;
+      inset: 0;
+      content: "";
+      opacity: .24;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.19'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
     }
 
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--phosphor);
-      box-shadow: 0 0 18px var(--phosphor);
-      animation: live 1.8s ease-in-out infinite;
-    }
-
-    @keyframes live {
-      50% { opacity: .28; }
-    }
-
-    #swordCanvas {
+    canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      cursor: crosshair;
-      touch-action: none;
     }
 
-    .sword-lab-copy {
+    .topbar {
       position: absolute;
-      z-index: 3;
-      right: 28px;
-      bottom: 28px;
-      left: 28px;
+      z-index: 5;
+      top: max(24px, env(safe-area-inset-top));
+      left: clamp(22px, 4vw, 64px);
+      right: clamp(22px, 4vw, 64px);
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      align-items: end;
-      pointer-events: none;
-    }
-
-    .sword-lab-copy strong {
-      display: block;
-      margin-bottom: 8px;
-      font-family: var(--display);
-      font-size: 26px;
-      letter-spacing: -.04em;
-    }
-
-    .sword-lab-copy span {
-      color: rgba(255, 255, 255, .52);
-      font-family: var(--mono);
-      font-size: 9px;
-      line-height: 1.5;
       letter-spacing: .08em;
     }
 
-    .gesture-readout {
-      display: grid;
-      grid-template-columns: repeat(3, 5px);
-      gap: 5px;
-    }
-
-    .gesture-readout i {
-      width: 5px;
-      height: 24px;
-      background: var(--phosphor);
-      transform-origin: bottom;
-      animation: meter 1.4s ease-in-out infinite alternate;
-    }
-
-    .gesture-readout i:nth-child(2) { animation-delay: -.5s; }
-    .gesture-readout i:nth-child(3) { animation-delay: -.9s; }
-
-    @keyframes meter {
-      to { transform: scaleY(.35); opacity: .35; }
-    }
-
-    .manifesto {
-      display: grid;
-      min-height: 78vh;
-      border-bottom: 1px solid var(--line);
-      grid-template-columns: .72fr 1.28fr;
-    }
-
-    .manifesto-label {
-      padding: 90px clamp(32px, 6vw, 90px);
-      border-right: 1px solid var(--line);
-      color: var(--steel);
-      font-family: var(--mono);
-      font-size: 10px;
-      line-height: 1.7;
-      letter-spacing: .08em;
-    }
-
-    .manifesto-copy {
+    .brand {
       display: flex;
-      padding: 90px clamp(32px, 7vw, 120px);
-      flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    .manifesto-copy h2 {
-      max-width: 980px;
-      margin-bottom: 80px;
-      font-family: var(--display);
-      font-size: clamp(42px, 5.4vw, 82px);
-      font-weight: 700;
-      line-height: 1.18;
-      letter-spacing: -.06em;
-    }
-
-    .manifesto-copy h2 em {
-      color: var(--signal);
-      font-style: normal;
-    }
-
-    .manifesto-foot {
+    .brand-mark {
       display: grid;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .manifesto-foot span {
-      display: block;
-      margin-bottom: 9px;
-      color: var(--steel);
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .08em;
-    }
-
-    .manifesto-foot strong {
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border: 1px solid rgba(231, 198, 107, .44);
+      border-radius: 50%;
+      color: var(--gold);
+      font-family: Georgia, serif;
       font-size: 14px;
+      box-shadow: inset 0 0 18px rgba(231, 198, 107, .08);
     }
 
-    .work-intro {
-      display: grid;
-      min-height: 64vh;
-      padding: clamp(80px, 12vw, 180px) clamp(32px, 7vw, 110px);
-      grid-template-columns: .65fr 1.35fr;
-      gap: 60px;
-      align-items: end;
+    .mode {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(242, 240, 232, .48);
+      font-size: 10px;
+      text-transform: uppercase;
     }
 
-    .kicker {
+    .mode::before {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--jade);
+      box-shadow: 0 0 12px var(--jade);
+      content: "";
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    .hero-copy {
+      position: absolute;
+      z-index: 4;
+      top: 50%;
+      left: clamp(24px, 7vw, 116px);
+      width: min(570px, calc(100vw - 48px));
+      pointer-events: none;
+      transform: translateY(-46%);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+
+    .eyebrow {
       display: flex;
       align-items: center;
       gap: 14px;
-      color: var(--steel);
-      font-family: var(--mono);
+      margin-bottom: 22px;
+      color: var(--gold);
       font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
+      letter-spacing: .34em;
     }
 
-    .kicker::before {
-      width: 8px;
-      height: 8px;
+    .eyebrow::before {
+      width: 34px;
+      height: 1px;
+      background: currentColor;
       content: "";
-      background: var(--signal);
     }
 
-    .work-intro h2 {
-      margin-bottom: 0;
-      font-family: var(--display);
-      font-size: clamp(52px, 7vw, 102px);
-      line-height: .98;
-      letter-spacing: -.075em;
+    h1 {
+      margin: 0;
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(54px, 8.2vw, 126px);
+      font-weight: 400;
+      letter-spacing: -.07em;
+      line-height: .9;
+      text-shadow: 0 0 42px rgba(231, 198, 107, .08);
     }
 
-    .project {
-      position: relative;
-      border-top: 1px solid var(--line);
+    h1 span {
+      display: block;
+      margin: .18em 0 0 .68em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(242, 240, 232, .54);
     }
 
-    .project.dark {
-      color: white;
-      border-color: rgba(255, 255, 255, .14);
-      background: #0d0f10;
-    }
-
-    .project-grid {
-      display: grid;
-      min-height: 100svh;
-      grid-template-columns: 34% 66%;
-    }
-
-    .project-info {
-      position: relative;
-      display: flex;
-      min-height: 100svh;
-      padding: clamp(38px, 5vw, 76px);
-      border-right: 1px solid var(--line);
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .dark .project-info {
-      border-color: rgba(255, 255, 255, .14);
-    }
-
-    .project-index {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: var(--steel);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-
-    .project-index b {
-      color: var(--signal);
-      font-size: 12px;
-    }
-
-    .project-title {
-      margin: auto 0;
-    }
-
-    .project-title h3 {
-      margin-bottom: 28px;
-      font-family: var(--display);
-      font-size: clamp(42px, 5vw, 76px);
-      font-weight: 700;
-      line-height: 1.02;
-      letter-spacing: -.065em;
-    }
-
-    .project-title p {
-      max-width: 440px;
-      margin-bottom: 0;
-      color: var(--steel);
-      font-size: 15px;
+    .intro {
+      max-width: 350px;
+      margin: 28px 0 0 4px;
+      color: var(--muted);
+      font-size: clamp(12px, 1vw, 15px);
+      letter-spacing: .08em;
       line-height: 1.9;
     }
 
-    .dark .project-title p {
-      color: rgba(255, 255, 255, .55);
-    }
-
-    .project-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .action {
-      display: inline-flex;
-      min-height: 48px;
-      padding: 0 17px;
-      border: 1px solid currentColor;
-      align-items: center;
-      gap: 14px;
-      font-size: 12px;
-      font-weight: 700;
-      transition: color .25s ease, background .25s ease;
-    }
-
-    .action:hover {
-      color: var(--paper);
-      background: var(--ink);
-    }
-
-    .dark .action:hover {
-      color: var(--ink);
-      background: white;
-    }
-
-    .action.primary {
-      color: white;
-      border-color: var(--signal);
-      background: var(--signal);
-    }
-
-    .action.primary:hover {
-      color: white;
-      background: var(--signal-dark);
-    }
-
-    .project-stage {
-      position: relative;
+    .gesture {
+      position: absolute;
+      z-index: 6;
+      right: clamp(24px, 5vw, 76px);
+      bottom: max(34px, env(safe-area-inset-bottom));
       display: grid;
-      min-width: 0;
-      min-height: 100svh;
-      padding: clamp(32px, 5vw, 72px);
-      overflow: hidden;
+      width: 118px;
+      height: 118px;
       place-items: center;
+      border: 0;
+      border-radius: 50%;
+      outline: none;
+      background: transparent;
+      cursor: pointer;
+      touch-action: none;
     }
 
-    .project-stage::before {
+    .gesture-ring,
+    .gesture-ring::before,
+    .gesture-ring::after {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(231, 198, 107, .28);
+      border-radius: 50%;
+      content: "";
+      transition: .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .gesture-ring::before { inset: 9px; border-color: rgba(72, 217, 163, .16); }
+    .gesture-ring::after { inset: 19px; border-style: dashed; animation: spin 12s linear infinite; }
+
+    .gesture strong {
+      font-family: "Songti SC", serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: .18em;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .gesture small {
+      display: block;
+      margin-top: 4px;
+      color: rgba(242, 240, 232, .36);
+      font-family: system-ui, sans-serif;
+      font-size: 8px;
+      letter-spacing: .12em;
+    }
+
+    .gesture:hover .gesture-ring,
+    .world.is-holding .gesture-ring {
+      border-color: rgba(231, 198, 107, .72);
+      box-shadow: 0 0 44px rgba(231, 198, 107, .14);
+      transform: scale(1.08);
+    }
+
+    .world.is-holding .gesture-ring::before { transform: scale(.8); }
+    .world.is-holding .gesture strong { color: var(--gold); }
+
+    .scroll-cue {
+      position: absolute;
+      z-index: 5;
+      bottom: 38px;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: rgba(242, 240, 232, .34);
+      font-size: 9px;
+      letter-spacing: .24em;
+      pointer-events: none;
+      transform: translateX(-50%) rotate(90deg) translateX(28px);
+      transform-origin: left center;
+    }
+
+    .scroll-cue::after {
+      width: 42px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(242, 240, 232, .5), transparent);
+      content: "";
+      animation: trace 1.8s ease-in-out infinite;
+    }
+
+    .chapter-preview {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      display: grid;
+      padding: 10vh clamp(24px, 8vw, 130px);
+      place-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(54px);
+    }
+
+    .chapter-preview p {
+      margin: 0 0 18px;
+      color: var(--jade);
+      font-size: 10px;
+      letter-spacing: .32em;
+    }
+
+    .chapter-preview h2 {
+      max-width: 900px;
+      margin: 0;
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(40px, 6.8vw, 104px);
+      font-weight: 400;
+      letter-spacing: -.055em;
+      line-height: 1.06;
+    }
+
+    .chapter-preview h2 em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .corner {
+      position: absolute;
+      z-index: 4;
+      bottom: 34px;
+      left: clamp(22px, 4vw, 64px);
+      color: rgba(242, 240, 232, .22);
+      font: 9px/1.6 ui-monospace, monospace;
+      letter-spacing: .1em;
+      pointer-events: none;
+    }
+
+    .cursor-aura {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(231, 198, 107, .12), rgba(72, 217, 163, .03) 42%, transparent 68%);
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      transition: opacity .3s;
+    }
+
+    .story {
+      position: relative;
+      z-index: 3;
+      overflow: clip;
+      margin-top: -1px;
+      background:
+        radial-gradient(circle at 78% 13%, rgba(72, 217, 163, .055), transparent 25rem),
+        radial-gradient(circle at 18% 48%, rgba(231, 198, 107, .045), transparent 28rem),
+        #050705;
+    }
+
+    .story::before {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 50%;
       width: 1px;
       content: "";
-      opacity: .35;
-      background: var(--line);
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(72, 217, 163, .3), transparent 8%, rgba(231, 198, 107, .14) 54%, transparent 93%);
     }
 
-    .dark .project-stage::before {
-      background: rgba(255, 255, 255, .14);
-    }
-
-    .media-frame {
+    .project {
       position: relative;
-      z-index: 2;
-      width: min(100%, 980px);
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, .15);
-      background: #050606;
-      box-shadow: 0 32px 100px rgba(0, 0, 0, .36);
+      width: min(1320px, 100%);
+      min-height: 108svh;
+      margin: 0 auto;
+      padding: clamp(120px, 15vw, 220px) clamp(28px, 6vw, 96px);
+      opacity: .18;
+      transform: translateY(70px);
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .8, .2, 1);
     }
 
-    .media-bar {
+    .project.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, .72fr) minmax(460px, 1.28fr);
+      gap: clamp(48px, 8vw, 128px);
+      align-items: start;
+    }
+
+    .project-copy {
+      position: sticky;
+      top: 21vh;
+      z-index: 2;
+      align-self: start;
+    }
+
+    .project-type {
       display: flex;
-      height: 38px;
-      padding: 0 13px;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 24px;
+      color: var(--jade);
+      font: 10px/1 ui-monospace, "SFMono-Regular", monospace;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+    }
+
+    .project-type::before {
+      width: 26px;
+      height: 1px;
+      background: currentColor;
+      content: "";
+    }
+
+    .project h3 {
+      max-width: 660px;
+      margin: 0;
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(42px, 5.4vw, 82px);
+      font-weight: 400;
+      letter-spacing: -.055em;
+      line-height: 1.03;
+    }
+
+    .project-lead {
+      max-width: 480px;
+      margin: 30px 0 0;
+      color: rgba(242, 240, 232, .58);
+      font-size: clamp(13px, 1.1vw, 16px);
+      line-height: 2;
+    }
+
+    .project-facts {
+      display: grid;
+      gap: 10px;
+      margin: 30px 0 0;
+      padding: 0;
+      color: rgba(242, 240, 232, .42);
+      font-size: 11px;
+      letter-spacing: .06em;
+      list-style: none;
+    }
+
+    .project-facts li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .project-facts li::before {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(231, 198, 107, .7);
+      content: "";
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 34px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(231, 198, 107, .45);
+      color: var(--paper);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-decoration: none;
+      transition: gap .25s ease, color .25s ease, border-color .25s ease;
+    }
+
+    .project-link:hover,
+    .project-link:focus-visible {
+      gap: 28px;
+      border-color: var(--gold);
+      color: var(--gold);
+      outline: none;
+    }
+
+    .project-status {
+      display: block;
+      margin-top: 16px;
+      color: rgba(242, 240, 232, .28);
+      font: 9px/1.6 ui-monospace, "SFMono-Regular", monospace;
+      letter-spacing: .12em;
+    }
+
+    .media-deck {
+      position: relative;
+      min-height: 780px;
+      perspective: 1200px;
+    }
+
+    .media-shell {
+      --roll: 0deg;
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      position: absolute;
+      overflow: hidden;
+      width: clamp(270px, 25vw, 354px);
+      margin: 0;
+      aspect-ratio: 9 / 16;
+      border: 1px solid rgba(242, 240, 232, .16);
+      background: #0b0f0c;
+      box-shadow: 0 34px 90px rgba(0, 0, 0, .46);
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+      transform: rotate(var(--roll)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transform-style: preserve-3d;
+      transition: transform .28s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+
+    .media-shell::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(5, 7, 5, .46), transparent 18%, transparent 72%, rgba(5, 7, 5, .72)),
+        linear-gradient(90deg, rgba(231, 198, 107, .08), transparent 20%);
+    }
+
+    .media-shell:hover {
+      z-index: 4;
+      border-color: rgba(231, 198, 107, .5);
+      box-shadow: 0 44px 110px rgba(0, 0, 0, .62), 0 0 50px rgba(72, 217, 163, .06);
+    }
+
+    .media-shell video,
+    .media-shell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-a {
+      --roll: -5deg;
+      top: 4%;
+      left: 4%;
+      z-index: 2;
+    }
+
+    .media-b {
+      --roll: 5deg;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .media-topline {
+      position: absolute;
+      z-index: 3;
+      top: 18px;
+      right: 18px;
+      left: 18px;
+      display: flex;
       align-items: center;
       justify-content: space-between;
-      color: rgba(255, 255, 255, .48);
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
-      background: #111415;
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: .06em;
+      color: rgba(255, 255, 255, .72);
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .13em;
     }
 
-    .media-dots {
+    .real-mark {
       display: flex;
-      gap: 5px;
+      align-items: center;
+      gap: 7px;
     }
 
-    .media-dots i {
+    .real-mark::before {
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .3);
+      background: var(--jade);
+      box-shadow: 0 0 10px var(--jade);
+      content: "";
     }
 
-    .media-frame video {
+    .media-name {
+      position: absolute;
+      z-index: 3;
+      right: 20px;
+      bottom: 22px;
+      left: 20px;
+      padding-right: 38px;
+    }
+
+    .media-name small {
       display: block;
+      margin-bottom: 7px;
+      color: var(--gold);
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .16em;
+    }
+
+    .media-name strong {
+      font-family: "Songti SC", serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: .02em;
+    }
+
+    .media-control {
+      position: absolute;
+      z-index: 4;
+      right: 16px;
+      bottom: 17px;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 50%;
+      color: white;
+      background: rgba(5, 7, 5, .5);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+    }
+
+    .media-control:hover,
+    .media-control:focus-visible {
+      border-color: var(--gold);
+      color: var(--gold);
+      outline: none;
+    }
+
+    .project-tools .project-grid {
+      grid-template-columns: minmax(500px, 1.28fr) minmax(280px, .72fr);
+    }
+
+    .project-tools .project-copy {
+      grid-column: 2;
+    }
+
+    .project-tools .evidence-stage {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .evidence-stage {
+      position: relative;
+      min-height: 780px;
+      perspective: 1200px;
+    }
+
+    .evidence-video {
+      --roll: -3deg;
+      top: 2%;
+      left: 0;
+      z-index: 3;
+    }
+
+    .proof-sheet {
+      position: absolute;
+      z-index: 1;
+      top: 12%;
+      right: 0;
+      overflow: hidden;
+      width: clamp(300px, 29vw, 430px);
+      height: 620px;
+      margin: 0;
+      border: 1px solid rgba(242, 240, 232, .15);
+      background: #111;
+      box-shadow: 0 34px 90px rgba(0, 0, 0, .45);
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+      transform: rotate(3deg);
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1), border-color .3s ease;
+    }
+
+    .proof-sheet:hover {
+      z-index: 5;
+      border-color: rgba(231, 198, 107, .45);
+      transform: rotate(0) translateY(-12px);
+    }
+
+    .proof-sheet img {
       width: 100%;
-      aspect-ratio: 16 / 10.5;
-      object-fit: contain;
-      background: #000;
+      height: auto;
+      min-height: 100%;
+      object-fit: cover;
+      object-position: top;
+      transition: transform 6s cubic-bezier(.15, .65, .2, 1);
+    }
+
+    .proof-sheet:hover img {
+      transform: translateY(-25%);
     }
 
     .proof-label {
       position: absolute;
-      z-index: 3;
-      right: 14px;
-      bottom: 14px;
-      display: flex;
-      padding: 8px 10px;
-      color: white;
-      background: rgba(10, 13, 14, .82);
-      align-items: center;
-      gap: 8px;
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: .08em;
-      backdrop-filter: blur(10px);
-    }
-
-    .proof-label::before {
-      width: 6px;
-      height: 6px;
-      content: "";
-      border-radius: 50%;
-      background: #ff3b30;
-      box-shadow: 0 0 10px #ff3b30;
-    }
-
-    .video-toggle {
-      position: absolute;
-      z-index: 4;
-      right: 12px;
-      bottom: 12px;
-      display: grid;
-      width: 42px;
-      height: 42px;
-      padding: 0;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, .3);
-      border-radius: 50%;
-      background: rgba(0, 0, 0, .52);
-      cursor: pointer;
-      place-items: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .phone-scene {
-      position: relative;
       z-index: 2;
-      display: grid;
-      width: min(100%, 860px);
-      grid-template-columns: minmax(240px, 340px) 1fr;
-      gap: clamp(32px, 6vw, 90px);
-      align-items: center;
-    }
-
-    .phone {
-      position: relative;
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #202325;
-      border-radius: 42px;
-      background: #121415;
-      box-shadow: 0 32px 90px rgba(25, 26, 24, .28);
-      transform: perspective(1200px) rotateY(7deg) rotateX(1deg);
-    }
-
-    .phone::before {
-      position: absolute;
-      z-index: 4;
-      top: 18px;
-      left: 50%;
-      width: 78px;
-      height: 22px;
-      content: "";
-      border-radius: 20px;
-      background: #070808;
-      transform: translateX(-50%);
-    }
-
-    .phone video {
-      display: block;
-      width: 100%;
-      border-radius: 33px;
-      aspect-ratio: 9 / 16;
-      object-fit: cover;
-      background: #eee;
-    }
-
-    .phone-proof {
-      position: absolute;
-      z-index: 5;
-      right: -32px;
-      bottom: 52px;
-      padding: 11px 13px;
-      color: white;
-      background: var(--signal);
-      font-family: var(--mono);
-      font-size: 9px;
-      line-height: 1.5;
-      box-shadow: 0 18px 30px rgba(90, 34, 14, .18);
-    }
-
-    .ppt-result {
-      position: relative;
-      display: grid;
-      min-height: 390px;
-      padding: 34px;
-      border-top: 6px solid #78aa54;
-      background: white;
-      box-shadow: 0 30px 80px rgba(17, 18, 19, .18);
-      transform: perspective(1200px) rotateY(-8deg) rotateX(1deg);
-    }
-
-    .ppt-result small {
-      color: #78aa54;
-      font-family: var(--mono);
-      font-size: 9px;
+      top: 16px;
+      left: 16px;
+      padding: 8px 10px;
+      color: #10130f;
+      background: var(--paper);
+      font: 8px/1 ui-monospace, monospace;
       letter-spacing: .12em;
     }
 
-    .ppt-result h4 {
-      margin: 20px 0 26px;
-      font-family: var(--display);
-      font-size: 30px;
-      line-height: 1.1;
-    }
-
-    .ppt-result img {
-      width: 100%;
-      min-height: 200px;
-      object-fit: cover;
-      object-position: center;
-      border: 1px solid rgba(17, 18, 19, .12);
-    }
-
-    .ppt-result b {
-      margin-top: 18px;
-      color: var(--steel);
-      font-size: 11px;
-    }
-
-    .tax-stage {
-      color: #e9ebe8;
-      background:
-        radial-gradient(circle at 80% 20%, rgba(86, 131, 108, .18), transparent 24%),
-        #131718;
-    }
-
-    .terminal {
-      position: relative;
-      z-index: 2;
-      width: min(100%, 900px);
-      color: #d8ddd9;
-      border: 1px solid rgba(255, 255, 255, .16);
-      background: rgba(10, 13, 14, .9);
-      box-shadow: 0 32px 100px rgba(0, 0, 0, .38);
-    }
-
-    .terminal-head {
-      display: flex;
-      height: 48px;
-      padding: 0 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
-      align-items: center;
-      justify-content: space-between;
-      color: rgba(255, 255, 255, .45);
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .08em;
-    }
-
-    .terminal-body {
-      padding: clamp(26px, 5vw, 52px);
-    }
-
-    .terminal-label {
-      display: block;
-      margin-bottom: 15px;
-      color: var(--phosphor);
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .11em;
-    }
-
-    .tax-form {
+    .process-line {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      max-width: 520px;
+      margin-top: 32px;
+      background: rgba(242, 240, 232, .1);
     }
 
-    .tax-form input {
-      min-width: 0;
-      height: 60px;
-      padding: 0 18px;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, .24);
-      border-radius: 0;
-      outline: 0;
-      background: rgba(255, 255, 255, .04);
-      font-size: 16px;
-    }
-
-    .tax-form input:focus {
-      border-color: var(--phosphor);
-      box-shadow: inset 0 -2px var(--phosphor);
-    }
-
-    .tax-form button {
-      min-width: 126px;
-      padding: 0 20px;
-      color: #0c1110;
-      border: 0;
-      background: var(--phosphor);
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .tax-examples {
-      display: flex;
-      margin: 14px 0 44px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tax-examples button {
-      padding: 6px 9px;
-      color: rgba(255, 255, 255, .55);
-      border: 1px solid rgba(255, 255, 255, .12);
-      background: transparent;
-      cursor: pointer;
-      font-family: var(--mono);
-      font-size: 9px;
-    }
-
-    .tax-examples button:hover {
-      color: white;
-      border-color: rgba(255, 255, 255, .34);
-    }
-
-    .tax-result {
-      display: grid;
-      min-height: 154px;
-      padding: 24px 0 0;
-      border-top: 1px solid rgba(255, 255, 255, .13);
-      grid-template-columns: 1fr 1fr;
-      gap: 26px;
-    }
-
-    .tax-result small {
-      display: block;
-      margin-bottom: 10px;
-      color: rgba(255, 255, 255, .38);
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: .1em;
-    }
-
-    .tax-result strong {
-      display: block;
-      font-size: clamp(20px, 3vw, 34px);
-      line-height: 1.3;
-    }
-
-    .tax-result .code {
-      color: var(--phosphor);
-      font-family: var(--mono);
-      font-size: clamp(15px, 2vw, 22px);
-      overflow-wrap: anywhere;
-    }
-
-    .tax-result.loading strong {
-      color: transparent;
-      background: linear-gradient(90deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .24), rgba(255, 255, 255, .08));
-      background-size: 200% 100%;
-      animation: loading 1s linear infinite;
-    }
-
-    @keyframes loading {
-      to { background-position: -200% 0; }
-    }
-
-    .about {
-      display: grid;
-      min-height: 92vh;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      grid-template-columns: 41% 59%;
-    }
-
-    .about-left {
-      display: flex;
-      padding: clamp(54px, 7vw, 110px);
-      border-right: 1px solid var(--line);
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .about-left h2 {
-      margin: 80px 0;
-      font-family: var(--display);
-      font-size: clamp(52px, 7vw, 96px);
-      line-height: .95;
-      letter-spacing: -.075em;
-    }
-
-    .about-left h2 span {
-      color: var(--signal);
-    }
-
-    .about-left p {
-      max-width: 430px;
-      margin-bottom: 0;
-      color: #565c5e;
-      line-height: 1.9;
-    }
-
-    .about-right {
-      display: grid;
-      padding: clamp(54px, 7vw, 110px);
-      grid-template-rows: auto 1fr;
-      gap: 70px;
-    }
-
-    .about-statement {
-      max-width: 900px;
-      font-family: var(--display);
-      font-size: clamp(30px, 4vw, 54px);
-      line-height: 1.35;
-      letter-spacing: -.045em;
-    }
-
-    .path-list {
-      align-self: end;
-      border-top: 1px solid var(--line);
-    }
-
-    .path-item {
-      display: grid;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--line);
-      grid-template-columns: 72px 1fr auto;
-      gap: 24px;
-      align-items: center;
-    }
-
-    .path-item b {
-      color: var(--signal);
-      font-family: var(--mono);
+    .process-line span {
+      padding: 13px 8px;
+      color: rgba(242, 240, 232, .5);
+      background: #070907;
       font-size: 10px;
+      text-align: center;
     }
 
-    .path-item strong {
-      font-size: 17px;
-    }
-
-    .path-item span {
-      max-width: 330px;
-      color: var(--steel);
-      font-size: 12px;
-      line-height: 1.6;
-      text-align: right;
-    }
-
-    .contact {
-      position: relative;
-      display: grid;
-      min-height: 86vh;
-      padding: clamp(56px, 8vw, 120px);
-      overflow: hidden;
-      color: white;
-      background: var(--signal);
-      align-content: space-between;
-    }
-
-    .contact::after {
-      position: absolute;
-      right: -10vw;
-      bottom: -52vw;
-      width: 78vw;
-      aspect-ratio: 1;
-      content: "";
-      border: 1px solid rgba(255, 255, 255, .26);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 8vw rgba(255, 255, 255, .04),
-        0 0 0 16vw rgba(255, 255, 255, .025);
-    }
-
-    .contact-top,
-    .contact-main,
-    .contact-foot {
-      position: relative;
+    .tax-stage .proof-sheet:first-child {
+      top: 0;
+      left: 3%;
+      right: auto;
       z-index: 2;
+      width: clamp(330px, 33vw, 480px);
+      height: 690px;
+      transform: rotate(-2deg);
     }
 
-    .contact-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
+    .tax-stage .proof-sheet:last-child {
+      top: 28%;
+      right: 0;
+      z-index: 3;
+      width: clamp(220px, 20vw, 290px);
+      height: 500px;
+      transform: rotate(5deg);
     }
 
-    .contact-main {
+    .tax-stage .proof-sheet:hover {
+      z-index: 5;
+      transform: rotate(0) translateY(-10px);
+    }
+
+    .code-ribbon {
+      position: absolute;
+      z-index: 0;
+      top: 8%;
+      right: -14%;
+      color: rgba(72, 217, 163, .08);
+      font: clamp(58px, 8vw, 118px)/.92 ui-monospace, monospace;
+      letter-spacing: -.06em;
+      writing-mode: vertical-rl;
+      pointer-events: none;
+    }
+
+    .closing {
+      position: relative;
       display: grid;
-      margin: 70px 0;
-      grid-template-columns: 1fr auto;
-      gap: 50px;
-      align-items: end;
+      min-height: 92svh;
+      padding: 14vh clamp(24px, 8vw, 130px);
+      place-content: center;
+      text-align: center;
     }
 
-    .contact h2 {
+    .closing::before {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      width: 1px;
+      height: 16vh;
+      background: linear-gradient(var(--jade), transparent);
+      content: "";
+    }
+
+    .closing p {
+      margin: 0 0 24px;
+      color: var(--gold);
+      font: 10px/1 ui-monospace, monospace;
+      letter-spacing: .26em;
+    }
+
+    .closing h2 {
       max-width: 1000px;
-      margin-bottom: 0;
-      font-family: var(--display);
-      font-size: clamp(68px, 10vw, 150px);
-      line-height: .9;
-      letter-spacing: -.09em;
+      margin: 0;
+      font-family: "Songti SC", serif;
+      font-size: clamp(48px, 7.6vw, 116px);
+      font-weight: 400;
+      letter-spacing: -.065em;
+      line-height: 1.02;
     }
 
-    .contact .round-link {
-      width: 140px;
-      height: 140px;
-      color: white;
-      border-color: white;
-      flex: 0 0 auto;
+    .closing span {
+      display: block;
+      max-width: 580px;
+      margin: 34px auto 0;
+      color: rgba(242, 240, 232, .46);
+      font-size: 13px;
+      line-height: 2;
     }
 
-    .contact .round-link:hover {
-      color: var(--signal);
-      background: white;
-    }
-
-    .contact-foot {
-      display: grid;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255, 255, 255, .35);
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    .contact-foot span:last-child {
-      text-align: right;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(34px);
-      transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (max-width: 1080px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-copy {
-        min-height: 760px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .sword-lab {
-        min-height: 720px;
-      }
-
-      .manifesto {
-        grid-template-columns: 1fr;
-      }
-
-      .manifesto-label {
-        padding-bottom: 24px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .project-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .project-info {
-        min-height: 620px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .project-stage {
-        min-height: 760px;
-      }
-
-      .about {
-        grid-template-columns: 1fr;
-      }
-
-      .about-left {
-        min-height: 650px;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { opacity: .36; transform: scale(.7); } }
+    @keyframes trace { 50% { opacity: .35; transform: translateX(8px); } }
 
     @media (max-width: 720px) {
-      .shell {
-        width: calc(100% - 28px);
-      }
-
-      .nav {
-        min-height: 62px;
-        padding: 0 14px;
-        grid-template-columns: 1fr auto;
-      }
-
-      .nav-center,
-      .nav-links a:not(.contact-link) {
-        display: none;
-      }
-
-      .brand {
-        font-size: 9px;
-      }
-
-      .nav-links .contact-link {
-        padding: 9px 11px;
-        font-size: 10px;
-      }
-
-      .hero {
-        padding-top: 62px;
-      }
-
+      .stage { height: 170svh; }
       .hero-copy {
-        min-height: 700px;
-        padding: 36px 20px;
+        top: 43%;
+        left: 24px;
+        transform: translateY(-50%);
       }
-
-      .identity {
-        gap: 12px;
-        font-size: 8px;
+      h1 { font-size: clamp(52px, 18vw, 84px); }
+      .intro { max-width: 255px; font-size: 11px; }
+      .gesture { right: 20px; bottom: 80px; width: 98px; height: 98px; }
+      .scroll-cue { display: none; }
+      .corner { bottom: 24px; }
+      .chapter-preview { align-content: center; }
+      .mode span { display: none; }
+      .world.is-holding .hero-copy {
+        opacity: .1 !important;
+        transform: translateY(-50%) scale(.97) !important;
       }
-
-      .identity::before {
-        width: 26px;
-      }
-
-      h1 {
-        margin: 56px 0 44px;
-        font-size: clamp(58px, 20vw, 84px);
-        line-height: .97;
-      }
-
-      .hero-bottom {
-        grid-template-columns: 1fr;
-        gap: 34px;
-      }
-
-      .hero-lead {
-        font-size: 15px;
-      }
-
-      .round-link {
-        width: 88px;
-        height: 88px;
-      }
-
-      .sword-lab {
-        min-height: 560px;
-      }
-
-      .sword-lab-head {
-        top: 18px;
-        left: 18px;
-      }
-
-      .sword-lab-copy {
-        right: 18px;
-        bottom: 18px;
-        left: 18px;
-      }
-
-      .sword-lab-copy strong {
-        font-size: 21px;
-      }
-
-      .manifesto {
+      .story::before { left: 22px; }
+      .project {
         min-height: auto;
-      }
-
-      .manifesto-label,
-      .manifesto-copy {
-        padding: 50px 20px;
-      }
-
-      .manifesto-copy h2 {
-        margin-bottom: 54px;
-        font-size: 38px;
-      }
-
-      .manifesto-foot {
-        grid-template-columns: 1fr;
-      }
-
-      .work-intro {
-        min-height: 520px;
-        padding: 78px 20px;
-        grid-template-columns: 1fr;
-        gap: 42px;
-      }
-
-      .work-intro h2 {
-        font-size: 52px;
-      }
-
-      .project-info {
-        min-height: 570px;
-        padding: 34px 20px;
-      }
-
-      .project-title h3 {
-        font-size: 44px;
-      }
-
-      .project-stage {
-        min-height: 560px;
-        padding: 22px 14px;
-      }
-
-      .media-frame {
-        width: 100%;
-      }
-
-      .media-frame video {
-        aspect-ratio: 1 / 1;
-        object-fit: contain;
-      }
-
-      .phone-scene {
-        width: 100%;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 12px;
-      }
-
-      .phone {
-        padding: 6px;
-        border-radius: 25px;
-        transform: rotateY(4deg);
-      }
-
-      .phone::before {
-        top: 11px;
-        width: 48px;
-        height: 14px;
-      }
-
-      .phone video {
-        border-radius: 20px;
-      }
-
-      .phone-proof {
-        right: -4px;
-        bottom: 24px;
-        padding: 7px 8px;
-        font-size: 7px;
-      }
-
-      .ppt-result {
-        min-height: 270px;
-        padding: 15px;
-        transform: rotateY(-4deg);
-      }
-
-      .ppt-result h4 {
-        margin: 12px 0;
-        font-size: 18px;
-      }
-
-      .ppt-result img {
-        min-height: 130px;
-      }
-
-      .ppt-result b {
-        margin-top: 10px;
-        font-size: 8px;
-      }
-
-      .terminal-body {
-        padding: 24px 17px;
-      }
-
-      .tax-form {
-        grid-template-columns: 1fr;
-      }
-
-      .tax-form button {
-        min-height: 52px;
-      }
-
-      .tax-result {
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-
-      .about-left,
-      .about-right {
-        padding: 58px 20px;
-      }
-
-      .about-left {
-        min-height: 580px;
-      }
-
-      .about-left h2 {
-        font-size: 58px;
-      }
-
-      .about-statement {
-        font-size: 32px;
-      }
-
-      .path-item {
-        grid-template-columns: 44px 1fr;
-      }
-
-      .path-item span {
-        display: none;
-      }
-
-      .contact {
-        min-height: 720px;
-        padding: 42px 20px;
-      }
-
-      .contact-main {
-        grid-template-columns: 1fr;
-      }
-
-      .contact h2 {
-        font-size: 68px;
-      }
-
-      .contact .round-link {
-        width: 110px;
-        height: 110px;
-      }
-
-      .contact-foot {
-        grid-template-columns: 1fr;
-      }
-
-      .contact-foot span:last-child {
-        text-align: left;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-      }
-
-      .reveal {
+        padding: 110px 22px 130px;
         opacity: 1;
         transform: none;
       }
+      .project-grid,
+      .project-tools .project-grid {
+        grid-template-columns: 1fr;
+        gap: 58px;
+      }
+      .project-copy,
+      .project-tools .project-copy {
+        position: relative;
+        top: auto;
+        grid-column: 1;
+      }
+      .project h3 { font-size: clamp(42px, 12vw, 66px); }
+      .project-lead { max-width: 92%; }
+      .media-deck,
+      .evidence-stage { min-height: 620px; }
+      .media-shell { width: min(58vw, 260px); }
+      .media-a { top: 0; left: 0; }
+      .media-b { right: 0; bottom: 0; }
+      .project-tools .evidence-stage {
+        grid-row: 2;
+        grid-column: 1;
+      }
+      .evidence-video { width: min(58vw, 260px); }
+      .proof-sheet {
+        top: 15%;
+        width: min(58vw, 280px);
+        height: 510px;
+      }
+      .tax-stage .proof-sheet:first-child {
+        left: 0;
+        width: min(66vw, 300px);
+        height: 560px;
+      }
+      .tax-stage .proof-sheet:last-child {
+        top: 31%;
+        width: min(49vw, 220px);
+        height: 400px;
+      }
+      .process-line {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 360px;
+      }
+      .closing { min-height: 82svh; padding-inline: 22px; }
+    }
+
+    @media (pointer: coarse) {
+      .cursor-aura { display: none; }
+      .world { cursor: default; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
     }
   </style>
 </head>
 <body>
-  <div class="progress" aria-hidden="true"></div>
-
-  <nav class="nav" aria-label="主导航">
-    <a class="brand" href="#top" aria-label="返回首页">
-      <span class="brand-mark">W5</span>
-      <span>伍建忠 / 小伍工作室</span>
-    </a>
-    <span class="nav-center">xiaowustudio.cn</span>
-    <div class="nav-links">
-      <a href="#work">真实项目</a>
-      <a href="#about">关于我</a>
-      <a class="contact-link" href="#contact">聊个问题 ↗</a>
-    </div>
-  </nav>
-
-  <main id="top">
-    <header class="hero">
-      <div class="hero-copy">
-        <div class="identity">工业现场经验 / 设备管理 / AI 工具实践</div>
-        <h1 aria-label="把现场经验做成智能工具">
-          <span><i>把现场经验</i></span>
-          <span><i>做成智能工具</i></span>
-        </h1>
-        <div class="hero-bottom">
-          <p class="hero-lead">
-            我是伍建忠。从生产一线、设备管理和电气维修中走来，
-            现在专注把<strong>真实需求做成简单、直观、真正能用的 AI 工具</strong>。
-          </p>
-          <a class="round-link" href="#work">查看<br>真实项目<br>↓</a>
+  <main class="stage" aria-label="小伍工作室交互首页概念">
+    <section class="world" id="world">
+      <div class="topbar">
+        <div class="brand">
+          <span class="brand-mark">伍</span>
+          <span>小伍工作室</span>
         </div>
+        <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
       </div>
 
-      <div class="sword-lab">
-        <div class="sword-lab-head"><i class="live-dot"></i>实时交互 / 剑阵原型</div>
-        <canvas id="swordCanvas" aria-label="跟随鼠标或手指移动的三维剑阵"></canvas>
-        <div class="sword-lab-copy">
-          <div>
-            <strong>移动鼠标，调动剑阵</strong>
-            <span>手机上拖动手指也可以操控</span>
-          </div>
-          <div class="gesture-readout" aria-hidden="true"><i></i><i></i><i></i></div>
-        </div>
+      <div class="hero-copy" id="heroCopy">
+        <div class="eyebrow">AI + WEB 编程的浪漫</div>
+        <h1>左手出画<span>右手散场</span></h1>
+        <p class="intro">不急着自我介绍。先让屏幕回应你。<br>移动探索，按住聚剑，松开散场。</p>
       </div>
-    </header>
 
-    <section class="manifesto">
-      <div class="manifesto-label reveal">
-        MY POSITION<br>
-        不是只懂 AI 的开发者<br>
-        也不是远离技术的管理者
-      </div>
-      <div class="manifesto-copy reveal">
-        <h2>我更在意一件事：<br>技术能不能在<em>真实现场</em>里，把问题解决。</h2>
-        <div class="manifesto-foot">
-          <div><span>来自哪里</span><strong>长期生产现场经验</strong></div>
-          <div><span>怎么做事</span><strong>先看问题，再选技术</strong></div>
-          <div><span>最终标准</span><strong>使用者愿意一直用</strong></div>
-        </div>
-      </div>
-    </section>
+      <button class="gesture" id="gesture" type="button" aria-label="按住聚集剑阵">
+        <span class="gesture-ring"></span>
+        <strong><span class="gesture-label">按住<br>聚剑</span><small>HOLD TO FORM</small></strong>
+      </button>
 
-    <section class="work-intro" id="work">
-      <div class="kicker reveal">Selected real work / 真实作品</div>
-      <h2 class="reveal">三个项目，<br>三种解决问题的方法。</h2>
-    </section>
+      <div class="chapter-preview" id="chapterPreview">
+        <p>01 / 从浪漫实验，到现场工具</p>
+        <h2>让屏幕回应人的意图，<br><em>也让工具解决真的问题。</em></h2>
+      </div>
 
-    <article class="project dark">
-      <div class="project-grid">
-        <div class="project-info">
-          <div class="project-index"><b>01</b><span>GESTURE × 3D WEB</span></div>
-          <div class="project-title reveal">
-            <h3>手势操控<br>大庚剑阵</h3>
-            <p>摄像头识别手势，不同手型触发不同剑阵。它不是概念图，而是已经跑起来、能够真正用手操控的网页互动作品。</p>
-          </div>
-          <div class="project-actions">
-            <a class="action primary" href="https://wiujianzhong.github.io/kunpeng-yuechao/dageng-sword-v2-ultimate.html" target="_blank" rel="noopener">打开剑阵体验 <span>↗</span></a>
-            <a class="action" href="#top">回到互动剑阵 <span>↑</span></a>
-          </div>
-        </div>
-        <div class="project-stage">
-          <div class="media-frame reveal">
-            <div class="media-bar">
-              <span class="media-dots"><i></i><i></i><i></i></span>
-              <span>REAL RECORDING / 2026</span>
-              <span>24 SEC</span>
-            </div>
-            <div style="position:relative">
-              <video class="observed-video" src="assets/sword-real.mp4" poster="assets/sword-poster.jpg" muted loop playsinline preload="metadata" aria-label="大庚剑阵真实手势操控录屏"></video>
-              <span class="proof-label">真实手势录屏</span>
-              <button class="video-toggle" type="button" aria-label="播放剑阵录屏" data-video-toggle>▶</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project">
-      <div class="project-grid">
-        <div class="project-info">
-          <div class="project-index"><b>02</b><span>WORKFLOW × AUTOMATION</span></div>
-          <div class="project-title reveal">
-            <h3>一键生成<br>整改 PPT</h3>
-            <p>批量上传现场图片，直接在手机上标注问题，自动整理成规范 PPT。减少的不是一个按钮，而是一遍遍重复排版的时间。</p>
-          </div>
-          <div class="project-actions">
-            <a class="action primary" href="https://wiujianzhong.github.io/kunpeng-yuechao/caresun-ppt-tool.html" target="_blank" rel="noopener">打开 PPT 工具 <span>↗</span></a>
-          </div>
-        </div>
-        <div class="project-stage">
-          <div class="phone-scene reveal">
-            <div class="phone">
-              <video class="observed-video" src="assets/ppt-real.mp4" poster="assets/ppt-poster.jpg" muted loop playsinline preload="metadata" aria-label="PPT工具手机实测视频"></video>
-              <span class="phone-proof">手机真实操作<br>完整流程录屏</span>
-              <button class="video-toggle" type="button" aria-label="播放PPT工具录屏" data-video-toggle style="right:18px;bottom:18px">▶</button>
-            </div>
-            <div class="ppt-result">
-              <small>OUTPUT / 自动生成结果</small>
-              <h4>从现场图片<br>到整齐汇报材料</h4>
-              <img src="assets/ppt-poster.jpg" alt="PPT工具生成后的真实排版预览">
-              <b>批量上传 · 图片标注 · 自动排版 · 本地保存</b>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project dark">
-      <div class="project-grid">
-        <div class="project-info">
-          <div class="project-index"><b>03</b><span>BUSINESS RULES × AI</span></div>
-          <div class="project-title reveal">
-            <h3>税收分类<br>编码匹配</h3>
-            <p>把商品名称匹配到 19 位税收分类编码。本地规则先判断，复杂情况再交给 AI，并把人工确认逐步沉淀成可复用经验。</p>
-          </div>
-          <div class="project-actions">
-            <a class="action primary" href="https://tax.xiaowustudio.cn" target="_blank" rel="noopener">进入完整系统 <span>↗</span></a>
-          </div>
-        </div>
-        <div class="project-stage tax-stage">
-          <div class="terminal reveal">
-            <div class="terminal-head">
-              <span>税务编码匹配 / 交互演示</span>
-              <span>19 DIGITS · VERIFIED DATA</span>
-            </div>
-            <div class="terminal-body">
-              <label class="terminal-label" for="taxInput">输入一个商品名称</label>
-              <form class="tax-form" id="taxForm">
-                <input id="taxInput" name="taxInput" value="电路板" autocomplete="off" aria-describedby="taxHint">
-                <button type="submit">开始匹配</button>
-              </form>
-              <div class="tax-examples" id="taxHint">
-                <button type="button" data-tax="电路板">电路板</button>
-                <button type="button" data-tax="传感器">传感器</button>
-                <button type="button" data-tax="电磁阀">电磁阀</button>
-                <button type="button" data-tax="离心泵">离心泵</button>
-                <button type="button" data-tax="密封圈">密封圈</button>
-              </div>
-              <div class="tax-result" id="taxResult" aria-live="polite">
-                <div>
-                  <small>官方分类名称</small>
-                  <strong id="taxName">印制电路板</strong>
-                </div>
-                <div>
-                  <small>19 位税收分类编码</small>
-                  <strong class="code" id="taxCode">1090521000000000000</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <section class="about" id="about">
-      <div class="about-left">
-        <div class="kicker reveal">About / 关于我</div>
-        <h2 class="reveal">懂机器，<br>也在学习<br><span>理解智能。</span></h2>
-        <p class="reveal">我不是从课堂里的“标准答案”走到 AI，而是从设备、故障、流程和人的真实协作里，一步步找到技术能发挥作用的位置。</p>
-      </div>
-      <div class="about-right">
-        <p class="about-statement reveal">从生产一线到设备管理，从低压电工到 AI 工具实践，我一直在做同一件事：看懂问题，动手解决，再用结果验证。</p>
-        <div class="path-list reveal">
-          <div class="path-item"><b>现场</b><strong>生产一线经验</strong><span>理解真实流程，而不是只看纸面流程</span></div>
-          <div class="path-item"><b>管理</b><strong>设备与人员协作</strong><span>把故障、标准、数据和执行连起来</span></div>
-          <div class="path-item"><b>动手</b><strong>低压电工与维修学习</strong><span>先测量、再判断、最后验证</span></div>
-          <div class="path-item"><b>现在</b><strong>AI 工具实践</strong><span>让经验可以复用，让流程真正提速</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact" id="contact">
-      <div class="contact-top">
-        <span>Available for real problems</span>
-        <span>xiaowustudio.cn</span>
-      </div>
-      <div class="contact-main">
-        <h2>有真实问题，<br>咱们就聊聊。</h2>
-        <a class="round-link" href="tel:19009925522">电话联系<br>190 0992<br>5522 ↗</a>
-      </div>
-      <div class="contact-foot">
-        <span>AI 工具定制 / 流程自动化 / 网页互动 / 智能体部署</span>
-        <span>© <span id="year"></span> 伍建忠 · 小伍工作室</span>
-      </div>
+      <div class="scroll-cue">向下进入作品</div>
+      <div class="corner">XIAOWU STUDIO<br>SHANDONG · CHINA</div>
+      <div class="cursor-aura" id="cursorAura"></div>
     </section>
   </main>
 
-  <script>
-    (() => {
-      "use strict";
+  <section class="story" aria-label="小伍工作室真实项目">
+    <article class="project project-gesture" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">浪漫实验 / HAND AS INTERFACE</div>
+          <h3>手，能不能成为一种新的鼠标？</h3>
+          <p class="project-lead">不点按钮。握拳、张手、转动手腕，画面就开始聚拢、旋转、散场。技术藏到背后，只留下人与画面之间最直觉的回应。</p>
+          <ul class="project-facts">
+            <li>两段均为本人实拍，不使用他人演示视频</li>
+            <li>手机、平板、电脑均可体验</li>
+            <li>一套手势语言，控制两种完全不同的粒子世界</li>
+          </ul>
+          <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/xmas.html" target="_blank" rel="noopener">
+            体验手势圣诞树 <span>↗</span>
+          </a>
+          <span class="project-status">大庚剑阵最新版正在做性能优化，确认后再放体验链接</span>
+        </div>
 
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const nav = document.querySelector(".nav");
-      const progress = document.querySelector(".progress");
-      const revealItems = document.querySelectorAll(".reveal");
-      const videos = document.querySelectorAll(".observed-video");
+        <div class="media-deck" aria-label="手势项目本人实拍视频">
+          <figure class="media-shell media-a" data-tilt>
+            <video src="assets/story/gesture-sword-self.mp4" poster="assets/story/gesture-sword-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:20</span></span>
+              <span class="media-name"><small>GESTURE / SWORD</small><strong>手势操控大庚剑阵</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放手势剑阵视频" data-video-control>▶</button>
+          </figure>
 
-      document.getElementById("year").textContent = new Date().getFullYear();
+          <figure class="media-shell media-b" data-tilt>
+            <video src="assets/story/gesture-xmas-self.mp4" poster="assets/story/gesture-xmas-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:18</span></span>
+              <span class="media-name"><small>GESTURE / XMAS</small><strong>左手出画，右手散场</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放手势圣诞树视频" data-video-control>▶</button>
+          </figure>
+        </div>
+      </div>
+    </article>
 
-      function updateScroll() {
-        const maximum = document.documentElement.scrollHeight - window.innerHeight;
-        const value = maximum > 0 ? window.scrollY / maximum : 0;
-        progress.style.transform = `scaleX(${value})`;
-        nav.classList.toggle("scrolled", window.scrollY > 24);
+    <article class="project project-tools" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">现场工具 / INSPECTION LOOP</div>
+          <h3>边拍边写，检查结束，PPT 也基本完成。</h3>
+          <p class="project-lead">现场拍照、自动拆页、逐项整改、重新成稿。它不是帮人做一张漂亮 PPT，而是把发现问题到完成整改的闭环真正跑通。</p>
+          <div class="process-line" aria-label="PPT工具工作流程">
+            <span>现场拍照</span>
+            <span>一键拆解</span>
+            <span>整改替换</span>
+            <span>自动成稿</span>
+          </div>
+          <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/caresun-ppt-tool.html" target="_blank" rel="noopener">
+            打开 PPT 工具 <span>↗</span>
+          </a>
+          <span class="project-status">真实演示：检查 → 整改 → 重新生成</span>
+        </div>
+
+        <div class="evidence-stage" aria-label="PPT工具真实演示和生成结果">
+          <figure class="media-shell evidence-video" data-tilt>
+            <video src="assets/story/ppt-closed-loop.mp4" poster="assets/story/ppt-closed-loop-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">闭环实测</span><span>00:31</span></span>
+              <span class="media-name"><small>PHOTO → PPT</small><strong>边拍边写，一键拆解</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放PPT闭环演示视频" data-video-control>▶</button>
+          </figure>
+
+          <figure class="proof-sheet">
+            <img src="assets/story/ppt-result-real.jpg" alt="PPT工具生成的真实检查整改页面" loading="lazy">
+            <figcaption class="proof-label">真实生成结果 / 向下悬停查看</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="project project-tax" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">数据工具 / 19-DIGIT MATCHING</div>
+          <h3>把杂乱清单，变成可核对的 19 位编码。</h3>
+          <p class="project-lead">批量匹配、候选比对、风险标记、导出复核。确定的交给系统自动跑，模糊的明确留下给人判断，不用“看起来像对的”结果糊弄过去。</p>
+          <ul class="project-facts">
+            <li>直接处理真实 Excel 商品清单</li>
+            <li>标记模糊项，保留人工确认入口</li>
+            <li>结果可追溯、可复核、可继续修改</li>
+          </ul>
+          <span class="project-status">下方为真实匹配结果与使用反馈，不是效果图</span>
+        </div>
+
+        <div class="evidence-stage tax-stage" aria-label="税务编码真实结果">
+          <figure class="proof-sheet">
+            <img src="assets/story/tax-result-real.jpg" alt="商品和服务税收分类编码真实匹配结果" loading="lazy">
+            <figcaption class="proof-label">真实 Excel 结果</figcaption>
+          </figure>
+          <figure class="proof-sheet">
+            <img src="assets/story/tax-proof-real.jpg" alt="税务编码工具实际使用反馈" loading="lazy">
+            <figcaption class="proof-label">实际使用反馈</figcaption>
+          </figure>
+          <div class="code-ribbon" aria-hidden="true">19·DIGIT·CODE</div>
+        </div>
+      </div>
+    </article>
+
+    <footer class="closing" data-reveal>
+      <p>XIAOWU STUDIO / 小伍工作室</p>
+      <h2>懂工厂、设备和 AI 的实战派。</h2>
+      <span>一半是 AI + Web 编程的浪漫，一半是把现场问题解决的实用。作品不只放在网页里，也真正进入工作流程。</span>
+    </footer>
+  </section>
+
+  <script type="module">
+    import * as THREE from "./assets/vendor/three.module.min.js";
+
+    const world = document.querySelector("#world");
+    const gesture = document.querySelector("#gesture");
+    const heroCopy = document.querySelector("#heroCopy");
+    const chapterPreview = document.querySelector("#chapterPreview");
+    const cursorAura = document.querySelector("#cursorAura");
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = matchMedia("(pointer: coarse)").matches;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050705, 0.055);
+
+    const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 15);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: !coarse, alpha: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.35 : 1.8));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    world.prepend(renderer.domElement);
+
+    const root = new THREE.Group();
+    root.position.x = innerWidth > 820 ? 2.8 : 0;
+    scene.add(root);
+
+    const particleCount = coarse ? 780 : 1500;
+    const drift = new Float32Array(particleCount * 3);
+    const sword = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    const randoms = new Float32Array(particleCount);
+    const gold = new THREE.Color(0xe7c66b);
+    const jade = new THREE.Color(0x48d9a3);
+    const pale = new THREE.Color(0xf3ecd3);
+    const tempColor = new THREE.Color();
+
+    function pointInSword(i) {
+      const p = i / particleCount;
+      let x;
+      let y;
+      let z;
+
+      if (p < .66) {
+        y = THREE.MathUtils.lerp(-3.25, 3.65, Math.random());
+        const bladeT = (y + 3.25) / 6.9;
+        const taper = y > 2.55 ? Math.max(.04, (3.65 - y) / 1.1) : 1;
+        const half = THREE.MathUtils.lerp(.28, .58, Math.sin(bladeT * Math.PI)) * taper;
+        x = THREE.MathUtils.randFloatSpread(half * 2);
+        z = THREE.MathUtils.randFloatSpread(.24);
+      } else if (p < .81) {
+        x = THREE.MathUtils.randFloatSpread(3.25);
+        y = THREE.MathUtils.randFloat(-3.3, -2.95);
+        z = THREE.MathUtils.randFloatSpread(.32);
+      } else if (p < .91) {
+        const a = Math.random() * Math.PI * 2;
+        const r = THREE.MathUtils.randFloat(.55, 1.05);
+        x = Math.cos(a) * r;
+        y = -3.1 + Math.sin(a) * r * .42;
+        z = THREE.MathUtils.randFloatSpread(.28);
+      } else {
+        x = THREE.MathUtils.randFloatSpread(.42);
+        y = THREE.MathUtils.randFloat(-4.9, -3.35);
+        z = THREE.MathUtils.randFloatSpread(.28);
       }
+      return [x, y, z];
+    }
 
-      window.addEventListener("scroll", updateScroll, { passive: true });
-      updateScroll();
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      const radius = THREE.MathUtils.randFloat(2.8, 7.7);
+      const angle = Math.random() * Math.PI * 2;
+      const band = Math.random() - .5;
 
+      drift[i3] = Math.cos(angle) * radius + THREE.MathUtils.randFloatSpread(1.8);
+      drift[i3 + 1] = Math.sin(angle) * radius * .66 + band * 3.2;
+      drift[i3 + 2] = THREE.MathUtils.randFloatSpread(6.5) - radius * .07;
+
+      const s = pointInSword(i);
+      sword[i3] = s[0];
+      sword[i3 + 1] = s[1];
+      sword[i3 + 2] = s[2];
+
+      tempColor.copy(Math.random() > .42 ? gold : jade);
+      if (Math.random() > .92) tempColor.copy(pale);
+      tempColor.multiplyScalar(THREE.MathUtils.randFloat(.62, 1.08));
+      colors[i3] = tempColor.r;
+      colors[i3 + 1] = tempColor.g;
+      colors[i3 + 2] = tempColor.b;
+      sizes[i] = THREE.MathUtils.randFloat(.65, 1.85);
+      randoms[i] = Math.random();
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(drift.slice(), 3));
+    geometry.setAttribute("aDrift", new THREE.BufferAttribute(drift, 3));
+    geometry.setAttribute("aSword", new THREE.BufferAttribute(sword, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
+
+    const material = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+      uniforms: {
+        uTime: { value: 0 },
+        uForm: { value: reduceMotion ? 1 : 0 },
+        uScroll: { value: 0 },
+        uPixelRatio: { value: renderer.getPixelRatio() }
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uForm;
+        uniform float uScroll;
+        uniform float uPixelRatio;
+        attribute vec3 aDrift;
+        attribute vec3 aSword;
+        attribute float aSize;
+        attribute float aRandom;
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        float ease(float x) { return x * x * (3.0 - 2.0 * x); }
+
+        void main() {
+          float form = ease(uForm);
+          vec3 restless = aDrift;
+          restless.x += sin(uTime * (.14 + aRandom * .25) + aDrift.y) * (.18 + aRandom * .18);
+          restless.y += cos(uTime * (.12 + aRandom * .18) + aDrift.x) * .16;
+          restless.z += sin(uTime * .22 + aRandom * 9.0) * .16;
+
+          vec3 formed = aSword;
+          formed.x += sin(uTime * 1.6 + aSword.y * 3.0 + aRandom * 4.0) * .025 * (1.0 - form);
+          formed.z += sin(uTime + aRandom * 12.0) * .045;
+
+          vec3 pos = mix(restless, formed, form);
+          float tunnel = smoothstep(.2, 1.0, uScroll);
+          pos.z += tunnel * (aRandom * 10.0 - 3.0);
+          pos.xy *= mix(1.0, .28 + aRandom * 1.9, tunnel);
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          gl_PointSize = aSize * uPixelRatio * (42.0 / -mvPosition.z) * mix(1.5, 2.35, form);
+          vColor = color;
+          vAlpha = mix(.28 + aRandom * .52, .7 + aRandom * .3, form);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+        void main() {
+          vec2 uv = gl_PointCoord - .5;
+          float d = length(uv);
+          if (d > .5) discard;
+          float core = smoothstep(.5, 0.0, d);
+          float glow = pow(core, 2.2);
+          gl_FragColor = vec4(vColor * (1.0 + glow * .8), vAlpha * core);
+        }
+      `
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    root.add(particles);
+
+    const swordShape = new THREE.Shape();
+    swordShape.moveTo(0, 4.05);
+    swordShape.lineTo(.46, 2.72);
+    swordShape.lineTo(.36, -2.7);
+    swordShape.lineTo(1.65, -3.03);
+    swordShape.lineTo(.42, -3.38);
+    swordShape.lineTo(.22, -4.82);
+    swordShape.lineTo(-.22, -4.82);
+    swordShape.lineTo(-.42, -3.38);
+    swordShape.lineTo(-1.65, -3.03);
+    swordShape.lineTo(-.36, -2.7);
+    swordShape.lineTo(-.46, 2.72);
+    swordShape.closePath();
+
+    const swordGeometry = new THREE.ShapeGeometry(swordShape);
+    const swordSoul = new THREE.Mesh(swordGeometry, new THREE.MeshBasicMaterial({
+      color: 0xe7c66b,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    }));
+    swordSoul.position.z = -.16;
+    root.add(swordSoul);
+
+    const swordEdge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(swordGeometry),
+      new THREE.LineBasicMaterial({
+        color: 0x9fffd9,
+        transparent: true,
+        opacity: 0,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    swordEdge.position.z = -.08;
+    root.add(swordEdge);
+
+    const haloMaterial = new THREE.MeshBasicMaterial({
+      color: 0xe7c66b,
+      transparent: true,
+      opacity: .08,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(4.1, .012, 4, 144), haloMaterial);
+    halo.rotation.x = 1.16;
+    halo.rotation.z = -.25;
+    root.add(halo);
+
+    const haloTwo = new THREE.Mesh(new THREE.TorusGeometry(5.2, .008, 4, 144), haloMaterial.clone());
+    haloTwo.rotation.set(1.32, .3, .6);
+    haloTwo.material.color.set(0x48d9a3);
+    haloTwo.material.opacity = .045;
+    root.add(haloTwo);
+
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    let holding = false;
+    let holdTarget = reduceMotion ? 1 : 0;
+    let form = reduceMotion ? 1 : 0;
+    let scrollProgress = 0;
+    let lingerTimer;
+
+    function setHolding(value) {
+      holding = value;
+      holdTarget = value ? 1 : 0;
+      world.classList.toggle("is-holding", value);
+      gesture.querySelector(".gesture-label").innerHTML = value ? "剑阵<br>已成" : "按住<br>聚剑";
+    }
+
+    function updatePointer(event) {
+      pointer.tx = (event.clientX / innerWidth - .5) * 2;
+      pointer.ty = (event.clientY / innerHeight - .5) * -2;
+      cursorAura.style.left = `${event.clientX}px`;
+      cursorAura.style.top = `${event.clientY}px`;
+      cursorAura.style.opacity = "1";
+    }
+
+    world.addEventListener("pointermove", updatePointer, { passive: true });
+    world.addEventListener("pointerleave", () => { cursorAura.style.opacity = "0"; });
+    gesture.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      gesture.setPointerCapture(event.pointerId);
+      setHolding(true);
+    });
+    gesture.addEventListener("pointerup", () => setHolding(false));
+    gesture.addEventListener("pointercancel", () => setHolding(false));
+    gesture.addEventListener("click", () => {
+      if (reduceMotion) return;
+      clearTimeout(lingerTimer);
+      setHolding(true);
+      lingerTimer = setTimeout(() => setHolding(false), 4500);
+    });
+
+    world.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("#gesture")) return;
+      setHolding(true);
+    });
+    world.addEventListener("pointerup", () => setHolding(false));
+    world.addEventListener("pointercancel", () => setHolding(false));
+
+    function onScroll() {
+      const rect = document.querySelector(".stage").getBoundingClientRect();
+      const distance = Math.max(1, rect.height - innerHeight);
+      scrollProgress = THREE.MathUtils.clamp(-rect.top / distance, 0, 1);
+      const reveal = THREE.MathUtils.smoothstep(scrollProgress, .42, .86);
+      heroCopy.style.opacity = String(1 - THREE.MathUtils.smoothstep(scrollProgress, .08, .42));
+      heroCopy.style.transform = `translateY(calc(-46% - ${scrollProgress * 34}px))`;
+      chapterPreview.style.opacity = String(reveal);
+      chapterPreview.style.transform = `translateY(${(1 - reveal) * 54}px)`;
+      gesture.style.opacity = String(1 - THREE.MathUtils.smoothstep(scrollProgress, .05, .34));
+      gesture.style.pointerEvents = scrollProgress > .36 ? "none" : "auto";
+    }
+
+    function resize() {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.35 : 1.8));
+      renderer.setSize(innerWidth, innerHeight);
+      material.uniforms.uPixelRatio.value = renderer.getPixelRatio();
+      root.position.x = innerWidth > 820 ? 2.8 : 0;
+    }
+
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", resize);
+    onScroll();
+
+    const clock = new THREE.Clock();
+    function render() {
+      const elapsed = clock.getElapsedTime();
+      pointer.x += (pointer.tx - pointer.x) * .085;
+      pointer.y += (pointer.ty - pointer.y) * .085;
+      form += (holdTarget - form) * (holding ? .075 : .032);
+
+      material.uniforms.uTime.value = elapsed;
+      material.uniforms.uForm.value = form;
+      material.uniforms.uScroll.value += (scrollProgress - material.uniforms.uScroll.value) * .045;
+
+      root.rotation.y = pointer.x * .38 + Math.sin(elapsed * .09) * .04;
+      root.rotation.x = pointer.y * .16;
+      particles.rotation.z = Math.sin(elapsed * .08) * .025;
+      halo.rotation.z += .00055;
+      haloTwo.rotation.z -= .00038;
+      halo.material.opacity = .035 + form * .17;
+      haloTwo.material.opacity = .025 + form * .075;
+      swordSoul.material.opacity = Math.max(0, form - .42) * .17;
+      swordEdge.material.opacity = Math.max(0, form - .5) * .34;
+
+      camera.position.x += (pointer.x * .24 - camera.position.x) * .025;
+      camera.position.y += (pointer.y * .13 - camera.position.y) * .025;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    }
+    render();
+  </script>
+  <script>
+    const revealTargets = document.querySelectorAll("[data-reveal]");
+    const storyVideos = document.querySelectorAll("[data-story-video]");
+
+    const setVideoState = (video) => {
+      const control = video.closest(".media-shell")?.querySelector("[data-video-control]");
+      if (!control) return;
+      const playing = !video.paused;
+      control.textContent = playing ? "Ⅱ" : "▶";
+      control.setAttribute("aria-label", playing ? "暂停视频" : "播放视频");
+    };
+
+    if ("IntersectionObserver" in window) {
       const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            revealObserver.unobserve(entry.target);
-          }
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
         });
       }, { threshold: .12 });
 
-      revealItems.forEach((item) => revealObserver.observe(item));
+      revealTargets.forEach((target) => revealObserver.observe(target));
 
       const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !reducedMotion) {
-            entry.target.play().catch(() => {});
-          } else {
-            entry.target.pause();
-          }
-          syncVideoButton(entry.target);
-        });
-      }, { threshold: .36 });
-
-      videos.forEach((video) => videoObserver.observe(video));
-
-      function syncVideoButton(video) {
-        const container = video.parentElement;
-        const button = container.querySelector("[data-video-toggle]");
-        if (!button) return;
-        button.textContent = video.paused ? "▶" : "Ⅱ";
-        button.setAttribute("aria-label", video.paused ? "播放视频" : "暂停视频");
-      }
-
-      document.querySelectorAll("[data-video-toggle]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const video = button.parentElement.querySelector("video");
-          if (video.paused) {
-            video.play().catch(() => {});
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            video.play().catch(() => setVideoState(video));
           } else {
             video.pause();
           }
-          syncVideoButton(video);
         });
-      });
+      }, { threshold: .42 });
 
-      const taxData = {
-        "电路板": ["印制电路板", "1090521000000000000"],
-        "PCB": ["印制电路板", "1090521000000000000"],
-        "线路板": ["印制电路板", "1090521000000000000"],
-        "传感器": ["传感器", "1090520000000000000"],
-        "电磁阀": ["阀门", "1090119010000000000"],
-        "离心泵": ["泵", "1090117010000000000"],
-        "密封圈": ["橡胶密封件", "1070506010000000000"],
-        "连接器": ["电路连接装置", "1090407030000000000"]
-      };
+      storyVideos.forEach((video) => videoObserver.observe(video));
+    } else {
+      revealTargets.forEach((target) => target.classList.add("is-visible"));
+    }
 
-      const taxForm = document.getElementById("taxForm");
-      const taxInput = document.getElementById("taxInput");
-      const taxResult = document.getElementById("taxResult");
-      const taxName = document.getElementById("taxName");
-      const taxCode = document.getElementById("taxCode");
+    storyVideos.forEach((video) => {
+      video.addEventListener("play", () => setVideoState(video));
+      video.addEventListener("pause", () => setVideoState(video));
+    });
 
-      function matchTax(value) {
-        const normalized = value.trim().toUpperCase();
-        const directKey = Object.keys(taxData).find((key) => normalized.includes(key.toUpperCase()));
-        taxResult.classList.add("loading");
-        taxName.textContent = "正在按业务规则匹配";
-        taxCode.textContent = "分析中";
-
-        window.setTimeout(() => {
-          const result = directKey ? taxData[directKey] : null;
-          taxResult.classList.remove("loading");
-          if (result) {
-            taxName.textContent = result[0];
-            taxCode.textContent = result[1];
-          } else {
-            taxName.textContent = "完整系统将调用 AI 继续判断";
-            taxCode.textContent = "需要人工确认";
-          }
-        }, reducedMotion ? 10 : 620);
-      }
-
-      taxForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        matchTax(taxInput.value);
-      });
-
-      document.querySelectorAll("[data-tax]").forEach((button) => {
-        button.addEventListener("click", () => {
-          taxInput.value = button.dataset.tax;
-          matchTax(button.dataset.tax);
-        });
-      });
-
-      const canvas = document.getElementById("swordCanvas");
-      const context = canvas.getContext("2d");
-      let width = 0;
-      let height = 0;
-      let dpr = 1;
-      let pointer = { x: .5, y: .5 };
-      let smoothPointer = { x: .5, y: .5 };
-      let time = 0;
-      let raf = 0;
-      const swords = Array.from({ length: 58 }, (_, index) => ({
-        angle: index / 58 * Math.PI * 2,
-        ring: index % 3,
-        phase: Math.random() * Math.PI * 2,
-        length: 24 + Math.random() * 22,
-        speed: .7 + Math.random() * .45
-      }));
-
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        width = rect.width;
-        height = rect.height;
-        dpr = Math.min(window.devicePixelRatio || 1, 1.7);
-        canvas.width = Math.round(width * dpr);
-        canvas.height = Math.round(height * dpr);
-        context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      function setPointer(event) {
-        const rect = canvas.getBoundingClientRect();
-        pointer.x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-        pointer.y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-      }
-
-      canvas.addEventListener("pointermove", setPointer, { passive: true });
-      canvas.addEventListener("pointerdown", setPointer, { passive: true });
-      canvas.addEventListener("pointerleave", () => {
-        pointer.x = .5;
-        pointer.y = .5;
-      });
-
-      function drawSword(x, y, angle, length, alpha, depth) {
-        context.save();
-        context.translate(x, y);
-        context.rotate(angle);
-        context.globalAlpha = alpha;
-
-        const bladeWidth = Math.max(1.2, depth * 2.3);
-        const glow = depth * 12;
-        context.shadowBlur = glow;
-        context.shadowColor = depth > .7 ? "#bfffe0" : "#58c6a0";
-
-        const gradient = context.createLinearGradient(0, -length, 0, length * .25);
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(.16, "#bfffe0");
-        gradient.addColorStop(.72, "#3aa47e");
-        gradient.addColorStop(1, "#132e27");
-
-        context.beginPath();
-        context.moveTo(0, -length);
-        context.lineTo(bladeWidth, length * .18);
-        context.lineTo(0, length * .05);
-        context.lineTo(-bladeWidth, length * .18);
-        context.closePath();
-        context.fillStyle = gradient;
-        context.fill();
-
-        context.shadowBlur = 0;
-        context.fillStyle = "#e2b65a";
-        context.fillRect(-bladeWidth * 2.1, length * .17, bladeWidth * 4.2, Math.max(1.5, depth * 2.4));
-        context.fillStyle = "#355448";
-        context.fillRect(-bladeWidth * .55, length * .2, bladeWidth * 1.1, length * .16);
-        context.restore();
-      }
-
-      function drawSwordField() {
-        context.clearRect(0, 0, width, height);
-        smoothPointer.x += (pointer.x - smoothPointer.x) * .055;
-        smoothPointer.y += (pointer.y - smoothPointer.y) * .055;
-        if (!reducedMotion) time += .008;
-
-        const cx = width * (.32 + smoothPointer.x * .36);
-        const cy = height * (.31 + smoothPointer.y * .3);
-        const baseRadius = Math.min(width, height) * .17;
-
-        const aura = context.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 2.5);
-        aura.addColorStop(0, "rgba(110, 255, 197, .17)");
-        aura.addColorStop(.45, "rgba(62, 161, 126, .055)");
-        aura.addColorStop(1, "rgba(0, 0, 0, 0)");
-        context.fillStyle = aura;
-        context.fillRect(0, 0, width, height);
-
-        for (let ring = 0; ring < 3; ring += 1) {
-          context.beginPath();
-          context.ellipse(cx, cy, baseRadius * (1 + ring * .45), baseRadius * (.24 + ring * .06), 0, 0, Math.PI * 2);
-          context.strokeStyle = `rgba(168, 255, 212, ${.14 - ring * .028})`;
-          context.lineWidth = 1;
-          context.stroke();
-        }
-
-        const ordered = swords.map((sword) => {
-          const angle = sword.angle + time * sword.speed * (sword.ring % 2 ? -1 : 1);
-          const radius = baseRadius * (1 + sword.ring * .45);
-          const depthWave = (Math.sin(angle) + 1) / 2;
-          return { sword, angle, radius, depthWave };
-        }).sort((a, b) => a.depthWave - b.depthWave);
-
-        ordered.forEach(({ sword, angle, radius, depthWave }) => {
-          const x = cx + Math.cos(angle) * radius;
-          const y = cy + Math.sin(angle) * radius * (.24 + sword.ring * .03);
-          const depth = .38 + depthWave * .74;
-          const tilt = angle + Math.PI / 2 + (smoothPointer.x - .5) * .22;
-          drawSword(x, y, tilt, sword.length * depth, .25 + depthWave * .68, depth);
-        });
-
-        context.beginPath();
-        context.arc(cx, cy, 5, 0, Math.PI * 2);
-        context.fillStyle = "#effff7";
-        context.shadowBlur = 20;
-        context.shadowColor = "#a8ffd4";
-        context.fill();
-        context.shadowBlur = 0;
-
-        raf = requestAnimationFrame(drawSwordField);
-      }
-
-      resizeCanvas();
-      drawSwordField();
-      window.addEventListener("resize", resizeCanvas, { passive: true });
-
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          cancelAnimationFrame(raf);
+    document.querySelectorAll("[data-video-control]").forEach((control) => {
+      control.addEventListener("click", () => {
+        const video = control.closest(".media-shell").querySelector("video");
+        if (video.paused) {
+          video.play().catch(() => setVideoState(video));
         } else {
-          drawSwordField();
+          video.pause();
         }
       });
-    })();
+    });
+
+    if (matchMedia("(pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll("[data-tilt]").forEach((card) => {
+        card.addEventListener("pointermove", (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - .5;
+          const y = (event.clientY - rect.top) / rect.height - .5;
+          card.style.setProperty("--tilt-x", `${y * -5}deg`);
+          card.style.setProperty("--tilt-y", `${x * 7}deg`);
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.setProperty("--tilt-x", "0deg");
+          card.style.setProperty("--tilt-y", "0deg");
+        });
+      });
+    }
   </script>
 </body>
 </html>
