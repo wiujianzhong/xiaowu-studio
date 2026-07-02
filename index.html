@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050705">
   <meta name="description" content="小伍工作室：把现场经验变成真正能用的 AI 与 Web 工具，也保留编程的浪漫。">
-  <title>小伍工作室｜交互首页概念</title>
+  <title>小伍工作室｜让信息替你工作</title>
   <style>
     :root {
       color-scheme: dark;
@@ -36,6 +36,16 @@
     }
 
     button, a { color: inherit; font: inherit; }
+
+    @media (pointer: fine) {
+      body,
+      .world,
+      a,
+      button,
+      .media-shell {
+        cursor: url("assets/cursor/xiaowu-pointer.svg") 5 5, auto;
+      }
+    }
 
     .stage {
       position: relative;
@@ -78,9 +88,35 @@
 
     canvas {
       position: absolute;
+      z-index: 1;
       inset: 0;
       width: 100%;
       height: 100%;
+      opacity: .2;
+      mix-blend-mode: screen;
+    }
+
+    .hero-film {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(.58) saturate(.78) contrast(1.08);
+      transform: scale(1.015);
+      transition: filter 1.1s ease, transform 1.1s ease;
+    }
+
+    .world.is-overload .hero-film {
+      filter: brightness(.48) saturate(.65) contrast(1.16);
+      transform: scale(1.035);
+    }
+
+    .world.is-resolved .hero-film {
+      filter: brightness(.48) saturate(.72) contrast(1.1);
+      transform: scale(1.02);
     }
 
     .topbar {
@@ -198,6 +234,7 @@
       width: min(250px, 24vw);
       gap: 8px;
       perspective: 900px;
+      display: none;
     }
 
     .quick-card {
@@ -266,7 +303,7 @@
       z-index: 4;
       top: 50%;
       left: clamp(24px, 7vw, 116px);
-      width: min(570px, calc(100vw - 48px));
+      width: min(680px, calc(100vw - 48px));
       pointer-events: none;
       transform: translateY(-46%);
       transition: opacity .4s ease, transform .4s ease;
@@ -292,18 +329,36 @@
     h1 {
       margin: 0;
       font-family: "Songti SC", "STSong", serif;
-      font-size: clamp(54px, 8.2vw, 126px);
+      font-size: clamp(54px, 6.8vw, 104px);
       font-weight: 400;
       letter-spacing: -.07em;
       line-height: .9;
       text-shadow: 0 0 42px rgba(231, 198, 107, .08);
     }
 
+    h1 b {
+      color: var(--jade);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .78em;
+      font-weight: 400;
+      letter-spacing: -.05em;
+      text-shadow: 0 0 36px rgba(72, 217, 163, .18);
+    }
+
     h1 span {
+      position: relative;
       display: block;
-      margin: .18em 0 0 .68em;
+      width: max-content;
+      max-width: 100%;
+      margin: .18em 0 0 .3em;
       color: transparent;
       -webkit-text-stroke: 1px rgba(242, 240, 232, .54);
+    }
+
+    .world.is-resolved h1 span {
+      color: rgba(242, 240, 232, .86);
+      -webkit-text-stroke: 0;
+      text-shadow: 0 12px 45px rgba(0, 0, 0, .52);
     }
 
     .intro {
@@ -313,6 +368,633 @@
       font-size: clamp(12px, 1vw, 15px);
       letter-spacing: .08em;
       line-height: 1.9;
+    }
+
+    .phone-sim {
+      position: absolute;
+      z-index: 5;
+      top: 14%;
+      left: 56%;
+      width: clamp(248px, 20vw, 318px);
+      aspect-ratio: 9 / 18.6;
+      padding: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 36px;
+      background: #080a09;
+      box-shadow: 0 38px 110px rgba(0, 0, 0, .66), 0 0 0 5px rgba(0, 0, 0, .34);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(40px) rotateY(-9deg) rotateX(3deg) scale(.92);
+      transition: opacity .7s ease, transform .9s cubic-bezier(.2, .8, .2, 1), filter .7s ease;
+    }
+
+    .world.is-phone-active .phone-sim {
+      opacity: 1;
+      transform: none;
+    }
+
+    .world.is-resolved .phone-sim {
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(-28px) scale(.8);
+    }
+
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 28px;
+      color: #141414;
+      background: #ededed;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    .phone-status {
+      display: flex;
+      height: 28px;
+      padding: 7px 14px 0;
+      align-items: center;
+      justify-content: space-between;
+      color: #141414;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      width: 74px;
+      height: 16px;
+      border-radius: 999px;
+      background: #050505;
+      transform: translateX(-50%);
+    }
+
+    .wechat-head {
+      display: flex;
+      height: 44px;
+      padding: 0 14px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #d6d6d6;
+      background: #ededed;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .wechat-head span { font-size: 16px; font-weight: 400; letter-spacing: 6px; }
+
+    .wechat-list {
+      position: absolute;
+      top: 72px;
+      right: 0;
+      bottom: 46px;
+      left: 0;
+      overflow: auto;
+      scrollbar-width: none;
+      background: #fff;
+      transition: opacity .28s ease, transform .38s ease;
+      scroll-behavior: smooth;
+    }
+
+    .wechat-list::-webkit-scrollbar { display: none; }
+
+    .phone-sim.is-chat .wechat-list {
+      opacity: 0;
+      transform: translateX(-18%);
+    }
+
+    .wechat-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 10px;
+      min-height: 57px;
+      padding: 8px 12px;
+      border-bottom: 1px solid #ececec;
+      align-items: center;
+      background: #fff;
+      transition: background .2s ease;
+    }
+
+    .wechat-row.is-active { background: #dcdcdc; }
+
+    .wechat-avatar {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      place-items: center;
+      color: white;
+      background: #36c777;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .wechat-avatar.school { background: #e8a844; }
+    .wechat-avatar.family { background: #f58b9e; }
+    .wechat-avatar.finance { background: #5188d8; }
+    .wechat-avatar.factory { background: #5b6f83; }
+    .wechat-avatar.property { background: #07a99a; }
+    .wechat-avatar.report { background: #8667cc; }
+    .wechat-avatar.delivery { background: #ee8d35; }
+
+    .wechat-row-copy {
+      min-width: 0;
+    }
+
+    .wechat-row-copy strong {
+      display: block;
+      overflow: hidden;
+      color: #171717;
+      font-size: 11px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wechat-row-copy small {
+      display: block;
+      margin-top: 6px;
+      overflow: hidden;
+      color: #999;
+      font-size: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wechat-row time {
+      align-self: start;
+      color: #bbb;
+      font-size: 7px;
+    }
+
+    .wechat-unread {
+      position: absolute;
+      right: 10px;
+      bottom: 9px;
+      min-width: 19px;
+      padding: 3px 5px;
+      border-radius: 999px;
+      color: white;
+      background: #fa5151;
+      font: 7px/1 Arial, sans-serif;
+      text-align: center;
+    }
+
+    .wechat-tabs {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      height: 46px;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d6d6d6;
+      background: #f7f7f7;
+    }
+
+    .wechat-tabs span {
+      display: grid;
+      place-content: center;
+      color: #888;
+      font-size: 7px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .wechat-tabs span:first-child { color: #07c160; }
+
+    .phone-chat {
+      position: absolute;
+      top: 28px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      opacity: 0;
+      background: #ededed;
+      pointer-events: none;
+      transform: translateX(16%);
+      transition: opacity .28s ease, transform .38s ease;
+    }
+
+    .phone-sim.is-chat .phone-chat {
+      opacity: 1;
+      transform: none;
+    }
+
+    .chat-head {
+      display: flex;
+      height: 44px;
+      padding: 0 13px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #d7d7d7;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .chat-head::before { content: "‹"; font-size: 22px; font-weight: 300; }
+    .chat-head::after { content: "•••"; letter-spacing: 1px; }
+
+    .chat-content {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      bottom: 44px;
+      left: 0;
+      display: flex;
+      padding: 15px 10px;
+      overflow: auto;
+      flex-direction: column;
+      gap: 7px;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+
+    .chat-content::-webkit-scrollbar { display: none; }
+
+    .phone-sender {
+      margin: 2px 0 -3px 2px;
+      color: #999;
+      font-size: 7px;
+    }
+
+    .phone-bubble {
+      max-width: 82%;
+      padding: 7px 9px;
+      border-radius: 5px;
+      color: #171717;
+      background: white;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+      font-size: 8px;
+      line-height: 1.55;
+    }
+
+    .phone-bubble.me {
+      align-self: flex-end;
+      background: #95ec69;
+    }
+
+    .phone-input {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 44px;
+      border-top: 1px solid #d3d3d3;
+      background: #f7f7f7;
+    }
+
+    .phone-touch {
+      position: absolute;
+      z-index: 4;
+      top: 112px;
+      right: 22px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 50%;
+      background: rgba(7, 193, 96, .55);
+      box-shadow: 0 0 0 6px rgba(7, 193, 96, .12);
+      opacity: 0;
+      transition: top .4s ease, opacity .2s ease, transform .18s ease;
+    }
+
+    .world.is-phone-active .phone-touch { opacity: 1; }
+    .phone-touch.is-tapping { transform: scale(.55); }
+
+    .message-field {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(.82);
+      transition: opacity .8s ease, transform 1s cubic-bezier(.2, .8, .2, 1), filter .5s ease;
+    }
+
+    .world.is-resolved .message-field {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+    }
+
+    .world.is-resolved .message-chip {
+      opacity: .46;
+      filter: saturate(.55) contrast(.92);
+    }
+
+    .message-chip {
+      position: absolute;
+      display: grid;
+      grid-template-columns: 38px minmax(126px, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      min-width: 222px;
+      padding: 9px 10px;
+      border: 1px solid rgba(255, 255, 255, .34);
+      border-radius: 13px;
+      color: #171717;
+      background: rgba(247, 247, 247, .9);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, .32);
+      backdrop-filter: blur(16px);
+      animation: message-drift 3.4s ease-in-out infinite alternate;
+      transition: opacity .35s ease, transform .35s ease, min-width .35s ease, border-color .35s ease, background .35s ease, box-shadow .35s ease;
+    }
+
+    .chip-avatar {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      place-items: center;
+      color: white;
+      background:
+        linear-gradient(90deg, transparent 48%, rgba(255,255,255,.82) 48% 52%, transparent 52%),
+        linear-gradient(transparent 48%, rgba(255,255,255,.82) 48% 52%, transparent 52%),
+        #36c777;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .chip-avatar.school { background-color: #e5a248; }
+    .chip-avatar.family { background-color: #ef8fa0; }
+
+    .chip-copy {
+      min-width: 0;
+    }
+
+    .chip-copy strong {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #171717;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .chip-copy time {
+      color: #aaa;
+      font-size: 7px;
+      font-weight: 400;
+    }
+
+    .chip-copy > small {
+      display: block;
+      max-width: 150px;
+      margin-top: 5px;
+      overflow: hidden;
+      color: #888;
+      font-size: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chip-unread {
+      min-width: 26px;
+      padding: 4px 5px;
+      border-radius: 999px;
+      color: white;
+      background: #fa5151;
+      font: 7px/1 ui-monospace, monospace;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .chip-preview {
+      grid-column: 1 / -1;
+      max-width: 0;
+      max-height: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #525252;
+      font-size: 8px;
+      line-height: 1.55;
+      opacity: 0;
+      transition: max-width .35s ease, max-height .35s ease, opacity .25s ease, margin .35s ease;
+    }
+
+    .chip-preview span {
+      display: block;
+      margin-top: 5px;
+      padding: 7px 8px;
+      border-radius: 4px;
+      background: #ededed;
+    }
+
+    .chip-preview em {
+      display: block;
+      margin-top: 8px;
+      color: #07a958;
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .message-chip:hover,
+    .message-chip.is-expanded {
+      z-index: 8;
+      min-width: 330px;
+      opacity: .98;
+      border-color: rgba(7, 193, 96, .58);
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 24px 66px rgba(0, 0, 0, .42);
+      filter: none;
+      animation-play-state: paused;
+      transform: rotate(0) scale(1.03);
+    }
+
+    .message-chip:hover .chip-preview,
+    .message-chip.is-expanded .chip-preview {
+      max-width: 310px;
+      max-height: 210px;
+      margin-top: 7px;
+      opacity: 1;
+    }
+
+    .chip-a { top: 22%; left: 5%; transform: rotate(-4deg); }
+    .chip-b { top: 59%; left: 7%; transform: rotate(3deg); animation-delay: -.7s; }
+    .chip-c { top: 66%; left: 38%; transform: rotate(-2deg); animation-delay: -1.4s; }
+
+    .focus-stack {
+      position: absolute;
+      z-index: 5;
+      top: 15%;
+      right: clamp(48px, 7vw, 112px);
+      width: min(430px, 38vw);
+      max-height: 76vh;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .42);
+      border-radius: 28px;
+      color: #111;
+      background: #ededed;
+      box-shadow: 0 38px 110px rgba(0, 0, 0, .62), 0 0 0 5px rgba(0, 0, 0, .24);
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(28px) scale(.92) rotateY(-5deg);
+      transition: opacity .55s ease, transform .75s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .hermes-status {
+      display: flex;
+      height: 28px;
+      padding: 7px 16px 0;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .focus-head {
+      display: grid;
+      height: 48px;
+      padding: 0 16px;
+      grid-template-columns: 38px 1fr 38px;
+      border-bottom: 1px solid #d4d4d4;
+      align-items: center;
+      background: #ededed;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .focus-head::before { content: "‹"; font-size: 28px; font-weight: 300; text-align: left; }
+    .focus-head::after { content: "⚙"; font-size: 19px; font-weight: 400; text-align: right; }
+
+    .focus-head strong { font-weight: 600; }
+
+    .focus-head small {
+      padding: 2px 4px;
+      border-radius: 4px;
+      color: white;
+      background: #aaa;
+      font-size: 8px;
+      vertical-align: 2px;
+    }
+
+    .hermes-chat {
+      max-height: calc(76vh - 120px);
+      padding: 14px 14px 18px;
+      overflow: auto;
+      scrollbar-width: none;
+    }
+
+    .hermes-chat::-webkit-scrollbar { display: none; }
+
+    .hermes-user {
+      max-width: 82%;
+      margin-left: auto;
+      padding: 10px 12px;
+      border-radius: 5px;
+      background: #95ec69;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .hermes-time {
+      margin: 12px 0;
+      color: #aaa;
+      font-size: 8px;
+      text-align: center;
+    }
+
+    .hermes-answer {
+      position: relative;
+      width: calc(100% - 38px);
+      padding: 14px 14px 12px;
+      border-radius: 5px;
+      background: white;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+      font-size: 10px;
+      line-height: 1.58;
+    }
+
+    .hermes-answer::before {
+      position: absolute;
+      top: 12px;
+      left: -7px;
+      width: 14px;
+      height: 14px;
+      background: white;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .hermes-answer > p { margin: 0 0 10px; color: #555; }
+    .hermes-answer h4 {
+      margin: 0 0 9px;
+      padding-top: 10px;
+      border-top: 1px solid #ececec;
+      font-size: 12px;
+    }
+
+    .hermes-answer ol {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .hermes-answer li {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .hermes-answer li b {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      place-items: center;
+      color: white;
+      background: #07c160;
+      font-size: 9px;
+    }
+
+    .hermes-answer li strong { display: block; font-size: 10px; }
+    .hermes-answer li span { display: block; margin-top: 2px; color: #777; font-size: 9px; }
+
+    .hermes-input {
+      display: grid;
+      height: 44px;
+      padding: 0 13px;
+      grid-template-columns: 26px 1fr 52px;
+      gap: 8px;
+      border-top: 1px solid #d4d4d4;
+      align-items: center;
+      background: #f7f7f7;
+      font-size: 15px;
+    }
+
+    .hermes-input span:nth-child(2) {
+      height: 30px;
+      border-radius: 4px;
+      background: white;
+    }
+
+    .hermes-input span:last-child {
+      letter-spacing: 8px;
+      white-space: nowrap;
+    }
+
+    .world.is-ai-open .message-field {
+      opacity: .16;
+      filter: blur(2px);
+      pointer-events: none;
+      transform: scale(.92);
+    }
+
+    .world.is-ai-open .focus-stack {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
     }
 
     .gesture {
@@ -365,14 +1047,14 @@
     }
 
     .gesture:hover .gesture-ring,
-    .world.is-holding .gesture-ring {
+    .world.is-ai-open .gesture-ring {
       border-color: rgba(231, 198, 107, .72);
       box-shadow: 0 0 44px rgba(231, 198, 107, .14);
       transform: scale(1.08);
     }
 
-    .world.is-holding .gesture-ring::before { transform: scale(.8); }
-    .world.is-holding .gesture strong { color: var(--gold); }
+    .world.is-ai-open .gesture-ring::before { transform: scale(.8); }
+    .world.is-ai-open .gesture strong { color: var(--gold); }
 
     .scroll-cue {
       position: absolute;
@@ -462,6 +1144,8 @@
     .story {
       position: relative;
       z-index: 3;
+      display: flex;
+      flex-direction: column;
       overflow: clip;
       margin-top: -1px;
       background:
@@ -469,6 +1153,13 @@
         radial-gradient(circle at 18% 48%, rgba(231, 198, 107, .045), transparent 28rem),
         #050705;
     }
+
+    .project-wechat { order: 1; }
+    .project-tools { order: 2; }
+    .project-tax { order: 3; }
+    .project-gesture { order: 4; }
+    .project-capabilities { order: 5; }
+    .closing { order: 6; }
 
     .story::before {
       position: absolute;
@@ -578,21 +1269,29 @@
       align-items: center;
       gap: 18px;
       margin-top: 34px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(231, 198, 107, .45);
-      color: var(--paper);
+      padding: 11px 14px;
+      border: 1px solid rgba(231, 198, 107, .48);
+      color: #f4c76d;
+      background: rgba(231, 198, 107, .075);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
       font-size: 12px;
       letter-spacing: .08em;
       text-decoration: none;
-      transition: gap .25s ease, color .25s ease, border-color .25s ease;
+      transition: gap .25s ease, color .25s ease, border-color .25s ease, background .25s ease, transform .25s ease;
+    }
+
+    .project-link span {
+      color: var(--jade);
     }
 
     .project-link:hover,
     .project-link:focus-visible {
       gap: 28px;
       border-color: var(--gold);
-      color: var(--gold);
+      color: #ffe29a;
+      background: rgba(231, 198, 107, .14);
       outline: none;
+      transform: translateY(-2px);
     }
 
     .project-actions {
@@ -609,10 +1308,209 @@
       letter-spacing: .12em;
     }
 
+    .tool-callout {
+      display: table;
+      margin-top: 26px;
+      padding: 8px 12px;
+      border: 1px solid rgba(244, 184, 74, .48);
+      color: #1c1407;
+      background: #f4b84a;
+      box-shadow: 0 10px 32px rgba(244, 184, 74, .12);
+      font: 10px/1 ui-monospace, "SFMono-Regular", monospace;
+      letter-spacing: .08em;
+    }
+
+    .project-tools .tool-callout + .project-link {
+      margin-top: 12px;
+      border-bottom-color: rgba(244, 184, 74, .72);
+      color: #f4c76d;
+    }
+
+    .project-wechat {
+      width: min(1480px, 100%);
+      min-height: 118svh;
+    }
+
+    .project-wechat::after {
+      position: absolute;
+      z-index: -1;
+      top: 14%;
+      right: -20%;
+      width: 58vw;
+      height: 58vw;
+      border-radius: 50%;
+      content: "";
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(72, 217, 163, .07), transparent 66%);
+    }
+
+    .project-wechat .project-grid {
+      grid-template-columns: minmax(320px, .72fr) minmax(600px, 1.38fr);
+      gap: clamp(54px, 7vw, 110px);
+      align-items: center;
+    }
+
+    .project-wechat .project-copy {
+      top: 16vh;
+    }
+
+    .wechat-play-link {
+      border: 1px solid rgba(231, 198, 107, .48);
+      background: rgba(231, 198, 107, .075);
+      cursor: pointer;
+    }
+
+    .wechat-demo-stage {
+      position: relative;
+      min-height: 680px;
+      display: grid;
+      align-content: center;
+      perspective: 1400px;
+    }
+
+    .wechat-video-shell {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      position: relative;
+      overflow: hidden;
+      width: min(850px, 100%);
+      margin: 0;
+      aspect-ratio: 16 / 9;
+      border: 1px solid rgba(242, 240, 232, .16);
+      background: #07100b;
+      box-shadow: 0 46px 130px rgba(0, 0, 0, .58), 0 0 80px rgba(72, 217, 163, .05);
+      clip-path: polygon(22px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%, 0 22px);
+      transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transform-style: preserve-3d;
+      transition: transform .28s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+
+    .wechat-video-shell:hover {
+      border-color: rgba(72, 217, 163, .4);
+      box-shadow: 0 52px 150px rgba(0, 0, 0, .66), 0 0 100px rgba(72, 217, 163, .08);
+    }
+
+    .wechat-video-shell::after {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(5, 7, 5, .08), transparent 58%, rgba(5, 7, 5, .68));
+    }
+
+    .wechat-video-shell video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .wechat-video-shell figcaption {
+      position: absolute;
+      z-index: 4;
+      right: 22px;
+      bottom: 18px;
+      left: 22px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .wechat-video-shell figcaption small {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--jade);
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .13em;
+    }
+
+    .wechat-video-shell figcaption strong {
+      font-family: "Songti SC", serif;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .wechat-video-shell figcaption em {
+      color: rgba(242, 240, 232, .4);
+      font: 8px/1 ui-monospace, monospace;
+      font-style: normal;
+      letter-spacing: .08em;
+    }
+
+    .wechat-video-button {
+      position: absolute;
+      z-index: 5;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 112px;
+      height: 112px;
+      border: 1px solid rgba(242, 240, 232, .3);
+      border-radius: 50%;
+      place-content: center;
+      color: var(--paper);
+      background: rgba(5, 8, 6, .62);
+      backdrop-filter: blur(14px);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      transition: color .25s ease, border-color .25s ease, opacity .3s ease, transform .3s ease;
+    }
+
+    .wechat-video-button:hover,
+    .wechat-video-button:focus-visible {
+      border-color: var(--jade);
+      color: var(--jade);
+      outline: none;
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    .wechat-video-button span {
+      font-size: 22px;
+      transform: translateX(2px);
+    }
+
+    .wechat-video-button small {
+      display: block;
+      margin-top: 8px;
+      font-size: 8px;
+      letter-spacing: .08em;
+    }
+
+    .wechat-video-shell.is-playing .wechat-video-button {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .wechat-video-shell.is-playing figcaption { opacity: 0; }
+
+    .wechat-capabilities {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      width: min(720px, 88%);
+      margin: -1px auto 0;
+      background: rgba(242, 240, 232, .1);
+    }
+
+    .wechat-capabilities span {
+      padding: 13px 8px;
+      color: rgba(242, 240, 232, .42);
+      background: #080c09;
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+
     .media-deck {
       position: relative;
       min-height: 780px;
       perspective: 1200px;
+    }
+
+    .project-gesture .media-deck {
+      min-height: 720px;
     }
 
     .media-shell {
@@ -630,7 +1528,7 @@
       clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
       transform: rotate(var(--roll)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
       transform-style: preserve-3d;
-      transition: transform .28s ease, border-color .3s ease, box-shadow .3s ease;
+      transition: transform .42s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, box-shadow .3s ease, opacity .35s ease, filter .35s ease;
     }
 
     .media-shell::after {
@@ -660,15 +1558,55 @@
     .media-a {
       --roll: -5deg;
       top: 4%;
-      left: 4%;
+      left: 10%;
       z-index: 2;
     }
 
     .media-b {
       --roll: 5deg;
-      right: 0;
-      bottom: 0;
+      top: 16%;
+      right: 10%;
+      bottom: auto;
       z-index: 1;
+    }
+
+    .project-gesture .media-shell {
+      opacity: .56;
+      filter: saturate(.55) brightness(.7);
+    }
+
+    .project-gesture .media-shell.is-active {
+      z-index: 6;
+      opacity: 1;
+      border-color: rgba(72, 217, 163, .58);
+      filter: none;
+      box-shadow: 0 48px 120px rgba(0, 0, 0, .68), 0 0 64px rgba(72, 217, 163, .1);
+      transform: rotate(var(--roll)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px) scale(1.025);
+    }
+
+    .project-gesture .media-shell.is-arming {
+      opacity: .86;
+      border-color: rgba(231, 198, 107, .72);
+      filter: saturate(.9) brightness(.9);
+    }
+
+    .switch-hint {
+      position: absolute;
+      z-index: 4;
+      right: 18px;
+      bottom: 74px;
+      left: 18px;
+      padding: 8px 10px;
+      color: rgba(242, 240, 232, .64);
+      background: rgba(5, 7, 5, .62);
+      font: 8px/1.4 ui-monospace, monospace;
+      letter-spacing: .08em;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .media-shell.is-active .switch-hint {
+      color: var(--jade);
     }
 
     .media-topline {
@@ -863,6 +1801,79 @@
       transform: rotate(0) translateY(-10px);
     }
 
+    .tax-stage .proof-sheet {
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, opacity .45s ease, filter .45s ease, box-shadow .45s ease;
+    }
+
+    .tax-stage[data-focus="result"] .proof-sheet:first-child,
+    .tax-stage[data-focus="feedback"] .proof-sheet:last-of-type {
+      z-index: 6;
+      opacity: 1;
+      border-color: rgba(72, 217, 163, .58);
+      filter: none;
+      box-shadow: 0 42px 110px rgba(0, 0, 0, .62), 0 0 54px rgba(72, 217, 163, .08);
+    }
+
+    .tax-stage[data-focus="result"] .proof-sheet:last-of-type,
+    .tax-stage[data-focus="feedback"] .proof-sheet:first-child {
+      opacity: .38;
+      filter: saturate(.45) brightness(.68);
+    }
+
+    .tax-narration {
+      position: absolute;
+      z-index: 8;
+      right: 4%;
+      bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .tax-narration button {
+      display: flex;
+      min-width: 250px;
+      padding: 11px 14px;
+      border: 1px solid rgba(244, 184, 74, .55);
+      align-items: center;
+      gap: 12px;
+      color: #251806;
+      background: #f4b84a;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, .34);
+      text-align: left;
+    }
+
+    .tax-narration button::before {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(37, 24, 6, .28);
+      border-radius: 50%;
+      place-items: center;
+      content: "▶";
+      font-size: 10px;
+    }
+
+    .tax-narration button.is-playing::before {
+      content: "Ⅱ";
+    }
+
+    .tax-narration small,
+    .tax-narration strong {
+      display: block;
+    }
+
+    .tax-narration small {
+      margin-bottom: 4px;
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .12em;
+    }
+
+    .tax-narration strong {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
     .code-ribbon {
       position: absolute;
       z-index: 0;
@@ -875,12 +1886,150 @@
       pointer-events: none;
     }
 
+    .project-capabilities {
+      width: min(1400px, 100%);
+    }
+
+    .capability-board {
+      display: grid;
+      gap: 12px;
+      perspective: 1200px;
+    }
+
+    .capability-card {
+      position: relative;
+      display: grid;
+      min-height: 150px;
+      padding: 24px 26px 22px 92px;
+      overflow: hidden;
+      border: 1px solid rgba(242, 240, 232, .12);
+      background: linear-gradient(110deg, rgba(13, 20, 15, .9), rgba(6, 9, 7, .62));
+      clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+      transition: border-color .3s ease, transform .35s ease, background .35s ease;
+    }
+
+    .capability-card:hover {
+      border-color: rgba(72, 217, 163, .42);
+      background: linear-gradient(110deg, rgba(17, 31, 22, .96), rgba(7, 11, 8, .72));
+      transform: translateX(-10px);
+    }
+
+    .capability-card > b {
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      color: var(--gold);
+      font: 23px/1 Georgia, serif;
+      font-weight: 400;
+    }
+
+    .capability-card h4 {
+      margin: 0;
+      font-family: "Songti SC", serif;
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .capability-card p {
+      margin: 11px 0 0;
+      color: rgba(242, 240, 232, .48);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .capability-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .capability-tags span {
+      padding: 6px 8px;
+      border: 1px solid rgba(72, 217, 163, .16);
+      color: rgba(72, 217, 163, .72);
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .08em;
+    }
+
     .closing {
       position: relative;
       display: grid;
       min-height: 92svh;
       padding: 14vh clamp(24px, 8vw, 130px);
       place-content: center;
+      text-align: center;
+    }
+
+    .contact-layout {
+      display: grid;
+      width: min(1040px, calc(100vw - 48px));
+      grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
+      gap: clamp(56px, 9vw, 130px);
+      align-items: center;
+      text-align: left;
+    }
+
+    .contact-copy {
+      min-width: 0;
+    }
+
+    .contact-copy > span { margin-left: 0; }
+
+    .contact-phone {
+      display: inline-flex;
+      margin-top: 38px;
+      flex-direction: column;
+      color: var(--paper);
+      text-decoration: none;
+    }
+
+    .contact-phone strong {
+      font: clamp(32px, 4.5vw, 64px)/1 ui-monospace, "SFMono-Regular", monospace;
+      font-weight: 400;
+      letter-spacing: -.055em;
+    }
+
+    .contact-phone small {
+      margin-top: 11px;
+      color: var(--jade);
+      font-size: 10px;
+      letter-spacing: .2em;
+    }
+
+    .contact-qr {
+      position: relative;
+      width: min(330px, 100%);
+      margin: 0;
+      padding: 14px;
+      border: 1px solid rgba(242, 240, 232, .16);
+      background: white;
+      box-shadow: 0 38px 100px rgba(0, 0, 0, .5);
+      transform: rotate(2deg);
+      transition: transform .35s ease, border-color .3s ease;
+    }
+
+    .contact-qr:hover {
+      border-color: rgba(72, 217, 163, .5);
+      transform: rotate(0) translateY(-8px);
+    }
+
+    .contact-qr img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .contact-qr figcaption {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      padding: 11px 12px;
+      color: #121512;
+      background: rgba(255, 255, 255, .9);
+      font-size: 10px;
+      letter-spacing: .08em;
       text-align: center;
     }
 
@@ -924,16 +2073,25 @@
     @keyframes breathe { 50% { opacity: .36; transform: scale(.7); } }
     @keyframes trace { 50% { opacity: .35; transform: translateX(8px); } }
     @keyframes sound-wave { to { transform: scaleY(.35); } }
+    @keyframes message-drift { to { translate: 0 -11px; } }
 
     @media (max-width: 720px) {
       .stage { height: 170svh; }
       .hero-copy {
-        top: 43%;
+        top: 42%;
         left: 24px;
+        width: calc(100vw - 48px);
         transform: translateY(-50%);
       }
-      h1 { font-size: clamp(52px, 18vw, 84px); }
-      .intro { max-width: 255px; font-size: 11px; }
+      h1 { font-size: clamp(43px, 13.5vw, 68px); }
+      h1 span { margin-left: 0; }
+      .intro { max-width: 285px; font-size: 11px; }
+      .hero-film { object-position: 66% center; }
+      .phone-sim {
+        top: 15%;
+        left: calc(50% - 112px);
+        width: 224px;
+      }
       .gesture { right: 20px; bottom: 80px; width: 98px; height: 98px; }
       .scroll-cue { display: none; }
       .corner { bottom: 24px; }
@@ -942,21 +2100,30 @@
       .mode { display: none; }
       .sound-toggle { padding: 8px; }
       .sound-label { display: none; }
-      .quick-projects {
-        top: 86px;
-        right: 20px;
-        width: 150px;
+      .quick-projects { display: none; }
+      .message-chip {
+        min-width: 190px;
+        grid-template-columns: 32px minmax(108px, 1fr) auto;
+        padding: 8px 9px;
       }
-      .quick-card {
-        min-height: 58px;
-        padding: 11px 34px 10px 12px;
+      .chip-avatar { width: 32px; height: 32px; }
+      .message-chip.is-expanded {
+        right: auto;
+        left: 12px;
+        min-width: min(330px, calc(100vw - 24px));
       }
-      .quick-card:not(.is-featured) { display: none; }
-      .quick-card strong { margin-top: 7px; font-size: 13px; }
-      .world.is-holding .hero-copy {
-        opacity: .1 !important;
-        transform: translateY(-50%) scale(.97) !important;
+      .chip-a { top: 16%; right: auto; left: 18px; }
+      .chip-b { top: 62%; right: auto; left: 12px; }
+      .chip-c { top: 72%; right: auto; left: 42%; }
+      .focus-stack {
+        top: 10%;
+        right: 16px;
+        left: 16px;
+        width: auto;
+        max-height: 76svh;
+        border-radius: 24px;
       }
+      .hermes-chat { max-height: calc(76svh - 120px); }
       .story::before { left: 22px; }
       .project {
         min-height: auto;
@@ -965,26 +2132,49 @@
         transform: none;
       }
       .project-grid,
-      .project-tools .project-grid {
+      .project-tools .project-grid,
+      .project-wechat .project-grid {
         grid-template-columns: 1fr;
         gap: 58px;
       }
       .project-copy,
-      .project-tools .project-copy {
+      .project-tools .project-copy,
+      .project-wechat .project-copy {
         position: relative;
         top: auto;
         grid-column: 1;
       }
       .project h3 { font-size: clamp(42px, 12vw, 66px); }
+      .project-capabilities h3 { font-size: clamp(38px, 10vw, 56px); }
       .project-lead { max-width: 92%; }
+      .capability-card {
+        min-height: 0;
+        padding: 22px 20px 20px 68px;
+      }
+      .capability-card > b { top: 23px; left: 22px; font-size: 19px; }
+      .contact-layout {
+        width: calc(100vw - 44px);
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+      .contact-phone strong { font-size: clamp(31px, 10vw, 46px); }
+      .contact-qr { width: min(300px, 88vw); margin: 0 auto; }
       .media-deck,
       .evidence-stage { min-height: 620px; }
       .media-shell { width: min(58vw, 260px); }
-      .media-a { top: 0; left: 0; }
-      .media-b { right: 0; bottom: 0; }
+      .media-a { top: 0; left: 2%; }
+      .media-b { top: 18%; right: 2%; bottom: auto; }
       .project-tools .evidence-stage {
         grid-row: 2;
         grid-column: 1;
+      }
+      .wechat-demo-stage { min-height: auto; }
+      .wechat-video-shell { width: 100%; }
+      .wechat-video-button { width: 88px; height: 88px; }
+      .wechat-video-shell figcaption em { display: none; }
+      .wechat-capabilities {
+        width: 94%;
+        grid-template-columns: repeat(3, 1fr);
       }
       .evidence-video { width: min(58vw, 260px); }
       .proof-sheet {
@@ -1001,6 +2191,14 @@
         top: 31%;
         width: min(49vw, 220px);
         height: 400px;
+      }
+      .tax-narration {
+        right: 0;
+        bottom: -8px;
+      }
+      .tax-narration button {
+        min-width: 0;
+        max-width: 76vw;
       }
       .process-line {
         grid-template-columns: repeat(2, 1fr);
@@ -1021,25 +2219,30 @@
   </style>
 </head>
 <body>
-  <audio id="siteAudio" src="assets/audio/gesture-sword-original.m4a" loop preload="metadata"></audio>
-  <main class="stage" aria-label="小伍工作室交互首页概念">
+  <main class="stage" aria-label="小伍工作室交互首页">
     <section class="world" id="world">
+      <video class="hero-film" src="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/executive-message-overload.mp4" poster="assets/hero/executive-message-overload-poster.jpg" muted autoplay playsinline preload="auto" aria-hidden="true"></video>
+
       <div class="topbar">
         <div class="brand">
           <span class="brand-mark">伍</span>
           <span>小伍工作室</span>
         </div>
         <div class="top-actions">
-          <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false" aria-label="开启主页原声">
+          <button class="sound-toggle" id="soundToggle" type="button" aria-label="重播消息并开启提示音">
             <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="sound-label">开启原声</span>
+            <span class="sound-label">重播消息声</span>
           </button>
           <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
         </div>
       </div>
 
       <nav class="quick-projects" aria-label="精选项目快速入口">
-        <a class="quick-card is-featured" href="https://wiujianzhong.github.io/kunpeng-yuechao/dageng-sword-v2.html" target="_blank" rel="noopener">
+        <a class="quick-card is-featured" href="#wechat-ai">
+          <small>FLAGSHIP / WECHAT AI</small>
+          <strong>微信 AI 超级助手</strong>
+        </a>
+        <a class="quick-card" href="https://wiujianzhong.github.io/kunpeng-yuechao/dageng-sword-v2.html" target="_blank" rel="noopener">
           <small>LIVE / GESTURE</small>
           <strong>大庚剑阵</strong>
         </a>
@@ -1047,26 +2250,142 @@
           <small>PHOTO → PPT</small>
           <strong>边拍边写</strong>
         </a>
-        <a class="quick-card" href="#tax-project">
-          <small>19-DIGIT MATCH</small>
-          <strong>税码匹配</strong>
-        </a>
       </nav>
 
       <div class="hero-copy" id="heroCopy">
-        <div class="eyebrow">AI + WEB 编程的浪漫</div>
-        <h1>左手出画<span>右手散场</span></h1>
-        <p class="intro">不急着自我介绍。先让屏幕回应你。<br>移动探索，按住聚剑，松开散场。</p>
+        <div class="eyebrow">工作与生活 / 都挤在微信里</div>
+        <h1 aria-label="一天被 999+ 条消息切成碎片">一天被 <b>999+</b><span>条消息切成碎片</span></h1>
+        <p class="intro">工作群、学校群、家人和杂事一起涌来。<br>鼠标移到消息标签查看原文，点击空白让 AI 替你总结。</p>
       </div>
 
-      <button class="gesture" id="gesture" type="button" aria-label="按住聚集剑阵">
+      <div class="phone-sim" id="phoneSim" aria-hidden="true">
+        <div class="phone-screen">
+          <span class="phone-notch"></span>
+          <div class="phone-status"><span>9:41</span><span>5G　▰</span></div>
+          <div class="wechat-head"><strong>微信</strong><span>⌕ ＋</span></div>
+          <div class="wechat-list">
+            <div class="wechat-row" data-phone-row="work">
+              <span class="wechat-avatar">销</span>
+              <span class="wechat-row-copy"><strong>华东销售群</strong><small>今天新增订单已经更新……</small></span>
+              <time>10:28</time><b class="wechat-unread" data-target="86">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="school">
+              <span class="wechat-avatar school">校</span>
+              <span class="wechat-row-copy"><strong>一年级三班家长群</strong><small>老师：明天统一穿校服……</small></span>
+              <time>10:16</time><b class="wechat-unread" data-target="52">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="family">
+              <span class="wechat-avatar family">家</span>
+              <span class="wechat-row-copy"><strong>媳妇</strong><small>下班记得买牛奶和鸡蛋</small></span>
+              <time>09:52</time><b class="wechat-unread" data-target="18">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="finance">
+              <span class="wechat-avatar finance">财</span>
+              <span class="wechat-row-copy"><strong>财务协同群</strong><small>两笔回款还没有确认……</small></span>
+              <time>09:31</time><b class="wechat-unread" data-target="73">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="life">
+              <span class="wechat-avatar">杂</span>
+              <span class="wechat-row-copy"><strong>家庭杂事</strong><small>周六家宴，下午接孩子</small></span>
+              <time>08:46</time><b class="wechat-unread" data-target="41">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="factory">
+              <span class="wechat-avatar factory">厂</span>
+              <span class="wechat-row-copy"><strong>综合工作群</strong><small>今天现场情况已经更新……</small></span>
+              <time>08:31</time><b class="wechat-unread" data-target="64">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="property">
+              <span class="wechat-avatar property">物</span>
+              <span class="wechat-row-copy"><strong>物业群</strong><small>维修登记和物业费提醒</small></span>
+              <time>昨天</time><b class="wechat-unread" data-target="34">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="report">
+              <span class="wechat-avatar report">报</span>
+              <span class="wechat-row-copy"><strong>每日工作汇报群</strong><small>请在下班前提交今日进度</small></span>
+              <time>昨天</time><b class="wechat-unread" data-target="29">0</b>
+            </div>
+            <div class="wechat-row" data-phone-row="delivery">
+              <span class="wechat-avatar delivery">递</span>
+              <span class="wechat-row-copy"><strong>快递与取件提醒</strong><small>丰巢柜中有 3 个包裹待取</small></span>
+              <time>周一</time><b class="wechat-unread" data-target="12">0</b>
+            </div>
+          </div>
+          <div class="phone-chat">
+            <div class="chat-head" id="phoneChatTitle">华东销售群</div>
+            <div class="chat-content" id="phoneChatContent"></div>
+            <div class="phone-input"></div>
+          </div>
+          <div class="wechat-tabs"><span>微信</span><span>通讯录</span><span>发现</span><span>我</span></div>
+          <span class="phone-touch"></span>
+        </div>
+      </div>
+
+      <div class="message-field" aria-hidden="true">
+        <div class="message-chip chip-a">
+          <span class="chip-avatar">销</span>
+          <span class="chip-copy"><strong>华东销售群<time>10:28</time></strong><small>刘经理：今天订单和回款谁汇总一下？</small></span>
+          <b class="chip-unread">86</b>
+          <div class="chip-preview">
+            <span>刘经理：今天新增订单数据更新了吗？</span>
+            <span>销售一部：新增 68 单，重点客户追加 18 单。</span>
+            <span>财务：还有 2 笔回款没有到账。</span>
+            <span>王主管：3 个异常订单下午两点前确认。</span>
+            <em>共 86 条消息 · 展开查看重点原文</em>
+          </div>
+        </div>
+        <div class="message-chip chip-b">
+          <span class="chip-avatar school">校</span>
+          <span class="chip-copy"><strong>一年级三班家长群<time>10:16</time></strong><small>班主任：请家长留意明天的安排</small></span>
+          <b class="chip-unread">52</b>
+          <div class="chip-preview">
+            <span>班主任：明天全班统一穿校服。</span>
+            <span>数学老师：口算练习完成第 18 页。</span>
+            <span>美术老师：手工作业今晚 19:00 前上传。</span>
+            <span>班主任：周五放学时间提前十分钟。</span>
+            <em>共 52 条消息 · 已过滤接龙和闲聊</em>
+          </div>
+        </div>
+        <div class="message-chip chip-c">
+          <span class="chip-avatar family">家</span>
+          <span class="chip-copy"><strong>媳妇<time>09:52</time></strong><small>别忘了买东西，还有三个快递</small></span>
+          <b class="chip-unread">18</b>
+          <div class="chip-preview">
+            <span>下班买牛奶、鸡蛋和儿童牙膏。</span>
+            <span>丰巢里三个快递，最早那个今晚收费。</span>
+            <span>周六中午家宴，下午记得接孩子。</span>
+            <span>物业费这周到期，回家提醒我一下。</span>
+            <em>共 18 条消息 · 已整理成家庭待办</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-stack" aria-hidden="true">
+        <div class="hermes-status"><span>10:28</span><span>5G　▰</span></div>
+        <div class="focus-head"><strong>Hermes <small>AI</small></strong></div>
+        <div class="hermes-chat">
+          <div class="hermes-user">帮我把今天微信里的工作、学校和家里事情仔细汇总一下，只保留我需要处理的。</div>
+          <div class="hermes-time">10:28</div>
+          <div class="hermes-answer">
+            <p>已读完 3,286 条消息。以下是今天需要你处理的事情：</p>
+            <h4>🔴 需要你关注的事</h4>
+            <ol>
+              <li><b>工</b><span><strong>订单与回款</strong><span>14:00 前确认 3 笔异常订单，跟进 2 笔逾期回款。</span></span></li>
+              <li><b>校</b><span><strong>老师布置的任务</strong><span>孩子明早穿校服；手工作业今晚 19:00 前提交。</span></span></li>
+              <li><b>家</b><span><strong>媳妇交代与杂事</strong><span>买牛奶、鸡蛋、儿童牙膏；取 3 个快递。</span></span></li>
+            </ol>
+          </div>
+        </div>
+        <div class="hermes-input"><span>◉</span><span></span><span>☺ ＋</span></div>
+      </div>
+
+      <button class="gesture" id="gesture" type="button" aria-label="打开AI消息总结">
         <span class="gesture-ring"></span>
-        <strong><span class="gesture-label">按住<br>聚剑</span><small>HOLD TO FORM</small></strong>
+        <strong><span class="gesture-label">点空白<br>看总结</span><small>CLICK FOR AI</small></strong>
       </button>
 
       <div class="chapter-preview" id="chapterPreview">
-        <p>01 / 从浪漫实验，到现场工具</p>
-        <h2>让屏幕回应人的意图，<br><em>也让工具解决真的问题。</em></h2>
+        <p>01 / 让信息替你工作</p>
+        <h2>消息不该成为负担，<br><em>它只是还没被整理的数据。</em></h2>
       </div>
 
       <div class="scroll-cue">向下进入作品</div>
@@ -1076,6 +2395,41 @@
   </main>
 
   <section class="story" aria-label="小伍工作室真实项目">
+    <article class="project project-wechat" id="wechat-ai" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">主推产品 / WECHAT AI COPILOT</div>
+          <h3>微信里的<br>第二大脑。</h3>
+          <p class="project-lead">不需要再翻几十个群。待办、晨报、日报、经营汇总和旧资料搜索，都可以直接在微信里问。它把散落在聊天记录里的信息，重新变成能够行动的答案。</p>
+          <ul class="project-facts">
+            <li>从海量群消息中提取销售、财务与生产重点</li>
+            <li>自动整理待办、晨报、日报和管理汇总</li>
+            <li>按一句话搜索旧聊天、图片、合同和历史文件</li>
+          </ul>
+          <button class="project-link wechat-play-link" type="button" data-wechat-video-control>
+            播放 42 秒电脑微信演示 <span>▶</span>
+          </button>
+          <span class="project-status">电脑端微信界面 · 自然旁白与轻配乐 · 视频使用脱敏演示数据</span>
+        </div>
+
+        <div class="wechat-demo-stage">
+          <figure class="wechat-video-shell" data-tilt>
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-natural.mp4" poster="assets/story/wechat-ai-super-assistant-poster.jpg" controls playsinline preload="metadata" data-wechat-video data-narrative-video></video>
+            <figcaption>
+              <span><small>SCENE DEMO / 00:42</small><strong>999+ 消息 → 3 件重点</strong></span>
+              <em>电脑微信演示 · 数据已脱敏</em>
+            </figcaption>
+            <button class="wechat-video-button" type="button" aria-label="播放微信AI超级助手演示视频" data-wechat-video-control>
+              <span>▶</span><small>播放完整演示</small>
+            </button>
+          </figure>
+          <div class="wechat-capabilities" aria-hidden="true">
+            <span>待办</span><span>晨报</span><span>日报</span><span>汇总</span><span>资料搜索</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
     <article class="project project-gesture" id="gesture-project" data-reveal>
       <div class="project-grid">
         <div class="project-copy">
@@ -1099,19 +2453,21 @@
         </div>
 
         <div class="media-deck" aria-label="手势项目本人实拍视频">
-          <figure class="media-shell media-a" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self.mp4" poster="assets/story/gesture-sword-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+          <figure class="media-shell media-a is-active" data-tilt data-gesture-card="sword">
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self-sound.mp4" poster="assets/story/gesture-sword-poster.jpg" loop playsinline preload="metadata" data-narrative-video data-gesture-video="sword"></video>
             <figcaption>
               <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:20</span></span>
+              <span class="switch-hint">当前播放 · 剑阵原声</span>
               <span class="media-name"><small>GESTURE / SWORD</small><strong>手势操控大庚剑阵</strong></span>
             </figcaption>
             <button class="media-control" type="button" aria-label="播放手势剑阵视频" data-video-control>▶</button>
           </figure>
 
-          <figure class="media-shell media-b" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-xmas-self.mp4" poster="assets/story/gesture-xmas-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+          <figure class="media-shell media-b" data-tilt data-gesture-card="xmas">
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-xmas-self-sound.mp4" poster="assets/story/gesture-xmas-poster.jpg" loop playsinline preload="metadata" data-narrative-video data-gesture-video="xmas"></video>
             <figcaption>
               <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:18</span></span>
+              <span class="switch-hint">鼠标停留 1 秒 · 切换圣诞音乐</span>
               <span class="media-name"><small>GESTURE / XMAS</small><strong>左手出画，右手散场</strong></span>
             </figcaption>
             <button class="media-control" type="button" aria-label="播放手势圣诞树视频" data-video-control>▶</button>
@@ -1132,17 +2488,18 @@
             <span>整改替换</span>
             <span>自动成稿</span>
           </div>
+          <span class="tool-callout">重点工具 · 手机打开即可现场使用</span>
           <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/caresun-ppt-tool.html" target="_blank" rel="noopener">
             打开 PPT 工具 <span>↗</span>
           </a>
-          <span class="project-status">真实演示：检查 → 整改 → 重新生成</span>
+          <span class="project-status">自然旁白演示：检查 → 整改 → 重新生成</span>
         </div>
 
         <div class="evidence-stage" aria-label="PPT工具真实演示和生成结果">
           <figure class="media-shell evidence-video" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop.mp4" poster="assets/story/ppt-closed-loop-poster.jpg" muted loop playsinline preload="metadata" data-story-video></video>
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop-narrated.mp4" poster="assets/story/ppt-closed-loop-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
             <figcaption>
-              <span class="media-topline"><span class="real-mark">闭环实测</span><span>00:31</span></span>
+              <span class="media-topline"><span class="real-mark">闭环实测</span><span>00:32</span></span>
               <span class="media-name"><small>PHOTO → PPT</small><strong>边拍边写，一键拆解</strong></span>
             </figcaption>
             <button class="media-control" type="button" aria-label="播放PPT闭环演示视频" data-video-control>▶</button>
@@ -1167,10 +2524,13 @@
             <li>标记模糊项，保留人工确认入口</li>
             <li>结果可追溯、可复核、可继续修改</li>
           </ul>
+          <a class="project-link" href="https://swbm.xiaowustudio.cn" target="_blank" rel="noopener">
+            打开税务编码工具 <span>↗</span>
+          </a>
           <span class="project-status">下方为真实匹配结果与使用反馈，不是效果图</span>
         </div>
 
-        <div class="evidence-stage tax-stage" aria-label="税务编码真实结果">
+        <div class="evidence-stage tax-stage" data-focus="result" aria-label="税务编码真实结果">
           <figure class="proof-sheet">
             <img src="assets/story/tax-result-real.jpg" alt="商品和服务税收分类编码真实匹配结果" loading="lazy">
             <figcaption class="proof-label">真实 Excel 结果</figcaption>
@@ -1180,14 +2540,74 @@
             <figcaption class="proof-label">实际使用反馈</figcaption>
           </figure>
           <div class="code-ribbon" aria-hidden="true">19·DIGIT·CODE</div>
+          <div class="tax-narration">
+            <audio src="assets/audio/tax-intro.m4a" preload="metadata" data-narrative-audio></audio>
+            <button type="button" data-tax-audio-control>
+              <span><small>13 秒真实案例讲解</small><strong data-tax-caption>先看左侧生成结果</strong></span>
+            </button>
+          </div>
         </div>
       </div>
     </article>
 
-    <footer class="closing" data-reveal>
-      <p>XIAOWU STUDIO / 小伍工作室</p>
-      <h2>懂工厂、设备和 AI 的实战派。</h2>
-      <span>一半是 AI + Web 编程的浪漫，一半是把现场问题解决的实用。作品不只放在网页里，也真正进入工作流程。</span>
+    <article class="project project-capabilities" id="capabilities" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">解决问题 / FROM PAIN TO SYSTEM</div>
+          <h3>把重复、麻烦、容易出错的事，做成能长期使用的系统。</h3>
+          <p class="project-lead">我不只做一个漂亮页面。更擅长从真实工作里的痛点出发，把流程拆开、把数据接起来，再做成普通人也能直接使用的软件和智能体。</p>
+          <ul class="project-facts">
+            <li>先理解现场怎么工作，再决定技术怎么做</li>
+            <li>能本地部署，也能接入网页、微信和现有流程</li>
+            <li>围绕实际结果持续修改，不交一次性演示</li>
+          </ul>
+        </div>
+
+        <div class="capability-board" aria-label="小伍工作室可解决的问题">
+          <article class="capability-card">
+            <b>01</b>
+            <h4>重复工作自动化</h4>
+            <p>把反复复制、整理、汇总、制表和生成文档的工作交给程序，减少人工操作和低级错误。</p>
+            <div class="capability-tags"><span>Excel 批处理</span><span>PPT 自动生成</span><span>报表汇总</span><span>资料整理</span></div>
+          </article>
+          <article class="capability-card">
+            <b>02</b>
+            <h4>工厂设备与管理软件</h4>
+            <p>围绕巡检、维修、异常、产线数据和管理提醒，做贴合现场的小工具、看板和业务系统。</p>
+            <div class="capability-tags"><span>设备巡检</span><span>维修台账</span><span>异常闭环</span><span>经营看板</span></div>
+          </article>
+          <article class="capability-card">
+            <b>03</b>
+            <h4>企业小系统</h4>
+            <p>把散落在表格、聊天和纸面上的流程收进一个清晰入口，让查询、审批、留痕和复核更简单。</p>
+            <div class="capability-tags"><span>税务编码</span><span>数据查询</span><span>流程审批</span><span>内部协同</span></div>
+          </article>
+          <article class="capability-card">
+            <b>04</b>
+            <h4>智能体与知识库部署</h4>
+            <p>让 AI 读懂企业自己的资料和工作记录，提供微信助手、内部问答、自动提醒和本地知识库。</p>
+            <div class="capability-tags"><span>微信 AI 助手</span><span>企业知识库</span><span>本地部署</span><span>自动提醒</span></div>
+          </article>
+        </div>
+      </div>
+    </article>
+
+    <footer class="closing" id="contact" data-reveal>
+      <div class="contact-layout">
+        <div class="contact-copy">
+          <p>CONTACT / 联系小伍工作室</p>
+          <h2>有麻烦事，<br>我们把它做成工具。</h2>
+          <span>重复劳动、工厂管理软件、业务小系统、智能体和企业知识库，都可以先聊清楚问题，再决定怎么做。</span>
+          <a class="contact-phone" href="tel:19009925522">
+            <strong>190 0992 5522</strong>
+            <small>电话 / 微信同号</small>
+          </a>
+        </div>
+        <figure class="contact-qr">
+          <img src="assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy">
+          <figcaption>扫码添加微信 · 伍建忠</figcaption>
+        </figure>
+      </div>
     </footer>
   </section>
 
@@ -1235,27 +2655,18 @@
       let y;
       let z;
 
-      if (p < .66) {
-        y = THREE.MathUtils.lerp(-3.25, 3.65, Math.random());
-        const bladeT = (y + 3.25) / 6.9;
-        const taper = y > 2.55 ? Math.max(.04, (3.65 - y) / 1.1) : 1;
-        const half = THREE.MathUtils.lerp(.28, .58, Math.sin(bladeT * Math.PI)) * taper;
-        x = THREE.MathUtils.randFloatSpread(half * 2);
-        z = THREE.MathUtils.randFloatSpread(.24);
-      } else if (p < .81) {
-        x = THREE.MathUtils.randFloatSpread(3.25);
-        y = THREE.MathUtils.randFloat(-3.3, -2.95);
-        z = THREE.MathUtils.randFloatSpread(.32);
-      } else if (p < .91) {
-        const a = Math.random() * Math.PI * 2;
-        const r = THREE.MathUtils.randFloat(.55, 1.05);
-        x = Math.cos(a) * r;
-        y = -3.1 + Math.sin(a) * r * .42;
-        z = THREE.MathUtils.randFloatSpread(.28);
+      if (p < .78) {
+        const row = Math.min(2, Math.floor(p / .26));
+        const rowT = (p - row * .26) / .26;
+        x = THREE.MathUtils.lerp(-2.45, 2.45, rowT) + THREE.MathUtils.randFloatSpread(.16);
+        y = 1.55 - row * 1.55 + THREE.MathUtils.randFloatSpread(.16);
+        z = THREE.MathUtils.randFloatSpread(.3);
       } else {
-        x = THREE.MathUtils.randFloatSpread(.42);
-        y = THREE.MathUtils.randFloat(-4.9, -3.35);
-        z = THREE.MathUtils.randFloatSpread(.28);
+        const a = Math.random() * Math.PI * 2;
+        const r = THREE.MathUtils.randFloat(3.7, 5.1);
+        x = Math.cos(a) * r;
+        y = Math.sin(a) * r * .62;
+        z = THREE.MathUtils.randFloatSpread(.65);
       }
       return [x, y, z];
     }
@@ -1382,6 +2793,7 @@
       side: THREE.DoubleSide
     }));
     swordSoul.position.z = -.16;
+    swordSoul.visible = false;
     root.add(swordSoul);
 
     const swordEdge = new THREE.LineSegments(
@@ -1394,6 +2806,7 @@
       })
     );
     swordEdge.position.z = -.08;
+    swordEdge.visible = false;
     root.add(swordEdge);
 
     const haloMaterial = new THREE.MeshBasicMaterial({
@@ -1421,13 +2834,179 @@
     let holdTarget = reduceMotion ? 1 : 0;
     let form = reduceMotion ? 1 : 0;
     let scrollProgress = 0;
-    let lingerTimer;
+    const phoneSim = document.querySelector("#phoneSim");
+    const phoneList = phoneSim.querySelector(".wechat-list");
+    const phoneTouch = phoneSim.querySelector(".phone-touch");
+    const phoneChatTitle = document.querySelector("#phoneChatTitle");
+    const phoneChatContent = document.querySelector("#phoneChatContent");
+    const soundToggle = document.querySelector("#soundToggle");
+    const soundLabel = soundToggle.querySelector(".sound-label");
+    const heroFilm = document.querySelector(".hero-film");
+    const phoneRows = [...phoneSim.querySelectorAll("[data-phone-row]")];
+    const unreadBadges = [...phoneSim.querySelectorAll(".wechat-unread[data-target]")];
+    const phoneStories = [
+      {
+        row: "work",
+        title: "华东销售群",
+        messages: [
+          ["刘经理", "今天订单和回款情况谁汇总一下？"],
+          ["销售一部", "上午新增 68 单，金额 12.4 万。"],
+          ["销售二部", "新增 41 单，重点客户追加 18 单。"],
+          ["财务小周", "两笔客户回款暂时还没有到账。"],
+          ["王主管", "3 个异常订单缺少价格确认。"],
+          ["仓储", "下午第一批货可以按时发出。"],
+          ["刘经理", "异常订单两点前给我最终结果。"],
+          ["我", "收到，我会处理。", true]
+        ]
+      },
+      {
+        row: "school",
+        title: "一年级三班家长群",
+        messages: [
+          ["班主任", "各位家长请留意明天的安排。"],
+          ["班主任", "明天全班统一穿校服。"],
+          ["数学老师", "口算练习完成第 18 页。"],
+          ["语文老师", "今晚阅读课文并签字。"],
+          ["美术老师", "手工作业今晚 19:00 前上传。"],
+          ["家委会", "周五放学时间提前十分钟。"],
+          ["班主任", "收到请在群里回复一下。"],
+          ["我", "收到，我会安排。", true]
+        ]
+      },
+      {
+        row: "family",
+        title: "媳妇",
+        messages: [
+          ["媳妇", "下班记得买牛奶和鸡蛋。"],
+          ["媳妇", "儿童牙膏也快用完了。"],
+          ["媳妇", "丰巢里有三个快递待取。"],
+          ["媳妇", "最早那个今晚开始收费。"],
+          ["媳妇", "周六中午家里有家宴。"],
+          ["媳妇", "下午别忘了接孩子。"],
+          ["媳妇", "物业费这周也到期了。"],
+          ["我", "收到，我都会处理。", true]
+        ]
+      }
+    ];
+    let storyTimers = [];
+    let messageAudioContext = null;
+
+    function queueStory(callback, delay) {
+      const timer = setTimeout(callback, delay);
+      storyTimers.push(timer);
+      return timer;
+    }
+
+    async function unlockMessageAudio() {
+      if (!messageAudioContext) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        messageAudioContext = new AudioContextClass();
+      }
+      if (messageAudioContext.state === "suspended") await messageAudioContext.resume();
+      soundToggle.classList.add("is-on");
+      soundLabel.textContent = "重播消息声";
+    }
+
+    function playMessageDing(index = 0) {
+      if (!messageAudioContext || messageAudioContext.state !== "running") return;
+      const now = messageAudioContext.currentTime;
+      const oscillator = messageAudioContext.createOscillator();
+      const gain = messageAudioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(index % 3 === 2 ? 1175 : 988, now);
+      oscillator.frequency.exponentialRampToValueAtTime(index % 3 === 2 ? 1568 : 1318, now + .08);
+      gain.gain.setValueAtTime(.0001, now);
+      gain.gain.exponentialRampToValueAtTime(.12, now + .012);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + .22);
+      oscillator.connect(gain).connect(messageAudioContext.destination);
+      oscillator.start(now);
+      oscillator.stop(now + .24);
+    }
+
+    function animateUnreadCounts() {
+      unreadBadges.forEach((badge) => { badge.textContent = "0"; });
+      for (let step = 1; step <= 8; step++) {
+        queueStory(() => {
+          const progress = step / 8;
+          unreadBadges.forEach((badge) => {
+            const target = Number(badge.dataset.target);
+            badge.textContent = String(Math.round(target * progress));
+          });
+          playMessageDing(step);
+        }, step * 150);
+      }
+    }
 
     function setHolding(value) {
       holding = value;
       holdTarget = value ? 1 : 0;
-      world.classList.toggle("is-holding", value);
-      gesture.querySelector(".gesture-label").innerHTML = value ? "剑阵<br>已成" : "按住<br>聚剑";
+      world.classList.toggle("is-ai-open", value);
+      gesture.querySelector(".gesture-label").innerHTML = value ? "AI<br>已总结" : "点空白<br>看总结";
+      onScroll();
+    }
+
+    function showPhoneStory(story, index) {
+      phoneRows.forEach((row) => row.classList.toggle("is-active", row.dataset.phoneRow === story.row));
+      phoneChatTitle.textContent = story.title;
+      phoneChatContent.replaceChildren();
+      story.messages.forEach(([sender, text, isMe]) => {
+        if (!isMe) {
+          const senderLabel = document.createElement("div");
+          senderLabel.className = "phone-sender";
+          senderLabel.textContent = sender;
+          phoneChatContent.append(senderLabel);
+        }
+        const bubble = document.createElement("div");
+        bubble.className = `phone-bubble${isMe ? " me" : ""}`;
+        bubble.textContent = text;
+        phoneChatContent.append(bubble);
+      });
+      phoneChatContent.scrollTop = 0;
+      phoneSim.classList.remove("is-chat");
+      phoneList.scrollTo({ top: 0, behavior: "smooth" });
+      phoneTouch.style.top = `${110 + index * 57}px`;
+      phoneTouch.classList.add("is-tapping");
+      playMessageDing(index);
+      queueStory(() => {
+        phoneTouch.classList.remove("is-tapping");
+        phoneSim.classList.add("is-chat");
+      }, 220);
+      queueStory(() => {
+        phoneChatContent.scrollTo({ top: phoneChatContent.scrollHeight, behavior: "smooth" });
+      }, 560);
+      queueStory(() => phoneSim.classList.remove("is-chat"), 1950);
+    }
+
+    function startHeroStory() {
+      storyTimers.forEach(clearTimeout);
+      storyTimers = [];
+      holding = false;
+      holdTarget = 0;
+      world.classList.remove("is-phone-active", "is-overload", "is-resolved", "is-ai-open");
+      phoneSim.classList.remove("is-chat");
+      phoneRows.forEach((row) => row.classList.remove("is-active"));
+      unreadBadges.forEach((badge) => { badge.textContent = "0"; });
+      phoneList.scrollTop = 0;
+      gesture.querySelector(".gesture-label").innerHTML = "点空白<br>看总结";
+      if (heroFilm) {
+        heroFilm.currentTime = 0;
+        heroFilm.play().catch(() => {});
+      }
+      queueStory(() => {
+        world.classList.add("is-phone-active");
+        onScroll();
+      }, 350);
+      queueStory(animateUnreadCounts, 500);
+      phoneStories.forEach((story, index) => {
+        queueStory(() => showPhoneStory(story, index), 2800 + index * 2200);
+      });
+      queueStory(() => world.classList.add("is-overload"), 6000);
+      queueStory(() => {
+        world.classList.add("is-resolved");
+        world.classList.remove("is-phone-active", "is-overload");
+        onScroll();
+      }, 9700);
     }
 
     function updatePointer(event) {
@@ -1440,38 +3019,73 @@
 
     world.addEventListener("pointermove", updatePointer, { passive: true });
     world.addEventListener("pointerleave", () => { cursorAura.style.opacity = "0"; });
-    gesture.addEventListener("pointerdown", (event) => {
-      event.preventDefault();
-      gesture.setPointerCapture(event.pointerId);
-      setHolding(true);
-    });
-    gesture.addEventListener("pointerup", () => setHolding(false));
-    gesture.addEventListener("pointercancel", () => setHolding(false));
-    gesture.addEventListener("click", () => {
-      if (reduceMotion) return;
-      clearTimeout(lingerTimer);
-      setHolding(true);
-      lingerTimer = setTimeout(() => setHolding(false), 4500);
+    gesture.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (!world.classList.contains("is-resolved")) return;
+      setHolding(!holding);
     });
 
-    world.addEventListener("pointerdown", (event) => {
-      if (event.target.closest("#gesture")) return;
-      setHolding(true);
+    document.querySelectorAll(".message-chip").forEach((chip) => {
+      chip.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (!world.classList.contains("is-resolved")) return;
+        const shouldExpand = !chip.classList.contains("is-expanded");
+        document.querySelectorAll(".message-chip").forEach((item) => item.classList.remove("is-expanded"));
+        chip.classList.toggle("is-expanded", shouldExpand);
+      });
     });
-    world.addEventListener("pointerup", () => setHolding(false));
-    world.addEventListener("pointercancel", () => setHolding(false));
+
+    world.addEventListener("click", (event) => {
+      if (!world.classList.contains("is-resolved")) return;
+      if (event.target.closest("a, button, video, .message-chip, .phone-sim, .focus-stack")) return;
+      document.querySelectorAll(".message-chip").forEach((item) => item.classList.remove("is-expanded"));
+      setHolding(!holding);
+    });
+
+    soundToggle.addEventListener("click", async (event) => {
+      event.stopPropagation();
+      window.xiaowuAudioUnlocked = true;
+      window.dispatchEvent(new Event("xiaowu:hero-audio"));
+      await unlockMessageAudio();
+      startHeroStory();
+      playMessageDing(0);
+    });
+    addEventListener("pointerdown", (event) => {
+      window.xiaowuAudioUnlocked = true;
+      if (!event.target.closest("[data-wechat-video-control], [data-video-control], [data-tax-audio-control]")) {
+        window.dispatchEvent(new Event("xiaowu:audio-unlocked"));
+      }
+      unlockMessageAudio();
+    }, { once: true, passive: true });
+    window.addEventListener("xiaowu:narrative-play", () => {
+      if (messageAudioContext?.state === "running") messageAudioContext.suspend();
+    });
+
+    if (reduceMotion) {
+      world.classList.add("is-resolved");
+    } else {
+      startHeroStory();
+    }
 
     function onScroll() {
       const rect = document.querySelector(".stage").getBoundingClientRect();
       const distance = Math.max(1, rect.height - innerHeight);
       scrollProgress = THREE.MathUtils.clamp(-rect.top / distance, 0, 1);
       const reveal = THREE.MathUtils.smoothstep(scrollProgress, .42, .86);
-      heroCopy.style.opacity = String(1 - THREE.MathUtils.smoothstep(scrollProgress, .08, .42));
+      const stateOpacity = world.classList.contains("is-ai-open")
+        ? .045
+        : world.classList.contains("is-phone-active")
+          ? .12
+          : world.classList.contains("is-resolved")
+            ? .82
+            : 1;
+      heroCopy.style.opacity = String((1 - THREE.MathUtils.smoothstep(scrollProgress, .08, .42)) * stateOpacity);
       heroCopy.style.transform = `translateY(calc(-46% - ${scrollProgress * 34}px))`;
       chapterPreview.style.opacity = String(reveal);
       chapterPreview.style.transform = `translateY(${(1 - reveal) * 54}px)`;
-      gesture.style.opacity = String(1 - THREE.MathUtils.smoothstep(scrollProgress, .05, .34));
-      gesture.style.pointerEvents = scrollProgress > .36 ? "none" : "auto";
+      const gestureVisible = world.classList.contains("is-resolved") ? 1 : 0;
+      gesture.style.opacity = String(gestureVisible * (1 - THREE.MathUtils.smoothstep(scrollProgress, .05, .34)));
+      gesture.style.pointerEvents = gestureVisible && scrollProgress <= .36 ? "auto" : "none";
     }
 
     function resize() {
@@ -1505,8 +3119,8 @@
       haloTwo.rotation.z -= .00038;
       halo.material.opacity = .035 + form * .17;
       haloTwo.material.opacity = .025 + form * .075;
-      swordSoul.material.opacity = Math.max(0, form - .42) * .17;
-      swordEdge.material.opacity = Math.max(0, form - .5) * .34;
+      swordSoul.material.opacity = 0;
+      swordEdge.material.opacity = 0;
 
       camera.position.x += (pointer.x * .24 - camera.position.x) * .025;
       camera.position.y += (pointer.y * .13 - camera.position.y) * .025;
@@ -1518,32 +3132,99 @@
     render();
   </script>
   <script>
-    const siteAudio = document.querySelector("#siteAudio");
-    const soundToggle = document.querySelector("#soundToggle");
-    const soundLabel = soundToggle.querySelector(".sound-label");
+    const wechatVideo = document.querySelector("[data-wechat-video]");
+    const wechatVideoShell = wechatVideo.closest(".wechat-video-shell");
     const revealTargets = document.querySelectorAll("[data-reveal]");
-    const storyVideos = document.querySelectorAll("[data-story-video]");
+    const narrativeVideos = [...document.querySelectorAll("[data-narrative-video]")];
+    const standardNarrativeVideos = narrativeVideos.filter((video) => !video.matches("[data-gesture-video]"));
+    const gestureVideos = [...document.querySelectorAll("[data-gesture-video]")];
+    const gestureProject = document.querySelector("#gesture-project");
+    const gestureCards = [...document.querySelectorAll("[data-gesture-card]")];
+    const taxProject = document.querySelector("#tax-project");
+    const taxStage = document.querySelector(".tax-stage");
+    const taxAudio = document.querySelector("[data-narrative-audio]");
+    const taxAudioControl = document.querySelector("[data-tax-audio-control]");
+    const taxCaption = document.querySelector("[data-tax-caption]");
+    const narrativeMedia = [...narrativeVideos, taxAudio];
+    const narrativeVisibility = new Map(narrativeMedia.map((media) => [media, 0]));
+    let activeGestureVideo = gestureVideos.find((video) => video.dataset.gestureVideo === "sword");
+    let gestureSectionRatio = 0;
+    let gestureHoverTimer = null;
+    let gestureReturnTimer = null;
 
-    soundToggle.addEventListener("click", async () => {
-      if (siteAudio.paused) {
-        siteAudio.volume = .24;
-        try {
-          await siteAudio.play();
-          soundToggle.classList.add("is-on");
-          soundToggle.setAttribute("aria-pressed", "true");
-          soundToggle.setAttribute("aria-label", "关闭主页原声");
-          soundLabel.textContent = "关闭原声";
-        } catch {
-          soundLabel.textContent = "点按重试";
-        }
-      } else {
-        siteAudio.pause();
-        soundToggle.classList.remove("is-on");
-        soundToggle.setAttribute("aria-pressed", "false");
-        soundToggle.setAttribute("aria-label", "开启主页原声");
-        soundLabel.textContent = "开启原声";
+    const pauseNarrativesExcept = (activeMedia = null) => {
+      narrativeMedia.forEach((media) => {
+        if (media !== activeMedia && !media.paused) media.pause();
+      });
+    };
+
+    const playNarrative = async (media) => {
+      if (!media || !window.xiaowuAudioUnlocked) return;
+      pauseNarrativesExcept(media);
+      window.dispatchEvent(new Event("xiaowu:narrative-play"));
+      media.muted = false;
+      media.volume = .96;
+      if (media.ended) media.currentTime = 0;
+      await media.play().catch(() => {});
+    };
+
+    const playMostVisibleNarrative = () => {
+      const visible = [...narrativeVisibility.entries()]
+        .filter(([, ratio]) => ratio >= .42)
+        .sort((a, b) => b[1] - a[1]);
+      if (!visible.length) {
+        pauseNarrativesExcept();
+        return;
       }
+      playNarrative(visible[0][0]);
+    };
+
+    const setGestureActive = (video, restart = false) => {
+      if (!video) return;
+      activeGestureVideo = video;
+      if (restart) video.currentTime = 0;
+      gestureVideos.forEach((item) => {
+        narrativeVisibility.set(item, item === video ? gestureSectionRatio : 0);
+      });
+      gestureCards.forEach((card) => {
+        const active = card.querySelector("video") === video;
+        const mode = card.dataset.gestureCard;
+        card.classList.toggle("is-active", active);
+        const hint = card.querySelector(".switch-hint");
+        if (active) {
+          hint.textContent = mode === "sword" ? "当前播放 · 剑阵原声" : "当前播放 · 圣诞音乐";
+        } else {
+          hint.textContent = mode === "xmas" ? "鼠标停留 1 秒 · 切换圣诞音乐" : "移入即可切回剑阵原声";
+        }
+      });
+      playMostVisibleNarrative();
+    };
+
+    const syncWechatVideo = () => {
+      const playing = !wechatVideo.paused;
+      wechatVideoShell.classList.toggle("is-playing", playing);
+      document.querySelectorAll("[data-wechat-video-control]").forEach((control) => {
+        control.setAttribute("aria-label", playing ? "暂停微信AI超级助手演示视频" : "播放微信AI超级助手演示视频");
+      });
+    };
+
+    document.querySelectorAll("[data-wechat-video-control]").forEach((control) => {
+      control.addEventListener("click", async () => {
+        if (wechatVideo.paused) {
+          window.xiaowuAudioUnlocked = true;
+          await playNarrative(wechatVideo);
+        } else {
+          wechatVideo.pause();
+        }
+      });
     });
+
+    wechatVideo.addEventListener("click", () => {
+      if (!wechatVideo.paused) wechatVideo.pause();
+    });
+    wechatVideo.addEventListener("play", syncWechatVideo);
+    wechatVideo.addEventListener("pause", syncWechatVideo);
+    wechatVideo.addEventListener("ended", syncWechatVideo);
 
     const setVideoState = (video) => {
       const control = video.closest(".media-shell")?.querySelector("[data-video-control]");
@@ -1552,6 +3233,59 @@
       control.textContent = playing ? "Ⅱ" : "▶";
       control.setAttribute("aria-label", playing ? "暂停视频" : "播放视频");
     };
+
+    const syncTaxAudioState = () => {
+      const playing = !taxAudio.paused;
+      taxAudioControl.classList.toggle("is-playing", playing);
+      taxAudioControl.setAttribute("aria-label", playing ? "暂停税务编码案例讲解" : "播放税务编码案例讲解");
+    };
+
+    taxAudio.addEventListener("timeupdate", () => {
+      const showingFeedback = taxAudio.currentTime >= 7.25;
+      taxStage.dataset.focus = showingFeedback ? "feedback" : "result";
+      taxCaption.textContent = showingFeedback ? "再看右侧客户真实反馈" : "先看左侧生成结果";
+    });
+    taxAudio.addEventListener("play", syncTaxAudioState);
+    taxAudio.addEventListener("pause", syncTaxAudioState);
+    taxAudio.addEventListener("ended", syncTaxAudioState);
+
+    taxAudioControl.addEventListener("click", () => {
+      window.xiaowuAudioUnlocked = true;
+      if (taxAudio.paused) {
+        if (taxAudio.ended) taxAudio.currentTime = 0;
+        playNarrative(taxAudio);
+      } else {
+        taxAudio.pause();
+      }
+    });
+
+    const xmasCard = document.querySelector('[data-gesture-card="xmas"]');
+    const swordCard = document.querySelector('[data-gesture-card="sword"]');
+
+    xmasCard.addEventListener("pointerenter", () => {
+      clearTimeout(gestureReturnTimer);
+      xmasCard.classList.add("is-arming");
+      gestureHoverTimer = setTimeout(() => {
+        xmasCard.classList.remove("is-arming");
+        setGestureActive(xmasCard.querySelector("video"), true);
+      }, 1000);
+    });
+
+    xmasCard.addEventListener("pointerleave", () => {
+      clearTimeout(gestureHoverTimer);
+      xmasCard.classList.remove("is-arming");
+      if (activeGestureVideo === xmasCard.querySelector("video")) {
+        gestureReturnTimer = setTimeout(() => setGestureActive(swordCard.querySelector("video"), true), 350);
+      }
+    });
+
+    swordCard.addEventListener("pointerenter", () => {
+      clearTimeout(gestureHoverTimer);
+      clearTimeout(gestureReturnTimer);
+      if (activeGestureVideo !== swordCard.querySelector("video")) {
+        setGestureActive(swordCard.querySelector("video"), true);
+      }
+    });
 
     if ("IntersectionObserver" in window) {
       const revealObserver = new IntersectionObserver((entries) => {
@@ -1564,32 +3298,66 @@
 
       revealTargets.forEach((target) => revealObserver.observe(target));
 
-      const videoObserver = new IntersectionObserver((entries) => {
+      const narrativeObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          const video = entry.target;
-          if (entry.isIntersecting) {
-            video.play().catch(() => setVideoState(video));
-          } else {
-            video.pause();
-          }
+          narrativeVisibility.set(entry.target, entry.intersectionRatio);
         });
-      }, { threshold: .42 });
+        playMostVisibleNarrative();
+      }, { threshold: [0, .2, .42, .6, .8, 1] });
 
-      storyVideos.forEach((video) => videoObserver.observe(video));
+      standardNarrativeVideos.forEach((video) => narrativeObserver.observe(video));
+
+      const taxObserver = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        narrativeVisibility.set(taxAudio, entry.intersectionRatio);
+        playMostVisibleNarrative();
+      }, { threshold: [0, .2, .42, .6, .8] });
+      taxObserver.observe(taxProject);
+
+      const gestureObserver = new IntersectionObserver((entries) => {
+        gestureSectionRatio = entries[0].intersectionRatio;
+        gestureVideos.forEach((video) => {
+          narrativeVisibility.set(video, video === activeGestureVideo ? gestureSectionRatio : 0);
+        });
+        playMostVisibleNarrative();
+      }, { threshold: [0, .2, .42, .6, .8] });
+      gestureObserver.observe(gestureProject);
     } else {
       revealTargets.forEach((target) => target.classList.add("is-visible"));
     }
 
-    storyVideos.forEach((video) => {
-      video.addEventListener("play", () => setVideoState(video));
-      video.addEventListener("pause", () => setVideoState(video));
+    window.addEventListener("xiaowu:audio-unlocked", playMostVisibleNarrative);
+    window.addEventListener("xiaowu:hero-audio", () => pauseNarrativesExcept());
+
+    narrativeMedia.forEach((media) => {
+      media.addEventListener("play", () => {
+        pauseNarrativesExcept(media);
+        setVideoState(media);
+      });
+      media.addEventListener("pause", () => setVideoState(media));
+      media.addEventListener("ended", () => setVideoState(media));
     });
 
     document.querySelectorAll("[data-video-control]").forEach((control) => {
       control.addEventListener("click", () => {
         const video = control.closest(".media-shell").querySelector("video");
+        if (video.matches("[data-gesture-video]")) {
+          window.xiaowuAudioUnlocked = true;
+          if (video === activeGestureVideo && !video.paused) {
+            video.pause();
+          } else {
+            setGestureActive(video, true);
+            playNarrative(video);
+          }
+          return;
+        }
         if (video.paused) {
-          video.play().catch(() => setVideoState(video));
+          if (video.matches("[data-narrative-video]")) {
+            window.xiaowuAudioUnlocked = true;
+            playNarrative(video);
+          } else {
+            video.play().catch(() => setVideoState(video));
+          }
         } else {
           video.pause();
         }
