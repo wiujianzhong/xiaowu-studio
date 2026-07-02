@@ -135,6 +135,132 @@
       animation: breathe 2.4s ease-in-out infinite;
     }
 
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .sound-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 11px;
+      border: 1px solid rgba(242, 240, 232, .14);
+      border-radius: 999px;
+      color: rgba(242, 240, 232, .58);
+      background: rgba(5, 7, 5, .34);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      font-size: 9px;
+      letter-spacing: .12em;
+      transition: color .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .sound-toggle:hover,
+    .sound-toggle:focus-visible,
+    .sound-toggle.is-on {
+      border-color: rgba(231, 198, 107, .56);
+      color: var(--gold);
+      background: rgba(231, 198, 107, .06);
+      outline: none;
+    }
+
+    .sound-bars {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 10px;
+    }
+
+    .sound-bars i {
+      width: 1px;
+      height: 4px;
+      background: currentColor;
+    }
+
+    .sound-bars i:nth-child(2) { height: 9px; }
+    .sound-bars i:nth-child(3) { height: 6px; }
+
+    .sound-toggle.is-on .sound-bars i {
+      animation: sound-wave .7s ease-in-out infinite alternate;
+    }
+
+    .sound-toggle.is-on .sound-bars i:nth-child(2) { animation-delay: -.35s; }
+    .sound-toggle.is-on .sound-bars i:nth-child(3) { animation-delay: -.15s; }
+
+    .quick-projects {
+      position: absolute;
+      z-index: 5;
+      top: clamp(92px, 13vh, 132px);
+      right: clamp(22px, 4vw, 64px);
+      display: grid;
+      width: min(250px, 24vw);
+      gap: 8px;
+      perspective: 900px;
+    }
+
+    .quick-card {
+      position: relative;
+      display: grid;
+      min-height: 76px;
+      padding: 13px 42px 13px 15px;
+      overflow: hidden;
+      border: 1px solid rgba(242, 240, 232, .11);
+      color: rgba(242, 240, 232, .62);
+      background: linear-gradient(115deg, rgba(11, 16, 12, .74), rgba(5, 7, 5, .28));
+      backdrop-filter: blur(14px);
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      text-decoration: none;
+      transform-origin: right center;
+      transition: color .28s ease, border-color .28s ease, transform .28s ease, background .28s ease;
+    }
+
+    .quick-card::after {
+      position: absolute;
+      right: 15px;
+      bottom: 13px;
+      color: rgba(231, 198, 107, .46);
+      content: "↗";
+      font-size: 13px;
+      transition: transform .28s ease, color .28s ease;
+    }
+
+    .quick-card:hover,
+    .quick-card:focus-visible {
+      border-color: rgba(231, 198, 107, .5);
+      color: var(--paper);
+      background: linear-gradient(115deg, rgba(18, 29, 21, .86), rgba(5, 7, 5, .45));
+      outline: none;
+      transform: translateX(-8px) rotateY(-3deg);
+    }
+
+    .quick-card:hover::after,
+    .quick-card:focus-visible::after {
+      color: var(--gold);
+      transform: translate(3px, -3px);
+    }
+
+    .quick-card small {
+      color: var(--jade);
+      font: 7px/1 ui-monospace, monospace;
+      letter-spacing: .18em;
+    }
+
+    .quick-card strong {
+      align-self: end;
+      margin-top: 9px;
+      font-family: "Songti SC", serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: .04em;
+    }
+
+    .quick-card.is-featured {
+      border-color: rgba(231, 198, 107, .25);
+      color: var(--paper);
+    }
+
     .hero-copy {
       position: absolute;
       z-index: 4;
@@ -469,6 +595,12 @@
       outline: none;
     }
 
+    .project-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 28px;
+    }
+
     .project-status {
       display: block;
       margin-top: 16px;
@@ -791,6 +923,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes breathe { 50% { opacity: .36; transform: scale(.7); } }
     @keyframes trace { 50% { opacity: .35; transform: translateX(8px); } }
+    @keyframes sound-wave { to { transform: scaleY(.35); } }
 
     @media (max-width: 720px) {
       .stage { height: 170svh; }
@@ -805,7 +938,21 @@
       .scroll-cue { display: none; }
       .corner { bottom: 24px; }
       .chapter-preview { align-content: center; }
-      .mode span { display: none; }
+      .top-actions { gap: 8px; }
+      .mode { display: none; }
+      .sound-toggle { padding: 8px; }
+      .sound-label { display: none; }
+      .quick-projects {
+        top: 86px;
+        right: 20px;
+        width: 150px;
+      }
+      .quick-card {
+        min-height: 58px;
+        padding: 11px 34px 10px 12px;
+      }
+      .quick-card:not(.is-featured) { display: none; }
+      .quick-card strong { margin-top: 7px; font-size: 13px; }
       .world.is-holding .hero-copy {
         opacity: .1 !important;
         transform: translateY(-50%) scale(.97) !important;
@@ -874,6 +1021,7 @@
   </style>
 </head>
 <body>
+  <audio id="siteAudio" src="assets/audio/gesture-sword-original.m4a" loop preload="metadata"></audio>
   <main class="stage" aria-label="小伍工作室交互首页概念">
     <section class="world" id="world">
       <div class="topbar">
@@ -881,8 +1029,29 @@
           <span class="brand-mark">伍</span>
           <span>小伍工作室</span>
         </div>
-        <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
+        <div class="top-actions">
+          <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false" aria-label="开启主页原声">
+            <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="sound-label">开启原声</span>
+          </button>
+          <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
+        </div>
       </div>
+
+      <nav class="quick-projects" aria-label="精选项目快速入口">
+        <a class="quick-card is-featured" href="https://wiujianzhong.github.io/kunpeng-yuechao/dageng-sword-v2.html" target="_blank" rel="noopener">
+          <small>LIVE / GESTURE</small>
+          <strong>大庚剑阵</strong>
+        </a>
+        <a class="quick-card" href="#ppt-project">
+          <small>PHOTO → PPT</small>
+          <strong>边拍边写</strong>
+        </a>
+        <a class="quick-card" href="#tax-project">
+          <small>19-DIGIT MATCH</small>
+          <strong>税码匹配</strong>
+        </a>
+      </nav>
 
       <div class="hero-copy" id="heroCopy">
         <div class="eyebrow">AI + WEB 编程的浪漫</div>
@@ -907,7 +1076,7 @@
   </main>
 
   <section class="story" aria-label="小伍工作室真实项目">
-    <article class="project project-gesture" data-reveal>
+    <article class="project project-gesture" id="gesture-project" data-reveal>
       <div class="project-grid">
         <div class="project-copy">
           <div class="project-type">浪漫实验 / HAND AS INTERFACE</div>
@@ -918,10 +1087,15 @@
             <li>手机、平板、电脑均可体验</li>
             <li>一套手势语言，控制两种完全不同的粒子世界</li>
           </ul>
-          <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/xmas.html" target="_blank" rel="noopener">
-            体验手势圣诞树 <span>↗</span>
-          </a>
-          <span class="project-status">大庚剑阵最新版正在做性能优化，确认后再放体验链接</span>
+          <div class="project-actions">
+            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/dageng-sword-v2.html" target="_blank" rel="noopener">
+              体验大庚剑阵 <span>↗</span>
+            </a>
+            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/xmas.html" target="_blank" rel="noopener">
+              体验手势圣诞树 <span>↗</span>
+            </a>
+          </div>
+          <span class="project-status">最新版已完成性能优化，支持摄像头手势与鼠标御剑</span>
         </div>
 
         <div class="media-deck" aria-label="手势项目本人实拍视频">
@@ -946,7 +1120,7 @@
       </div>
     </article>
 
-    <article class="project project-tools" data-reveal>
+    <article class="project project-tools" id="ppt-project" data-reveal>
       <div class="project-grid">
         <div class="project-copy">
           <div class="project-type">现场工具 / INSPECTION LOOP</div>
@@ -982,7 +1156,7 @@
       </div>
     </article>
 
-    <article class="project project-tax" data-reveal>
+    <article class="project project-tax" id="tax-project" data-reveal>
       <div class="project-grid">
         <div class="project-copy">
           <div class="project-type">数据工具 / 19-DIGIT MATCHING</div>
@@ -1344,8 +1518,32 @@
     render();
   </script>
   <script>
+    const siteAudio = document.querySelector("#siteAudio");
+    const soundToggle = document.querySelector("#soundToggle");
+    const soundLabel = soundToggle.querySelector(".sound-label");
     const revealTargets = document.querySelectorAll("[data-reveal]");
     const storyVideos = document.querySelectorAll("[data-story-video]");
+
+    soundToggle.addEventListener("click", async () => {
+      if (siteAudio.paused) {
+        siteAudio.volume = .24;
+        try {
+          await siteAudio.play();
+          soundToggle.classList.add("is-on");
+          soundToggle.setAttribute("aria-pressed", "true");
+          soundToggle.setAttribute("aria-label", "关闭主页原声");
+          soundLabel.textContent = "关闭原声";
+        } catch {
+          soundLabel.textContent = "点按重试";
+        }
+      } else {
+        siteAudio.pause();
+        soundToggle.classList.remove("is-on");
+        soundToggle.setAttribute("aria-pressed", "false");
+        soundToggle.setAttribute("aria-label", "开启主页原声");
+        soundLabel.textContent = "开启原声";
+      }
+    });
 
     const setVideoState = (video) => {
       const control = video.closest(".media-shell")?.querySelector("[data-video-control]");
