@@ -48,11 +48,11 @@
       top: 0;
       left: 0;
       display: none;
-      width: 31px;
-      height: 31px;
+      width: 24px;
+      height: 30px;
       pointer-events: none;
       opacity: 0;
-      transform: translate3d(-3px, -3px, 0);
+      transform: translate3d(-2px, -2px, 0);
       transition: opacity .16s ease, filter .16s ease;
     }
 
@@ -61,32 +61,32 @@
       width: 100%;
       height: 100%;
       filter:
-        drop-shadow(0 0 1px rgba(255, 255, 255, .92))
-        drop-shadow(0 3px 5px rgba(0, 0, 0, .7));
-      transform-origin: 4px 4px;
+        drop-shadow(0 0 1px rgba(255, 255, 255, .82))
+        drop-shadow(0 2px 4px rgba(0, 0, 0, .58));
+      transform-origin: 3px 3px;
       transition: transform .12s ease, filter .12s ease;
     }
 
     .ai-cursor.is-visible { opacity: 1; }
 
     .ai-cursor.is-pressed {
-      filter: drop-shadow(0 0 5px rgba(255, 255, 255, .68));
+      filter: drop-shadow(0 0 3px rgba(255, 255, 255, .48));
     }
 
     .ai-cursor.is-pressed svg {
-      transform: scale(.8) rotate(-4deg);
+      transform: scale(.86);
     }
 
     .ai-click-ring {
       position: fixed;
       z-index: 9999;
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid rgba(255, 255, 255, .86);
+      width: 14px;
+      height: 14px;
+      border: 1px solid rgba(255, 255, 255, .7);
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%) scale(.45);
-      animation: aiClick .52s cubic-bezier(.18, .8, .22, 1) forwards;
+      animation: aiClick .42s cubic-bezier(.18, .8, .22, 1) forwards;
     }
 
     @media (pointer: fine) {
@@ -94,9 +94,9 @@
     }
 
     @keyframes aiClick {
-      0% { opacity: .9; transform: translate(-50%, -50%) scale(.45); }
-      70% { opacity: .45; }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+      0% { opacity: .72; transform: translate(-50%, -50%) scale(.5); }
+      70% { opacity: .28; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
     }
 
     .stage {
@@ -2317,9 +2317,9 @@
 
     .phone-sim {
       z-index: 8;
-      top: 66.5%;
-      left: 35%;
-      width: clamp(76px, 6.2vw, 98px);
+      top: 72.53%;
+      left: calc(50% - 26.25svh);
+      width: 10.31svh;
       aspect-ratio: 9 / 20.5;
       padding: 3px;
       opacity: 1;
@@ -2486,6 +2486,14 @@
       69% { transform: translate(-50%, -50%) rotate(-2.8deg) scale(1.025); }
       76% { transform: translate(-50%, -50%) rotate(-5.8deg) scale(1.01); }
       83% { transform: translate(-50%, -50%) rotate(-5deg); }
+    }
+
+    @media (min-width: 721px) and (min-aspect-ratio: 1671 / 941) {
+      .phone-sim {
+        top: calc(50% + 12.69vw);
+        left: 35.22%;
+        width: 5.8vw;
+      }
     }
 
     @keyframes screenInvite {
@@ -2746,29 +2754,37 @@
       .hero-copy h1 { font-size: clamp(39px, 11.4vw, 58px); }
       h1 span { margin-left: 0; }
       .hero-copy .intro { display: none; }
-      .hero-film { object-position: 56% center; }
+      .hero-film { object-position: center; }
       .phone-sim {
-        top: 69%;
-        left: 15%;
-        width: 76px;
-        padding: 3px;
-        border: 1px solid rgba(255, 255, 255, .34);
-        border-radius: 14px;
-        background: #050706;
-        transform: translate(-50%, -50%) rotate(-5deg);
+        top: 52.15%;
+        left: calc(50% - 14.74svh);
+        width: 3.53svh;
+        padding: 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        transform: translate(-50%, -50%) rotate(-3deg);
       }
-      .phone-sim:not(.is-zoomed) { aspect-ratio: 9 / 20.5; }
+      .phone-sim:not(.is-zoomed) { aspect-ratio: 9 / 19.7; }
       .phone-sim:not(.is-zoomed) {
-        padding: 3px;
-        border: 1px solid rgba(255, 255, 255, .34);
-        border-radius: 14px;
-        background: #050706;
-        box-shadow: 0 14px 34px rgba(0, 0, 0, .68), 0 0 0 2px rgba(0, 0, 0, .48);
+        padding: 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        box-shadow: 0 0 18px rgba(72, 217, 163, .2);
+        animation-name: phoneInviteMobile;
       }
-      .phone-sim:not(.is-zoomed) .phone-screen { border-radius: 10px; }
+      .phone-sim:not(.is-zoomed) .phone-screen { border-radius: 5px; }
       .world.is-phone-active .phone-sim,
       .world.is-resolved .phone-sim {
-        transform: translate(-50%, -50%) rotate(-5deg);
+        transform: translate(-50%, -50%) rotate(-3deg);
+      }
+      @keyframes phoneInviteMobile {
+        0%, 55%, 100% { transform: translate(-50%, -50%) rotate(-3deg); }
+        62% { transform: translate(-50%, -50%) rotate(-4.2deg) scale(1.018); }
+        69% { transform: translate(-50%, -50%) rotate(-1.8deg) scale(1.025); }
+        76% { transform: translate(-50%, -50%) rotate(-3.6deg) scale(1.01); }
+        83% { transform: translate(-50%, -50%) rotate(-3deg); }
       }
       .phone-sim.is-zoomed {
         top: 17%;
@@ -2912,13 +2928,14 @@
 </head>
 <body>
   <div class="ai-cursor" id="aiCursor" aria-hidden="true">
-    <svg viewBox="0 0 32 32" focusable="false">
-      <path d="M4.7 3.5c-.9-.45-1.85.45-1.47 1.38l9.12 22.34c.39.96 1.76 1 2.2.07l3.18-6.7a1.2 1.2 0 0 1 1.57-.58l6.63 3.08c.94.44 1.88-.53 1.4-1.45L16.16 10.97 4.7 3.5Z" fill="#050505" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+    <svg viewBox="0 0 24 30" focusable="false">
+      <path d="M3 2.5v22.3l5.8-5.5 4.7 8.2 4-2.3-4.6-8 8-1.5L3 2.5Z" fill="#050505" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
     </svg>
   </div>
   <main class="stage" id="home" aria-label="小伍工作室交互首页">
     <section class="world is-phone-active" id="world">
       <picture class="hero-picture">
+        <source media="(max-width: 720px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.png">
         <img class="hero-film" src="assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠侧身拿着手机站在雪山前">
       </picture>
 
@@ -3218,7 +3235,7 @@
             <li>能本地部署，也能接入网页、微信和现有流程</li>
             <li>围绕实际结果持续修改，不交一次性演示</li>
           </ul>
-          <audio src="assets/audio/xiaowu-capabilities-intro.m4a?v=20260703" preload="metadata" data-capabilities-audio></audio>
+          <audio src="assets/audio/xiaowu-capabilities-intro.m4a?v=20260703c" preload="metadata" data-capabilities-audio></audio>
           <button class="capability-audio" type="button" data-capabilities-audio-control>
             <span data-capabilities-audio-icon>▶</span>
             <span><strong>听工作室介绍 · 12 秒</strong><small>点击播放，不自动打扰</small></span>
@@ -3919,7 +3936,7 @@
         pauseNarrativesExcept(capabilitiesAudio);
         window.dispatchEvent(new Event("xiaowu:narrative-play"));
         capabilitiesAudio.muted = false;
-        capabilitiesAudio.volume = .82;
+        capabilitiesAudio.volume = .72;
         capabilitiesAudio.play().catch((error) => {
           capabilitiesManualPlayback = false;
           console.warn("工作室语音播放失败：", error.name);
