@@ -186,15 +186,17 @@
     }
 
     .topbar {
-      position: absolute;
-      z-index: 5;
-      top: max(24px, env(safe-area-inset-top));
-      left: clamp(22px, 4vw, 64px);
-      right: clamp(22px, 4vw, 64px);
+      position: fixed;
+      z-index: 120;
+      top: max(18px, env(safe-area-inset-top));
+      left: 50%;
+      right: auto;
       display: flex;
+      width: min(calc(100vw - 40px), 1180px);
       align-items: center;
       justify-content: space-between;
       letter-spacing: .08em;
+      transform: translateX(-50%);
     }
 
     .brand {
@@ -2248,11 +2250,15 @@
 
     .topbar {
       gap: clamp(18px, 3vw, 42px);
-      padding: 8px 11px 8px 8px;
-      border: 1px solid rgba(242, 240, 232, .1);
+      padding: 9px 12px 9px 9px;
+      border: 1px solid rgba(231, 198, 107, .2);
       border-radius: 999px;
-      background: rgba(5, 7, 5, .48);
-      backdrop-filter: blur(18px);
+      background: linear-gradient(105deg, rgba(7, 11, 8, .84), rgba(12, 15, 13, .68));
+      box-shadow:
+        0 18px 55px rgba(0, 0, 0, .42),
+        inset 0 1px 0 rgba(255, 255, 255, .05);
+      -webkit-backdrop-filter: blur(22px) saturate(1.15);
+      backdrop-filter: blur(22px) saturate(1.15);
     }
 
     .anchor-nav {
@@ -2731,8 +2737,10 @@
         top: max(14px, env(safe-area-inset-top));
         right: 14px;
         left: 14px;
+        width: auto;
         flex-wrap: wrap;
         border-radius: 18px;
+        transform: none;
       }
       .anchor-nav {
         order: 3;
@@ -2932,30 +2940,29 @@
       <path d="M3 2.5v22.3l5.8-5.5 4.7 8.2 4-2.3-4.6-8 8-1.5L3 2.5Z" fill="#050505" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
     </svg>
   </div>
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-mark">伍</span>
+      <span>小伍工作室</span>
+    </div>
+    <nav class="anchor-nav" aria-label="页面锚点导航">
+      <a href="#wechat-ai">微信助手</a>
+      <a href="#ppt-project">PPT</a>
+      <a href="#tax-project">税务编码</a>
+      <a href="#gesture-project">浪漫实验</a>
+      <a href="#capabilities">我能做什么</a>
+      <a href="#contact">联系我</a>
+    </nav>
+    <div class="top-actions">
+      <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
+    </div>
+  </div>
   <main class="stage" id="home" aria-label="小伍工作室交互首页">
     <section class="world is-phone-active" id="world">
       <picture class="hero-picture">
         <source media="(max-width: 720px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
         <img class="hero-film" src="assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠侧身拿着手机站在雪山前">
       </picture>
-
-      <div class="topbar">
-        <div class="brand">
-          <span class="brand-mark">伍</span>
-          <span>小伍工作室</span>
-        </div>
-        <nav class="anchor-nav" aria-label="页面锚点导航">
-          <a href="#wechat-ai">微信助手</a>
-          <a href="#ppt-project">PPT</a>
-          <a href="#tax-project">税务编码</a>
-          <a href="#gesture-project">浪漫实验</a>
-          <a href="#capabilities">我能做什么</a>
-          <a href="#contact">联系我</a>
-        </nav>
-        <div class="top-actions">
-          <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
-        </div>
-      </div>
 
       <div class="hero-copy" id="heroCopy">
         <div class="eyebrow">伍建忠 / 小伍工作室</div>
