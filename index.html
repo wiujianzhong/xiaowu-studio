@@ -48,82 +48,33 @@
       top: 0;
       left: 0;
       display: none;
-      width: 34px;
-      height: 34px;
+      width: 31px;
+      height: 31px;
       pointer-events: none;
       opacity: 0;
-      transform: translate3d(0, 0, 0);
+      transform: translate3d(-3px, -3px, 0);
       transition: opacity .16s ease, filter .16s ease;
     }
 
-    .ai-cursor::before {
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      width: 24px;
-      height: 27px;
-      background: #050706;
-      clip-path: polygon(0 0, 91% 42%, 55% 55%, 73% 94%, 54% 100%, 35% 61%, 0 82%);
-      content: "";
+    .ai-cursor svg {
+      display: block;
+      width: 100%;
+      height: 100%;
       filter:
-        drop-shadow(0 0 .8px #fff)
-        drop-shadow(0 0 2px rgba(255, 255, 255, .95))
-        drop-shadow(0 0 5px rgba(180, 218, 255, .56))
-        drop-shadow(0 4px 7px rgba(0, 0, 0, .7));
-      transform-origin: 2px 2px;
+        drop-shadow(0 0 1px rgba(255, 255, 255, .92))
+        drop-shadow(0 3px 5px rgba(0, 0, 0, .7));
+      transform-origin: 4px 4px;
       transition: transform .12s ease, filter .12s ease;
-    }
-
-    .ai-cursor::after {
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      width: 24px;
-      height: 27px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, .24), transparent 42%);
-      clip-path: polygon(0 0, 91% 42%, 55% 55%, 73% 94%, 54% 100%, 35% 61%, 0 82%);
-      content: "";
-      opacity: .58;
-    }
-
-    .ai-cursor span {
-      position: absolute;
-      z-index: 2;
-      top: 20px;
-      left: 17px;
-      display: grid;
-      min-width: 18px;
-      height: 12px;
-      padding: 0 3px;
-      border: 1px solid rgba(72, 217, 163, .78);
-      border-radius: 999px;
-      place-items: center;
-      color: #f4d272;
-      background: rgba(3, 6, 5, .95);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .58), 0 0 7px rgba(72, 217, 163, .22);
-      font: 800 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-      letter-spacing: .02em;
     }
 
     .ai-cursor.is-visible { opacity: 1; }
 
     .ai-cursor.is-pressed {
-      filter: drop-shadow(0 0 7px rgba(72, 217, 163, .75));
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, .68));
     }
 
-    .ai-cursor.is-pressed::before {
-      filter:
-        drop-shadow(0 0 1px #fff)
-        drop-shadow(0 0 4px rgba(72, 217, 163, .95))
-        drop-shadow(0 2px 5px rgba(0, 0, 0, .7));
+    .ai-cursor.is-pressed svg {
       transform: scale(.8) rotate(-4deg);
-    }
-
-    .ai-cursor.is-pressed span {
-      border-color: #fff;
-      color: #fff;
-      background: rgba(28, 87, 66, .96);
-      transform: scale(.88);
     }
 
     .ai-click-ring {
@@ -131,7 +82,7 @@
       z-index: 9999;
       width: 20px;
       height: 20px;
-      border: 1px solid var(--jade);
+      border: 1.5px solid rgba(255, 255, 255, .86);
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%) scale(.45);
@@ -2366,9 +2317,10 @@
 
     .phone-sim {
       z-index: 8;
-      top: 64%;
-      left: 34%;
+      top: 66.5%;
+      left: 35%;
       width: clamp(76px, 6.2vw, 98px);
+      aspect-ratio: 9 / 20.5;
       padding: 3px;
       opacity: 1;
       pointer-events: auto;
@@ -2796,12 +2748,24 @@
       .hero-copy .intro { display: none; }
       .hero-film { object-position: 56% center; }
       .phone-sim {
-        top: 72.5%;
-        left: 12.5%;
+        top: 69%;
+        left: 15%;
         width: 76px;
+        padding: 3px;
+        border: 1px solid rgba(255, 255, 255, .34);
+        border-radius: 14px;
+        background: #050706;
         transform: translate(-50%, -50%) rotate(-5deg);
       }
       .phone-sim:not(.is-zoomed) { aspect-ratio: 9 / 20.5; }
+      .phone-sim:not(.is-zoomed) {
+        padding: 3px;
+        border: 1px solid rgba(255, 255, 255, .34);
+        border-radius: 14px;
+        background: #050706;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, .68), 0 0 0 2px rgba(0, 0, 0, .48);
+      }
+      .phone-sim:not(.is-zoomed) .phone-screen { border-radius: 10px; }
       .world.is-phone-active .phone-sim,
       .world.is-resolved .phone-sim {
         transform: translate(-50%, -50%) rotate(-5deg);
@@ -2947,7 +2911,11 @@
   </style>
 </head>
 <body>
-  <div class="ai-cursor" id="aiCursor" aria-hidden="true"><span>AI</span></div>
+  <div class="ai-cursor" id="aiCursor" aria-hidden="true">
+    <svg viewBox="0 0 32 32" focusable="false">
+      <path d="M4.7 3.5c-.9-.45-1.85.45-1.47 1.38l9.12 22.34c.39.96 1.76 1 2.2.07l3.18-6.7a1.2 1.2 0 0 1 1.57-.58l6.63 3.08c.94.44 1.88-.53 1.4-1.45L16.16 10.97 4.7 3.5Z" fill="#050505" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+    </svg>
+  </div>
   <main class="stage" id="home" aria-label="小伍工作室交互首页">
     <section class="world is-phone-active" id="world">
       <picture class="hero-picture">
@@ -3250,7 +3218,7 @@
             <li>能本地部署，也能接入网页、微信和现有流程</li>
             <li>围绕实际结果持续修改，不交一次性演示</li>
           </ul>
-          <audio src="assets/audio/xiaowu-capabilities-intro.m4a" preload="metadata" data-capabilities-audio></audio>
+          <audio src="assets/audio/xiaowu-capabilities-intro.m4a?v=20260703" preload="metadata" data-capabilities-audio></audio>
           <button class="capability-audio" type="button" data-capabilities-audio-control>
             <span data-capabilities-audio-icon>▶</span>
             <span><strong>听工作室介绍 · 12 秒</strong><small>点击播放，不自动打扰</small></span>
@@ -3811,6 +3779,7 @@
     const autoNarrativeMedia = [...narrativeVideos, taxAudio];
     const narrativeMedia = [...autoNarrativeMedia, capabilitiesAudio];
     const narrativeVisibility = new Map(autoNarrativeMedia.map((media) => [media, 0]));
+    let capabilitiesManualPlayback = false;
     let activeGestureVideo = gestureVideos.find((video) => video.dataset.gestureVideo === "sword");
     let gestureSectionRatio = 0;
     let gestureHoverTimer = null;
@@ -3824,6 +3793,7 @@
 
     const playNarrative = async (media) => {
       if (!media || !window.xiaowuAudioUnlocked) return;
+      if (media !== capabilitiesAudio) capabilitiesManualPlayback = false;
       pauseNarrativesExcept(media);
       window.dispatchEvent(new Event("xiaowu:narrative-play"));
       media.muted = false;
@@ -3833,6 +3803,7 @@
     };
 
     const playMostVisibleNarrative = () => {
+      if (capabilitiesManualPlayback) return;
       const visible = [...narrativeVisibility.entries()]
         .filter(([, ratio]) => ratio >= .42)
         .sort((a, b) => b[1] - a[1]);
@@ -3931,15 +3902,30 @@
     };
 
     capabilitiesAudio.addEventListener("play", syncCapabilitiesAudioState);
-    capabilitiesAudio.addEventListener("pause", syncCapabilitiesAudioState);
-    capabilitiesAudio.addEventListener("ended", syncCapabilitiesAudioState);
+    capabilitiesAudio.addEventListener("pause", () => {
+      capabilitiesManualPlayback = false;
+      syncCapabilitiesAudioState();
+    });
+    capabilitiesAudio.addEventListener("ended", () => {
+      capabilitiesManualPlayback = false;
+      syncCapabilitiesAudioState();
+    });
 
     capabilitiesAudioControl.addEventListener("click", () => {
       window.xiaowuAudioUnlocked = true;
       if (capabilitiesAudio.paused) {
         if (capabilitiesAudio.ended) capabilitiesAudio.currentTime = 0;
-        playNarrative(capabilitiesAudio);
+        capabilitiesManualPlayback = true;
+        pauseNarrativesExcept(capabilitiesAudio);
+        window.dispatchEvent(new Event("xiaowu:narrative-play"));
+        capabilitiesAudio.muted = false;
+        capabilitiesAudio.volume = .82;
+        capabilitiesAudio.play().catch((error) => {
+          capabilitiesManualPlayback = false;
+          console.warn("工作室语音播放失败：", error.name);
+        });
       } else {
+        capabilitiesManualPlayback = false;
         capabilitiesAudio.pause();
       }
     });
