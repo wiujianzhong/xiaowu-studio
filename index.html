@@ -1320,10 +1320,11 @@
 
     .project-wechat { order: 1; }
     .project-tools { order: 2; }
-    .project-tax { order: 3; }
-    .project-gesture { order: 4; }
-    .project-capabilities { order: 5; }
-    .closing { order: 6; }
+    .project-delivery { order: 3; }
+    .project-tax { order: 4; }
+    .project-gesture { order: 5; }
+    .project-capabilities { order: 6; }
+    .closing { order: 7; }
 
     .story::before {
       position: absolute;
@@ -1861,6 +1862,60 @@
     .project-tools .evidence-stage {
       grid-row: 1;
       grid-column: 1;
+    }
+
+    .project-delivery {
+      width: min(1420px, 100%);
+    }
+
+    .project-delivery .project-type {
+      color: #f4b84a;
+    }
+
+    .delivery-stage {
+      position: relative;
+      min-height: 760px;
+      perspective: 1200px;
+    }
+
+    .project-delivery .media-shell {
+      width: clamp(420px, 45vw, 650px);
+      aspect-ratio: 16 / 10;
+      background: #06100c;
+    }
+
+    .delivery-video-a {
+      --roll: -2.5deg;
+      top: 2%;
+      left: 0;
+      z-index: 3;
+    }
+
+    .delivery-video-b {
+      --roll: 3deg;
+      top: 44%;
+      right: 0;
+      z-index: 2;
+    }
+
+    .delivery-chipline {
+      position: absolute;
+      z-index: 5;
+      top: 36%;
+      right: 8%;
+      display: flex;
+      gap: 8px;
+      transform: rotate(2deg);
+    }
+
+    .delivery-chipline span {
+      padding: 7px 10px;
+      border: 1px solid rgba(244, 184, 74, .32);
+      color: rgba(242, 240, 232, .7);
+      background: rgba(5, 7, 5, .72);
+      font: 9px/1 ui-monospace, monospace;
+      letter-spacing: .08em;
+      backdrop-filter: blur(10px);
     }
 
     .evidence-stage {
@@ -2877,10 +2932,24 @@
       .contact-phone strong { font-size: clamp(31px, 10vw, 46px); }
       .contact-qr { width: min(300px, 88vw); margin: 0 auto; }
       .media-deck,
-      .evidence-stage { min-height: 620px; }
+      .evidence-stage,
+      .delivery-stage { min-height: 620px; }
       .media-shell { width: min(58vw, 260px); }
       .media-a { top: 0; left: 2%; }
       .media-b { top: 18%; right: 2%; bottom: auto; }
+      .project-delivery .media-shell {
+        width: min(86vw, 390px);
+        aspect-ratio: 16 / 10;
+      }
+      .delivery-video-a { top: 0; left: 0; }
+      .delivery-video-b { top: 43%; right: 0; }
+      .delivery-chipline {
+        top: 38%;
+        right: auto;
+        left: 12px;
+        flex-wrap: wrap;
+        max-width: calc(100vw - 44px);
+      }
       .project-tools .evidence-stage {
         grid-row: 2;
         grid-column: 1;
@@ -2948,6 +3017,7 @@
     <nav class="anchor-nav" aria-label="页面锚点导航">
       <a href="#wechat-ai">微信助手</a>
       <a href="#ppt-project">PPT</a>
+      <a href="#delivery-project">送货助手</a>
       <a href="#tax-project">税务编码</a>
       <a href="#gesture-project">浪漫实验</a>
       <a href="#capabilities">我能做什么</a>
@@ -3190,6 +3260,54 @@
             <img src="assets/story/ppt-result-real.jpg" alt="PPT工具生成的真实检查整改页面" loading="lazy">
             <figcaption class="proof-label">真实生成结果 / 向下悬停查看</figcaption>
           </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="project project-delivery" id="delivery-project" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">生产工具 / AI DELIVERY ASSISTANT</div>
+          <h3>供应商一句话报货，系统自动生成送货单。</h3>
+          <p class="project-lead">给经常收货、对账、导出表格的工厂场景做的工具。手机录音说清客户、商品、规格、数量和单价，AI 先生成草稿，人再确认入库，最后自动汇总订单和导出 Excel。</p>
+          <ul class="project-facts">
+            <li>语音录入 → AI 解析订单 → 人工确认 → 保存数据库</li>
+            <li>客户、商品、规格、单位和历史价格可持续积累</li>
+            <li>老板看板按日/周/月/年汇总，支持客户对账和 Excel 导出</li>
+          </ul>
+          <div class="project-actions">
+            <a class="project-link" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noopener">
+              打开 AI 送货助手 <span>↗</span>
+            </a>
+            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/delivery/" target="_blank" rel="noopener">
+              查看静态演示页 <span>↗</span>
+            </a>
+          </div>
+          <span class="project-status">真实客户图文手册截图制作 · 手机开单与电脑看账双端适配</span>
+        </div>
+
+        <div class="delivery-stage" aria-label="AI送货助手两段功能演示视频">
+          <figure class="media-shell delivery-video-a" data-tilt>
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-voice-order.mp4" poster="assets/story/delivery-voice-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">真实界面</span><span>00:08</span></span>
+              <span class="media-name"><small>VOICE → ORDER</small><strong>语音开单，确认后入库</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放AI送货助手语音开单演示视频" data-video-control>▶</button>
+          </figure>
+
+          <figure class="media-shell delivery-video-b" data-tilt>
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-board.mp4" poster="assets/story/delivery-report-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">真实汇总</span><span>00:08</span></span>
+              <span class="media-name"><small>ORDER → REPORT</small><strong>订单管理，客户对账</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放AI送货助手报表汇总演示视频" data-video-control>▶</button>
+          </figure>
+
+          <div class="delivery-chipline" aria-hidden="true">
+            <span>语音开单</span><span>人工确认</span><span>Excel 导出</span><span>客户汇总</span>
+          </div>
         </div>
       </div>
     </article>
