@@ -132,49 +132,53 @@
       transform: translateX(-50%);
     }
 
-    .brand {
-      display: inline-flex;
-      min-width: 0;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
+        .brand {
+          display: inline-flex;
+          min-width: 0;
+          align-items: center;
+          gap: 12px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          cursor: pointer;
+          text-decoration: none;
+          text-align: left;
+          transition: transform .2s ease, opacity .2s ease;
+        }
 
-    .mark {
-      display: grid;
-      width: 39px;
-      height: 39px;
-      place-items: center;
-      border: 1px solid rgba(228, 192, 106, .58);
-      color: var(--gold);
-      background: rgba(9, 12, 11, .42);
-      font-family: Georgia, serif;
-      font-size: 18px;
-      font-weight: 800;
-      box-shadow: inset 0 0 20px rgba(228, 192, 106, .08);
-      backdrop-filter: blur(14px);
-    }
+        .brand:hover {
+          opacity: .92;
+          transform: translateY(-1px);
+        }
 
-    .brand-avatar {
-      display: block;
-      width: 39px;
-      height: 39px;
-      border: 1px solid rgba(246, 240, 227, .22);
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .24);
-    }
+        .brand-avatar {
+          display: block;
+          width: 46px;
+          height: 46px;
+          border: 1px solid rgba(228, 192, 106, .42);
+          border-radius: 50%;
+          background:
+            radial-gradient(circle at 50% 28%, rgba(228, 192, 106, .18), transparent 48%),
+            rgba(9, 12, 11, .62);
+          object-fit: cover;
+          object-position: center top;
+          box-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+        }
 
-    .brand strong {
-      display: block;
-      font-size: 14px;
-      line-height: 1;
-    }
+        .brand-copy {
+          display: block;
+        }
 
-    .brand span {
-      display: block;
-      margin-top: 5px;
-      color: rgba(246, 240, 227, .48);
+        .brand-copy strong {
+          display: block;
+          font-size: 14px;
+          line-height: 1;
+        }
+
+        .brand-copy span {
+          display: block;
+          margin-top: 5px;
+          color: rgba(246, 240, 227, .48);
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 10px;
       letter-spacing: .12em;
@@ -485,34 +489,71 @@
       line-height: 1.45;
     }
 
-    .project-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+        .project-link-panel {
+          display: grid;
+          width: fit-content;
+          max-width: min(760px, 100%);
+          gap: 10px;
+          margin-top: 18px;
+          padding: 12px;
+          border: 1px solid rgba(57, 212, 157, .24);
+          background: rgba(4, 9, 7, .5);
+          box-shadow: 0 18px 54px rgba(0, 0, 0, .32);
+          backdrop-filter: blur(16px);
+        }
 
-    .project-link {
-      display: inline-flex;
-      min-height: 36px;
-      align-items: center;
-      justify-content: center;
-      padding: 0 12px;
-      border: 1px solid rgba(246, 240, 227, .16);
-      color: rgba(246, 240, 227, .74);
-      background: rgba(9, 12, 11, .46);
-      font-size: 12px;
-      text-decoration: none;
-      backdrop-filter: blur(12px);
-      transition: border-color .2s ease, color .2s ease, transform .2s ease;
-    }
+        .project-link-title {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: rgba(246, 240, 227, .8);
+          font-size: 12px;
+          letter-spacing: .08em;
+        }
 
-    .project-link:hover,
-    .project-link:focus-visible {
-      border-color: rgba(57, 212, 157, .52);
-      color: var(--paper);
-      transform: translateY(-2px);
-    }
+        .project-link-title::before {
+          width: 8px;
+          height: 8px;
+          background: var(--jade);
+          box-shadow: 0 0 18px rgba(57, 212, 157, .75);
+          content: "";
+        }
+
+        .project-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .project-link {
+          display: inline-flex;
+          min-height: 36px;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 0 13px;
+          border: 1px solid rgba(246, 240, 227, .2);
+          color: rgba(246, 240, 227, .84);
+          background: rgba(246, 240, 227, .055);
+          font-size: 12px;
+          text-decoration: none;
+          backdrop-filter: blur(12px);
+          transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .project-link::after {
+          color: var(--jade);
+          content: "↗";
+          font-size: 12px;
+        }
+
+        .project-link:hover,
+        .project-link:focus-visible {
+          border-color: rgba(57, 212, 157, .52);
+          color: var(--paper);
+          background: rgba(57, 212, 157, .12);
+          transform: translateY(-2px);
+        }
 
     body.modal-open {
       overflow: hidden;
@@ -611,13 +652,163 @@
       white-space: nowrap;
     }
 
-    .modal-launch[hidden] {
-      display: none;
-    }
+        .modal-launch[hidden] {
+          display: none;
+        }
 
-    .media-frame {
-      display: grid;
-      min-height: 0;
+        .profile-modal {
+          position: fixed;
+          inset: 0;
+          z-index: 70;
+          display: grid;
+          place-items: center;
+          padding: 24px;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity .22s ease;
+        }
+
+        .profile-modal[aria-hidden="false"] {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .profile-backdrop {
+          position: absolute;
+          inset: 0;
+          min-height: 0;
+          border: 0;
+          background: rgba(3, 5, 5, .78);
+          cursor: zoom-out;
+          backdrop-filter: blur(18px);
+        }
+
+        .profile-shell {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          width: min(900px, calc(100vw - 34px));
+          max-height: min(86svh, 760px);
+          grid-template-columns: minmax(220px, .72fr) minmax(0, 1fr);
+          gap: clamp(22px, 4vw, 44px);
+          overflow: auto;
+          padding: clamp(18px, 3vw, 34px);
+          border: 1px solid rgba(246, 240, 227, .2);
+          border-radius: 8px;
+          background:
+            radial-gradient(circle at 16% 18%, rgba(57, 212, 157, .14), transparent 34%),
+            rgba(9, 12, 11, .96);
+          box-shadow: 0 30px 110px rgba(0, 0, 0, .62);
+        }
+
+        .profile-close {
+          position: absolute;
+          top: 14px;
+          right: 14px;
+          display: grid;
+          width: 40px;
+          height: 40px;
+          min-height: 40px;
+          place-items: center;
+          border: 1px solid rgba(246, 240, 227, .2);
+          border-radius: 50%;
+          background: rgba(246, 240, 227, .08);
+          color: var(--paper);
+          cursor: pointer;
+        }
+
+        .profile-portrait {
+          display: grid;
+          min-height: 360px;
+          place-items: end center;
+          border-bottom: 1px solid rgba(228, 192, 106, .28);
+          background:
+            radial-gradient(circle at 50% 38%, rgba(228, 192, 106, .22), transparent 46%),
+            linear-gradient(180deg, rgba(246, 240, 227, .08), rgba(246, 240, 227, 0));
+        }
+
+        .profile-portrait img {
+          display: block;
+          width: min(100%, 430px);
+          max-height: 520px;
+          object-fit: contain;
+        }
+
+        .profile-copy {
+          display: grid;
+          align-content: center;
+          gap: 18px;
+          padding-right: 28px;
+        }
+
+        .profile-kicker,
+        .contact-kicker {
+          margin: 0;
+          color: var(--jade);
+          font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+          font-size: 11px;
+          letter-spacing: .14em;
+          text-transform: uppercase;
+        }
+
+        .profile-copy h2 {
+          margin: 0;
+          font-size: clamp(28px, 4vw, 48px);
+          line-height: 1.06;
+        }
+
+        .profile-copy p {
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.78;
+        }
+
+        .profile-skills,
+        .capability-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .profile-skills span,
+        .capability-tags span {
+          display: inline-flex;
+          min-height: 28px;
+          align-items: center;
+          padding: 0 10px;
+          border: 1px solid rgba(246, 240, 227, .14);
+          color: rgba(246, 240, 227, .72);
+          background: rgba(246, 240, 227, .05);
+          font-size: 12px;
+        }
+
+        .profile-actions,
+        .contact-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .profile-actions a,
+        .profile-actions button,
+        .contact-actions a,
+        .contact-actions button {
+          display: inline-flex;
+          min-height: 40px;
+          align-items: center;
+          justify-content: center;
+          padding: 0 14px;
+          border: 1px solid rgba(57, 212, 157, .35);
+          color: var(--paper);
+          background: rgba(57, 212, 157, .1);
+          font-size: 13px;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .media-frame {
+          display: grid;
+          min-height: 0;
       place-items: center;
       background:
         linear-gradient(90deg, rgba(246, 240, 227, .035) 1px, transparent 1px),
@@ -690,11 +881,117 @@
       line-height: 1.18;
     }
 
-    .work-state {
-      justify-self: end;
-      color: var(--jade);
-      font-size: 13px;
-    }
+        .work-state {
+          justify-self: end;
+          color: var(--jade);
+          font-size: 13px;
+        }
+
+        .capability-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 14px;
+        }
+
+        .capability-card {
+          display: grid;
+          min-height: 176px;
+          align-content: start;
+          gap: 14px;
+          padding: 18px;
+          border: 1px solid rgba(246, 240, 227, .14);
+          border-radius: 8px;
+          background: rgba(246, 240, 227, .04);
+        }
+
+        .capability-card b {
+          color: var(--gold);
+          font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+          font-size: 12px;
+          letter-spacing: .16em;
+        }
+
+        .capability-card h3 {
+          margin: 0;
+          font-size: clamp(20px, 2.3vw, 30px);
+          line-height: 1.16;
+        }
+
+        .capability-card p {
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.72;
+        }
+
+        .contact-section {
+          padding-top: 34px;
+        }
+
+        .contact-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+          gap: clamp(24px, 5vw, 64px);
+          align-items: center;
+          padding: 40px 0;
+          border-top: 1px solid var(--line);
+          border-bottom: 1px solid var(--line);
+        }
+
+        .contact-copy {
+          display: grid;
+          gap: 18px;
+        }
+
+        .contact-copy h2 {
+          margin: 0;
+          font-size: clamp(34px, 5vw, 68px);
+          line-height: 1.02;
+        }
+
+        .contact-copy p {
+          max-width: 48em;
+          margin: 0;
+          color: var(--muted);
+          line-height: 1.76;
+        }
+
+        .contact-phone {
+          display: grid;
+          width: fit-content;
+          gap: 4px;
+          color: var(--paper);
+          text-decoration: none;
+        }
+
+        .contact-phone strong {
+          font-size: clamp(28px, 4vw, 46px);
+          line-height: 1;
+        }
+
+        .contact-phone span {
+          color: var(--jade);
+          font-size: 13px;
+        }
+
+        .contact-qr {
+          margin: 0;
+          justify-self: end;
+          text-align: center;
+        }
+
+        .contact-qr img {
+          display: block;
+          width: min(260px, 100%);
+          border: 1px solid rgba(246, 240, 227, .18);
+          border-radius: 8px;
+          background: #fff;
+        }
+
+        .contact-qr figcaption {
+          margin-top: 10px;
+          color: rgba(246, 240, 227, .6);
+          font-size: 12px;
+        }
 
     @media (max-width: 980px) {
       .case-rail {
@@ -711,14 +1008,23 @@
         scroll-snap-align: start;
       }
 
-      .section-head,
-      .work-item {
-        grid-template-columns: 1fr;
-      }
+          .section-head,
+          .work-item,
+          .contact-layout {
+            grid-template-columns: 1fr;
+          }
 
-      .work-item {
-        gap: 10px;
-        align-items: start;
+          .capability-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .contact-qr {
+            justify-self: start;
+          }
+
+          .work-item {
+            gap: 10px;
+            align-items: start;
         padding: 22px 0;
       }
 
@@ -790,14 +1096,48 @@
 
       .fluid-controls::-webkit-scrollbar { display: none; }
 
-      .fluid-control {
-        min-width: max-content;
-        min-height: 36px;
-        padding-inline: 11px;
-      }
+          .fluid-control {
+            min-width: max-content;
+            min-height: 36px;
+            padding-inline: 11px;
+          }
+
+          .project-link-panel {
+            width: 100%;
+          }
+
+          .project-link {
+            flex: 1 1 calc(50% - 5px);
+          }
+
+          .profile-modal {
+            padding: 12px;
+          }
+
+          .profile-shell {
+            grid-template-columns: 1fr;
+            gap: 18px;
+            padding: 16px;
+          }
+
+          .profile-portrait {
+            min-height: 270px;
+          }
+
+          .profile-portrait img {
+            width: min(100%, 310px);
+          }
+
+          .profile-copy {
+            padding-right: 0;
+          }
+
+          .capability-grid {
+            grid-template-columns: 1fr;
+          }
 
 
-      .proof {
+          .proof {
         min-width: 0;
         font-size: 12px;
       }
@@ -859,16 +1199,15 @@
   </style>
 </head>
 <body>
-  <canvas class="fluid-backdrop" id="fluidBackdrop" aria-hidden="true"></canvas>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="小伍工作室首页">
-      <span class="mark">伍</span>
-      <img class="brand-avatar" src="assets/portrait/xiaowu-avatar-thumb.jpg" alt="伍建忠头像" width="39" height="39">
-      <span>
-        <strong>小伍工作室</strong>
-        <span>real projects, useful tools</span>
-      </span>
-    </a>
+      <canvas class="fluid-backdrop" id="fluidBackdrop" aria-hidden="true"></canvas>
+      <header class="topbar">
+        <button class="brand" type="button" data-profile-open aria-haspopup="dialog" aria-controls="profileModal" aria-label="查看伍建忠简介">
+          <img class="brand-avatar" src="assets/profile/xiaowu-cowboy-avatar-v1.png" alt="伍建忠头像" width="46" height="46">
+          <span class="brand-copy">
+            <strong>小伍工作室</strong>
+            <span>点击看伍建忠简介</span>
+          </span>
+        </button>
     <nav class="nav" aria-label="主页导航">
       <a href="#cases">项目案例</a>
       <a href="#work">工作方向</a>
@@ -988,42 +1327,121 @@
             </span>
           </button>
         </div>
-        <div class="project-links" aria-label="项目链接">
-          <a class="project-link" href="https://jiaxin-ppt.xiaowustudio.cn/" target="_blank" rel="noreferrer">PPT 工具</a>
-          <a class="project-link" href="https://swbm.xiaowustudio.cn/" target="_blank" rel="noreferrer">税务编码</a>
-          <a class="project-link" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noreferrer">AI 送货助手</a>
-          <a class="project-link" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noreferrer">健身动作库</a>
-          <a class="project-link" href="https://sword.xiaowustudio.cn/" target="_blank" rel="noreferrer">大庚剑阵</a>
-        </div>
-      </div>
-    </section>
+            <div class="project-link-panel">
+              <span class="project-link-title">这些是可点击项目入口</span>
+              <div class="project-links" aria-label="项目链接">
+                <a class="project-link" href="https://jiaxin-ppt.xiaowustudio.cn/" target="_blank" rel="noreferrer">PPT 工具</a>
+                <a class="project-link" href="https://swbm.xiaowustudio.cn/" target="_blank" rel="noreferrer">税务编码</a>
+                <a class="project-link" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noreferrer">AI 送货助手</a>
+                <a class="project-link" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noreferrer">健身动作库</a>
+                <a class="project-link" href="https://sword.xiaowustudio.cn/" target="_blank" rel="noreferrer">大庚剑阵</a>
+                <a class="project-link" href="https://xmas.xiaowustudio.cn/" target="_blank" rel="noreferrer">圣诞树手势</a>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <section class="section" id="work" aria-labelledby="work-title">
-      <div class="section-head">
-        <h2 id="work-title">从需求到上线，一套工具能被真正用起来。</h2>
-        <p>我更擅长把现场沟通、表格整理、图片材料和移动端交互串成完整流程：先能演示，再能部署，最后能让别人每天打开就用。</p>
-      </div>
-      <div class="work-list">
-        <article class="work-item">
-          <span class="work-tag">AI / OFFICE</span>
-          <h3 class="work-title">PPT 一键生成、税务编码匹配、微信资料整理</h3>
-          <span class="work-state">已上线</span>
-        </article>
-        <article class="work-item">
-          <span class="work-tag">BUSINESS</span>
-          <h3 class="work-title">AI 送货助手、客户对账、报表汇总和导出</h3>
-          <span class="work-state">可演示</span>
-        </article>
-        <article class="work-item" id="contact">
-          <span class="work-tag">MOBILE / INTERACTION</span>
-          <h3 class="work-title">健身动作库、手势交互、移动端网页体验</h3>
-          <span class="work-state">持续更新</span>
-        </article>
-      </div>
-    </section>
-  </main>
+        <section class="section" id="work" aria-labelledby="work-title">
+          <div class="section-head">
+            <h2 id="work-title">小伍工作室能做什么。</h2>
+            <p>从工厂现场到网页工具，我更擅长把真实流程拆清楚，再做成能演示、能部署、能让别人每天打开就用的小系统。</p>
+          </div>
+          <div class="capability-grid">
+            <article class="capability-card">
+              <b>01 / OFFICE</b>
+              <h3>PPT、表格和资料自动化</h3>
+              <p>把照片、说明、Excel、报表和日常资料整理成可复用流程，减少重复复制、改格式和人工核对。</p>
+              <div class="capability-tags"><span>PPT 一键生成</span><span>Excel 批处理</span><span>资料整理</span></div>
+            </article>
+            <article class="capability-card">
+              <b>02 / DATA</b>
+              <h3>数据核对和业务小系统</h3>
+              <p>围绕税务编码、客户对账、送货记录、汇总导出做小工具，让数据先过一遍机器，再由人确认。</p>
+              <div class="capability-tags"><span>税务编码</span><span>客户对账</span><span>汇总导出</span></div>
+            </article>
+            <article class="capability-card">
+              <b>03 / FACTORY</b>
+              <h3>纺织现场和设备经验</h3>
+              <p>熟悉清梳设备、新技术、乌斯特异纤机、乌斯特各类仪器和棉纺工艺，更容易把现场问题说成软件需求。</p>
+              <div class="capability-tags"><span>清梳设备</span><span>乌斯特异纤机</span><span>棉纺工艺</span></div>
+            </article>
+            <article class="capability-card">
+              <b>04 / AI</b>
+              <h3>AI 助手和知识库</h3>
+              <p>把聊天、文档、工作记录和企业资料接成问答、提醒、总结和自动处理流程，适合先从小场景落地。</p>
+              <div class="capability-tags"><span>微信 AI 助手</span><span>知识库</span><span>自动提醒</span></div>
+            </article>
+            <article class="capability-card">
+              <b>05 / MOBILE</b>
+              <h3>手机端网页和轻应用</h3>
+              <p>健身动作库、送货助手、现场录入和查询类工具，都可以做成手机打开就能用的网页体验。</p>
+              <div class="capability-tags"><span>PWA</span><span>移动端</span><span>扫码即用</span></div>
+            </article>
+            <article class="capability-card">
+              <b>06 / PLAY</b>
+              <h3>手势互动和网页特效</h3>
+              <p>用 Canvas、WebGL、视频和手势交互做更有记忆点的演示，让项目不只是能用，也能让人愿意点开。</p>
+              <div class="capability-tags"><span>手势游戏</span><span>WebGL</span><span>演示视频</span></div>
+            </article>
+          </div>
+        </section>
 
-  <div class="player-modal" id="playerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+        <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+          <div class="contact-layout">
+            <div class="contact-copy">
+              <p class="contact-kicker">CONTACT / 联系小伍工作室</p>
+              <h2 id="contact-title">有项目、有现场问题，直接联系。</h2>
+              <p>重复劳动、工厂管理、业务小系统、AI 助手、移动端网页和互动演示，都可以先聊清楚问题，再决定怎么做。</p>
+              <a class="contact-phone" href="tel:19009925522">
+                <strong>190 0992 5522</strong>
+                <span>电话 / 微信同号</span>
+              </a>
+              <div class="contact-actions">
+                <a href="tel:19009925522">拨打电话</a>
+                <button type="button" data-copy-wechat data-wechat="19009925522">复制微信号</button>
+              </div>
+            </div>
+            <figure class="contact-qr">
+              <img src="assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy" decoding="async">
+              <figcaption>扫码添加微信 · 伍建忠</figcaption>
+            </figure>
+          </div>
+        </section>
+      </main>
+
+      <div class="profile-modal" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+	    <button class="profile-backdrop" type="button" data-profile-close aria-label="关闭简介遮罩"></button>
+        <section class="profile-shell" aria-label="伍建忠简介">
+          <button class="profile-close" type="button" data-profile-close aria-label="关闭伍建忠简介">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="profile-portrait">
+            <img src="assets/profile/xiaowu-cowboy-profile-v1.png" alt="伍建忠年轻风趣头像" width="720" height="720">
+          </div>
+          <div class="profile-copy">
+            <p class="profile-kicker">WU JIANZHONG / 小伍工作室</p>
+            <h2 id="profileTitle">懂现场，也愿意把工具做得有意思。</h2>
+            <p>我是伍建忠。小伍工作室主要把工作现场里的重复劳动、资料整理、报表生成、移动端交互和 AI 助手做成能真正使用的网页工具。</p>
+            <p>我也熟悉清梳设备、新技术、乌斯特异纤机、乌斯特各类仪器和棉纺工艺，所以更容易从真实场景里找到软件该解决的问题。</p>
+            <div class="profile-skills" aria-label="伍建忠擅长方向">
+              <span>清梳设备</span>
+              <span>乌斯特异纤机</span>
+              <span>棉纺工艺</span>
+              <span>AI 助手</span>
+              <span>网页工具</span>
+              <span>移动端交互</span>
+            </div>
+            <div class="profile-actions">
+              <a href="tel:19009925522">电话联系</a>
+              <button type="button" data-copy-wechat data-wechat="19009925522">复制微信号</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="player-modal" id="playerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
     <button class="modal-backdrop" type="button" data-close-player aria-label="关闭预览"></button>
     <div class="player-shell">
       <div class="player-head">
@@ -1063,14 +1481,25 @@
   </script>
   <script>
     const modal = document.getElementById("playerModal");
-    const mediaFrame = document.getElementById("mediaFrame");
-    const playerTitle = document.getElementById("playerTitle");
-    const playerNote = document.getElementById("playerNote");
-    const playerLink = document.getElementById("playerLink");
+        const mediaFrame = document.getElementById("mediaFrame");
+        const playerTitle = document.getElementById("playerTitle");
+        const playerNote = document.getElementById("playerNote");
+        const playerLink = document.getElementById("playerLink");
+        const profileModal = document.getElementById("profileModal");
 
-    function openPlayer(card) {
-      const title = card.dataset.title;
-      const note = card.dataset.note;
+        function openProfile() {
+          profileModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("modal-open");
+        }
+
+        function closeProfile() {
+          profileModal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+        }
+
+        function openPlayer(card) {
+          const title = card.dataset.title;
+          const note = card.dataset.note;
       const poster = card.dataset.poster;
       const video = card.dataset.video;
       const link = card.dataset.link;
@@ -1105,13 +1534,39 @@
       card.addEventListener("click", () => openPlayer(card));
     });
 
-    document.querySelectorAll("[data-close-player]").forEach((button) => {
-      button.addEventListener("click", closePlayer);
-    });
+        document.querySelectorAll("[data-close-player]").forEach((button) => {
+          button.addEventListener("click", closePlayer);
+        });
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && modal.getAttribute("aria-hidden") === "false") closePlayer();
-    });
-  </script>
+        document.querySelectorAll("[data-profile-open]").forEach((button) => {
+          button.addEventListener("click", openProfile);
+        });
+
+        document.querySelectorAll("[data-profile-close]").forEach((button) => {
+          button.addEventListener("click", closeProfile);
+        });
+
+        document.querySelectorAll("[data-copy-wechat]").forEach((button) => {
+          const original = button.textContent;
+          button.addEventListener("click", async () => {
+            const wechat = button.dataset.wechat;
+            try {
+              await navigator.clipboard.writeText(wechat);
+              button.textContent = "微信号已复制";
+            } catch {
+              button.textContent = `微信号：${wechat}`;
+            }
+            window.setTimeout(() => {
+              button.textContent = original;
+            }, 1800);
+          });
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape") return;
+          if (modal.getAttribute("aria-hidden") === "false") closePlayer();
+          if (profileModal.getAttribute("aria-hidden") === "false") closeProfile();
+        });
+      </script>
 </body>
 </html>
