@@ -1918,6 +1918,105 @@
       backdrop-filter: blur(10px);
     }
 
+    .project-fitness {
+      width: min(1420px, 100%);
+    }
+
+    .project-fitness .project-type {
+      color: #48d9a3;
+    }
+
+    .fitness-stage {
+      position: relative;
+      min-height: 720px;
+      perspective: 1200px;
+    }
+
+    .fitness-interface {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      position: absolute;
+      top: 4%;
+      left: 0;
+      z-index: 2;
+      overflow: hidden;
+      width: clamp(520px, 48vw, 760px);
+      margin: 0;
+      aspect-ratio: 1280 / 920;
+      border: 1px solid rgba(242, 240, 232, .16);
+      background: #eef1ec;
+      box-shadow: 0 40px 110px rgba(0, 0, 0, .5), 0 0 58px rgba(72, 217, 163, .06);
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+      transform: rotate(-1.5deg) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transform-style: preserve-3d;
+      transition: transform .35s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+
+    .fitness-interface:hover {
+      border-color: rgba(72, 217, 163, .48);
+      box-shadow: 0 50px 130px rgba(0, 0, 0, .58), 0 0 80px rgba(72, 217, 163, .08);
+      transform: rotate(0deg) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px);
+    }
+
+    .fitness-interface img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .fitness-interface figcaption {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      padding: 8px 10px;
+      color: #10130f;
+      background: rgba(255, 255, 255, .92);
+      font: 8px/1 ui-monospace, monospace;
+      letter-spacing: .12em;
+    }
+
+    .fitness-action-video {
+      --roll: 4deg;
+      right: 2%;
+      bottom: 5%;
+      z-index: 5;
+      width: clamp(230px, 21vw, 320px);
+      aspect-ratio: 1;
+      background: #f5f6f2;
+      box-shadow: 0 36px 95px rgba(0, 0, 0, .56);
+    }
+
+    .fitness-action-video video {
+      object-fit: cover;
+    }
+
+    .fitness-metric-strip {
+      position: absolute;
+      z-index: 6;
+      right: 10%;
+      bottom: 0;
+      display: flex;
+      gap: 8px;
+      transform: rotate(-1deg);
+    }
+
+    .fitness-metric-strip span {
+      padding: 9px 11px;
+      border: 1px solid rgba(72, 217, 163, .26);
+      color: rgba(242, 240, 232, .72);
+      background: rgba(5, 7, 5, .72);
+      font: 9px/1 ui-monospace, monospace;
+      letter-spacing: .08em;
+      backdrop-filter: blur(10px);
+    }
+
+    .fitness-metric-strip b {
+      color: var(--jade);
+      font-weight: 700;
+    }
+
     .evidence-stage {
       position: relative;
       min-height: 780px;
@@ -2950,6 +3049,30 @@
         flex-wrap: wrap;
         max-width: calc(100vw - 44px);
       }
+      .fitness-stage { min-height: 620px; }
+      .fitness-interface {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        transform: rotate(-1deg);
+      }
+      .fitness-interface:hover {
+        transform: rotate(0) translateY(-6px);
+      }
+      .fitness-action-video {
+        top: 45%;
+        right: 0;
+        bottom: auto;
+        width: min(50vw, 220px);
+      }
+      .fitness-metric-strip {
+        right: auto;
+        bottom: 12px;
+        left: 0;
+        flex-wrap: wrap;
+        max-width: calc(100vw - 44px);
+      }
       .project-tools .evidence-stage {
         grid-row: 2;
         grid-column: 1;
@@ -3018,6 +3141,7 @@
       <a href="#wechat-ai">微信助手</a>
       <a href="#ppt-project">PPT</a>
       <a href="#delivery-project">送货助手</a>
+      <a href="#fitness-project">动作库</a>
       <a href="#tax-project">税务编码</a>
       <a href="#gesture-project">浪漫实验</a>
       <a href="#capabilities">我能做什么</a>
@@ -3307,6 +3431,52 @@
 
           <div class="delivery-chipline" aria-hidden="true">
             <span>语音开单</span><span>人工确认</span><span>Excel 导出</span><span>客户汇总</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="project project-fitness" id="fitness-project" data-reveal>
+      <div class="project-grid">
+        <div class="project-copy">
+          <div class="project-type">资料产品 / FITNESS MOTION LIBRARY</div>
+          <h3>1324 个健身动作，手机里直接查。</h3>
+          <p class="project-lead">把开源动作数据集整理成“小伍健身动作库”：中文动作名、中文步骤、肌群筛选、器械筛选、收藏和随机动作都能在手机上直接用。不是下载一堆文件，而是打开网页就能查动作、看演示。</p>
+          <ul class="project-facts">
+            <li>1324 个动作，覆盖胸、背、肩、腿、手臂、腰腹和有氧</li>
+            <li>动作 GIF 演示、180x180 缩略图、中文步骤和英文原名对照</li>
+            <li>支持手机添加到主屏幕，像一个轻量动作库 App</li>
+          </ul>
+          <div class="project-actions">
+            <a class="project-link" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noopener">
+              打开小伍健身动作库 <span>↗</span>
+            </a>
+            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/fitness/" target="_blank" rel="noopener">
+              备用公网入口 <span>↗</span>
+            </a>
+          </div>
+          <span class="project-status">已发布到 fitness.xiaowustudio.cn · 图片与动作演示使用真实上线素材</span>
+        </div>
+
+        <div class="fitness-stage" aria-label="小伍健身动作库真实截图和动作视频">
+          <figure class="fitness-interface" data-tilt>
+            <img src="assets/story/fitness-library-poster.png" alt="小伍健身动作库真实网页截图" loading="lazy">
+            <figcaption>真实页面截图 / 1324 个动作</figcaption>
+          </figure>
+
+          <figure class="media-shell fitness-action-video" data-tilt>
+            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo.mp4" poster="assets/story/fitness-chest-poster.jpg" loop playsinline preload="metadata" data-narrative-video></video>
+            <figcaption>
+              <span class="media-topline"><span class="real-mark">动作演示</span><span>00:20</span></span>
+              <span class="media-name"><small>CHEST / BODYWEIGHT</small><strong>胸肌动作 GIF 转视频</strong></span>
+            </figcaption>
+            <button class="media-control" type="button" aria-label="播放健身动作演示视频" data-video-control>▶</button>
+          </figure>
+
+          <div class="fitness-metric-strip" aria-hidden="true">
+            <span><b>1324</b> 动作</span>
+            <span><b>10</b> 部位</span>
+            <span><b>PWA</b> 手机可装</span>
           </div>
         </div>
       </div>
