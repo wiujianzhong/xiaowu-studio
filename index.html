@@ -3,21 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#050705">
+  <meta name="theme-color" content="#090c0b">
   <meta name="description" content="小伍工作室：把现场经验变成真正能用的 AI 与 Web 工具，也保留编程的浪漫。">
   <title>小伍工作室｜让信息替你工作</title>
   <style>
     :root {
       color-scheme: dark;
-      --ink: #050705;
-      --paper: #f2f0e8;
-      --muted: rgba(242, 240, 232, .58);
-      --gold: #e7c66b;
-      --jade: #48d9a3;
-      --energy: 0;
+      --ink: #090c0b;
+      --ink-soft: #111714;
+      --paper: #f6f0e3;
+      --muted: rgba(246, 240, 227, .66);
+      --faint: rgba(246, 240, 227, .42);
+      --line: rgba(246, 240, 227, .16);
+      --gold: #e4c06a;
+      --jade: #39d49d;
+      --field: #496747;
+      --red: #e44d38;
+      --blue: #8ab6d6;
+      --fluid-accent: #c12b7e;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html {
       background: var(--ink);
@@ -27,4425 +36,950 @@
     body {
       margin: 0;
       min-width: 320px;
-      overflow-x: hidden;
       color: var(--paper);
-      background:
-        radial-gradient(circle at 50% 38%, rgba(35, 104, 78, .08), transparent 34rem),
-        var(--ink);
-      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: var(--ink);
+      overflow-x: hidden;
     }
 
-    button, a { color: inherit; font: inherit; }
-
-    @media (pointer: fine) {
-      body.cursor-ready,
-      body.cursor-ready * { cursor: none !important; }
-    }
-
-    .ai-cursor {
+    .fluid-backdrop {
       position: fixed;
-      z-index: 10000;
-      top: 0;
-      left: 0;
-      display: none;
-      width: 24px;
-      height: 30px;
-      pointer-events: none;
-      opacity: 0;
-      transform: translate3d(-2px, -2px, 0);
-      transition: opacity .16s ease, filter .16s ease;
-    }
-
-    .ai-cursor svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      filter:
-        drop-shadow(0 0 1px rgba(255, 255, 255, .82))
-        drop-shadow(0 2px 4px rgba(0, 0, 0, .58));
-      transform-origin: 3px 3px;
-      transition: transform .12s ease, filter .12s ease;
-    }
-
-    .ai-cursor.is-visible { opacity: 1; }
-
-    .ai-cursor.is-pressed {
-      filter: drop-shadow(0 0 3px rgba(255, 255, 255, .48));
-    }
-
-    .ai-cursor.is-pressed svg {
-      transform: scale(.86);
-    }
-
-    .ai-click-ring {
-      position: fixed;
-      z-index: 9999;
-      width: 14px;
-      height: 14px;
-      border: 1px solid rgba(255, 255, 255, .7);
-      border-radius: 50%;
-      pointer-events: none;
-      transform: translate(-50%, -50%) scale(.45);
-      animation: aiClick .42s cubic-bezier(.18, .8, .22, 1) forwards;
-    }
-
-    @media (pointer: fine) {
-      .ai-cursor { display: block; }
-    }
-
-    @keyframes aiClick {
-      0% { opacity: .72; transform: translate(-50%, -50%) scale(.5); }
-      70% { opacity: .28; }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
-    }
-
-    .stage {
-      position: relative;
-      height: 185svh;
-    }
-
-    .world {
-      position: sticky;
-      top: 0;
-      height: 100svh;
-      overflow: hidden;
-      isolation: isolate;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: pan-y;
-    }
-
-    .world::before {
-      position: absolute;
-      z-index: 1;
       inset: 0;
-      content: "";
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 48%, transparent 0 22%, rgba(5, 7, 5, .16) 48%, rgba(5, 7, 5, .82) 100%),
-        linear-gradient(180deg, rgba(5, 7, 5, .3), transparent 24%, transparent 68%, rgba(5, 7, 5, .76));
-    }
-
-    .world::after {
-      position: absolute;
       z-index: 2;
-      inset: 0;
-      content: "";
-      opacity: .24;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      opacity: .5;
+      mix-blend-mode: normal;
+      filter: brightness(.94) saturate(1.32) contrast(1.01);
       pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.19'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
+      touch-action: none;
     }
 
-    .world > canvas {
-      position: absolute;
-      z-index: 1;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: none !important;
+    a,
+    button {
+      color: inherit;
+      font: inherit;
     }
 
-    .hero-picture {
-      position: absolute;
-      z-index: 0;
-      inset: 0;
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--jade);
+      outline-offset: 4px;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      isolation: isolate;
       overflow: hidden;
+      background: var(--ink);
     }
 
-    .hero-film {
+    .hero::before {
       position: absolute;
-      z-index: 0;
       inset: 0;
+      z-index: -1;
+      content: "";
+      background-image:
+        linear-gradient(90deg, rgba(246, 240, 227, .04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(246, 240, 227, .035) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mix-blend-mode: overlay;
+      opacity: .68;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center;
-      filter: brightness(.58) saturate(.78) contrast(1.08);
-      transform: scale(1.015);
-      transition: filter 1.1s ease, transform 1.1s ease;
+      filter: saturate(.92) contrast(1.04) brightness(.84);
+      transform: scale(1.012);
     }
 
-    .world.is-story-playing .hero-film {
-      filter: brightness(.86) saturate(.94) contrast(1.04);
-      transform: scale(1.045) translateX(-.7%);
-    }
-
-    .world.is-story-playing .hero-copy {
-      opacity: 0 !important;
-    }
-
-    .world.is-overload .hero-film {
-      filter: brightness(.48) saturate(.65) contrast(1.16);
-      transform: scale(1.035);
-    }
-
-    .world.is-resolved .hero-film {
-      filter: brightness(.48) saturate(.72) contrast(1.1);
-      transform: scale(1.02);
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      content: "";
+      background:
+        linear-gradient(90deg, rgba(9, 12, 11, .88) 0%, rgba(9, 12, 11, .64) 34%, rgba(9, 12, 11, .16) 68%, rgba(9, 12, 11, .2) 100%),
+        linear-gradient(180deg, rgba(9, 12, 11, .34) 0%, rgba(9, 12, 11, .08) 48%, rgba(9, 12, 11, .86) 100%);
+      pointer-events: none;
     }
 
     .topbar {
       position: fixed;
-      z-index: 120;
-      top: max(18px, env(safe-area-inset-top));
+      z-index: 20;
+      top: max(16px, env(safe-area-inset-top));
       left: 50%;
-      right: auto;
       display: flex;
-      width: min(calc(100vw - 40px), 1180px);
+      width: min(calc(100vw - 32px), 1180px);
       align-items: center;
       justify-content: space-between;
-      letter-spacing: .08em;
+      gap: 16px;
+      padding: 12px 0;
       transform: translateX(-50%);
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
+      min-width: 0;
       align-items: center;
       gap: 12px;
-      font-size: 12px;
-      font-weight: 600;
+      text-decoration: none;
     }
 
-    .brand-mark {
+    .mark {
       display: grid;
-      width: 31px;
-      height: 31px;
+      width: 39px;
+      height: 39px;
       place-items: center;
-      border: 1px solid rgba(231, 198, 107, .44);
-      border-radius: 50%;
+      border: 1px solid rgba(228, 192, 106, .58);
       color: var(--gold);
+      background: rgba(9, 12, 11, .42);
       font-family: Georgia, serif;
-      font-size: 14px;
-      box-shadow: inset 0 0 18px rgba(231, 198, 107, .08);
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: inset 0 0 20px rgba(228, 192, 106, .08);
+      backdrop-filter: blur(14px);
     }
 
-    .mode {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(242, 240, 232, .48);
+    .brand strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(246, 240, 227, .48);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 10px;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
-    .mode::before {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--jade);
-      box-shadow: 0 0 12px var(--jade);
-      content: "";
-      animation: breathe 2.4s ease-in-out infinite;
-    }
-
-    .top-actions {
+    .nav {
       display: flex;
       align-items: center;
       gap: 18px;
+      padding: 10px 14px;
+      border: 1px solid rgba(246, 240, 227, .14);
+      background: rgba(9, 12, 11, .36);
+      color: rgba(246, 240, 227, .66);
+      font-size: 12px;
+      backdrop-filter: blur(16px);
     }
 
-    .sound-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 8px 11px;
-      border: 1px solid rgba(242, 240, 232, .14);
-      border-radius: 999px;
-      color: rgba(242, 240, 232, .58);
-      background: rgba(5, 7, 5, .34);
-      backdrop-filter: blur(12px);
-      cursor: pointer;
-      font-size: 9px;
-      letter-spacing: .12em;
-      transition: color .25s ease, border-color .25s ease, background .25s ease;
-    }
-
-    .sound-toggle:hover,
-    .sound-toggle:focus-visible,
-    .sound-toggle.is-on {
-      border-color: rgba(231, 198, 107, .56);
-      color: var(--gold);
-      background: rgba(231, 198, 107, .06);
-      outline: none;
-    }
-
-    .sound-bars {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      height: 10px;
-    }
-
-    .sound-bars i {
-      width: 1px;
-      height: 4px;
-      background: currentColor;
-    }
-
-    .sound-bars i:nth-child(2) { height: 9px; }
-    .sound-bars i:nth-child(3) { height: 6px; }
-
-    .sound-toggle.is-on .sound-bars i {
-      animation: sound-wave .7s ease-in-out infinite alternate;
-    }
-
-    .sound-toggle.is-on .sound-bars i:nth-child(2) { animation-delay: -.35s; }
-    .sound-toggle.is-on .sound-bars i:nth-child(3) { animation-delay: -.15s; }
-
-    .quick-projects {
-      position: absolute;
-      z-index: 5;
-      top: clamp(92px, 13vh, 132px);
-      right: clamp(22px, 4vw, 64px);
-      display: grid;
-      width: min(250px, 24vw);
-      gap: 8px;
-      perspective: 900px;
-      display: none;
-    }
-
-    .quick-card {
-      position: relative;
-      display: grid;
-      min-height: 76px;
-      padding: 13px 42px 13px 15px;
-      overflow: hidden;
-      border: 1px solid rgba(242, 240, 232, .11);
-      color: rgba(242, 240, 232, .62);
-      background: linear-gradient(115deg, rgba(11, 16, 12, .74), rgba(5, 7, 5, .28));
-      backdrop-filter: blur(14px);
-      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    .nav a {
       text-decoration: none;
-      transform-origin: right center;
-      transition: color .28s ease, border-color .28s ease, transform .28s ease, background .28s ease;
     }
 
-    .quick-card::after {
-      position: absolute;
-      right: 15px;
-      bottom: 13px;
-      color: rgba(231, 198, 107, .46);
-      content: "↗";
-      font-size: 13px;
-      transition: transform .28s ease, color .28s ease;
-    }
-
-    .quick-card:hover,
-    .quick-card:focus-visible {
-      border-color: rgba(231, 198, 107, .5);
-      color: var(--paper);
-      background: linear-gradient(115deg, rgba(18, 29, 21, .86), rgba(5, 7, 5, .45));
-      outline: none;
-      transform: translateX(-8px) rotateY(-3deg);
-    }
-
-    .quick-card:hover::after,
-    .quick-card:focus-visible::after {
-      color: var(--gold);
-      transform: translate(3px, -3px);
-    }
-
-    .quick-card small {
-      color: var(--jade);
-      font: 7px/1 ui-monospace, monospace;
-      letter-spacing: .18em;
-    }
-
-    .quick-card strong {
-      align-self: end;
-      margin-top: 9px;
-      font-family: "Songti SC", serif;
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: .04em;
-    }
-
-    .quick-card.is-featured {
-      border-color: rgba(231, 198, 107, .25);
+    .nav a:hover {
       color: var(--paper);
     }
 
-    .hero-copy {
-      position: absolute;
-      z-index: 4;
-      top: 50%;
-      left: clamp(24px, 7vw, 116px);
-      width: min(680px, calc(100vw - 48px));
-      pointer-events: none;
-      transform: translateY(-46%);
-      transition: opacity .4s ease, transform .4s ease;
+    .hero-inner {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      width: min(1180px, calc(100vw - 32px));
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: 112px 0 34px;
+      align-content: end;
+      gap: clamp(24px, 5vw, 54px);
+    }
+
+    .copy {
+      display: grid;
+      max-width: 710px;
+      gap: 22px;
+      padding-bottom: clamp(20px, 4vw, 54px);
     }
 
     .eyebrow {
-      display: flex;
+      display: inline-flex;
+      width: fit-content;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 22px;
-      color: var(--gold);
-      font-size: 10px;
-      letter-spacing: .34em;
+      gap: 10px;
+      color: rgba(246, 240, 227, .74);
+      font-size: 13px;
+      letter-spacing: .18em;
     }
 
     .eyebrow::before {
-      width: 34px;
-      height: 1px;
-      background: currentColor;
+      width: 9px;
+      height: 9px;
+      background: var(--jade);
+      box-shadow: 0 0 18px rgba(57, 212, 157, .82);
       content: "";
     }
 
     h1 {
+      max-width: 9.6em;
       margin: 0;
-      font-family: "Songti SC", "STSong", serif;
-      font-size: clamp(54px, 6.8vw, 104px);
-      font-weight: 400;
-      letter-spacing: -.07em;
-      line-height: .9;
-      text-shadow: 0 0 42px rgba(231, 198, 107, .08);
-    }
-
-    h1 b {
-      color: var(--jade);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: .78em;
-      font-weight: 400;
-      letter-spacing: -.05em;
-      text-shadow: 0 0 36px rgba(72, 217, 163, .18);
-    }
-
-    h1 span {
-      position: relative;
-      display: block;
-      width: max-content;
-      max-width: 100%;
-      margin: .18em 0 0 .3em;
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(242, 240, 232, .54);
-    }
-
-    .world.is-resolved h1 span {
-      color: rgba(242, 240, 232, .86);
-      -webkit-text-stroke: 0;
-      text-shadow: 0 12px 45px rgba(0, 0, 0, .52);
-    }
-
-    .intro {
-      max-width: 350px;
-      margin: 28px 0 0 4px;
-      color: var(--muted);
-      font-size: clamp(12px, 1vw, 15px);
-      letter-spacing: .08em;
-      line-height: 1.9;
-    }
-
-    .phone-sim {
-      position: absolute;
-      z-index: 5;
-      top: 14%;
-      left: 56%;
-      width: clamp(248px, 20vw, 318px);
-      aspect-ratio: 9 / 18.6;
-      padding: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, .3);
-      border-radius: 36px;
-      background: #080a09;
-      box-shadow: 0 38px 110px rgba(0, 0, 0, .66), 0 0 0 5px rgba(0, 0, 0, .34);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(40px) rotateY(-9deg) rotateX(3deg) scale(.92);
-      transition: opacity .7s ease, transform .9s cubic-bezier(.2, .8, .2, 1), filter .7s ease;
-    }
-
-    .world.is-phone-active .phone-sim {
-      opacity: 1;
-      transform: none;
-    }
-
-    .world.is-resolved .phone-sim {
-      opacity: 0;
-      filter: blur(8px);
-      transform: translateY(-28px) scale(.8);
-    }
-
-    .phone-screen {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 28px;
-      color: #141414;
-      background: #ededed;
-      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-    }
-
-    .wechat-thumbnail {
-      position: absolute;
-      z-index: 6;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-      color: #141414;
-      background: #f4f4f4;
-      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-    }
-
-    .phone-sim:not(.is-zoomed) .wechat-thumbnail {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .thumb-status,
-    .thumb-title,
-    .thumb-login,
-    .thumb-row,
-    .thumb-tabs {
-      display: flex;
-      flex: 0 0 auto;
-      align-items: center;
-    }
-
-    .thumb-status {
-      height: 7.5%;
-      padding: 0 7%;
-      justify-content: space-between;
-      font-size: 3.6px;
-      font-weight: 700;
-    }
-
-    .thumb-title {
-      height: 9%;
-      padding: 0 7%;
-      justify-content: space-between;
-      font-size: 4px;
-    }
-
-    .thumb-title b { font-size: 5.4px; }
-    .thumb-title i { color: #19bd75; font-style: normal; letter-spacing: -1px; }
-    .thumb-title em { font-size: 8px; font-style: normal; font-weight: 300; }
-
-    .thumb-search {
-      display: grid;
-      width: 90%;
-      height: 7.5%;
-      margin: 1.5% auto 2%;
-      border-radius: 2px;
-      place-items: center;
-      color: #aaa;
-      background: #fff;
-      font-size: 4px;
-    }
-
-    .thumb-login {
-      height: 8%;
-      padding: 0 8%;
-      gap: 5%;
-      border-bottom: 1px solid #ddd;
-      color: #666;
-      font-size: 3.5px;
-    }
-
-    .thumb-list {
-      min-height: 0;
-      flex: 1 1 auto;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .thumb-row {
-      height: 20%;
-      padding: 2% 6%;
-      gap: 5%;
-      border-bottom: 1px solid #ededed;
-    }
-
-    .thumb-avatar {
-      display: grid;
-      width: 17%;
-      aspect-ratio: 1;
-      flex: 0 0 auto;
-      border-radius: 2px;
-      place-items: center;
-      color: #fff;
-      background: #ef5350;
-      font-size: 4px;
-      font-weight: 700;
-    }
-
-    .thumb-avatar.green { background: #17bf70; }
-    .thumb-avatar.blue { background: #2d8fe8; }
-    .thumb-avatar.gold { background: #f2a83b; }
-
-    .thumb-copy {
-      display: grid;
-      min-width: 0;
-      flex: 1;
-      gap: 1px;
-    }
-
-    .thumb-copy b {
-      overflow: hidden;
-      font-size: 4.2px;
-      font-weight: 600;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .thumb-copy small {
-      overflow: hidden;
-      color: #aaa;
-      font-size: 3px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .thumb-row time {
-      align-self: flex-start;
-      color: #bbb;
-      font-size: 2.7px;
-    }
-
-    .thumb-tabs {
-      height: 8%;
-      justify-content: space-around;
-      color: #444;
-      background: rgba(248, 248, 248, .98);
-      font-size: 3px;
-    }
-
-    .thumb-tabs span:first-child { color: #16ba6c; }
-
-    .phone-status {
-      display: flex;
-      height: 28px;
-      padding: 7px 14px 0;
-      align-items: center;
-      justify-content: space-between;
-      color: #141414;
-      font-size: 8px;
-      font-weight: 600;
-    }
-
-    .phone-notch {
-      position: absolute;
-      top: 6px;
-      left: 50%;
-      width: 74px;
-      height: 16px;
-      border-radius: 999px;
-      background: #050505;
-      transform: translateX(-50%);
-    }
-
-    .wechat-head {
-      display: flex;
-      height: 44px;
-      padding: 0 14px;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #d6d6d6;
-      background: #ededed;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .wechat-head span { font-size: 16px; font-weight: 400; letter-spacing: 6px; }
-
-    .wechat-list {
-      position: absolute;
-      top: 72px;
-      right: 0;
-      bottom: 46px;
-      left: 0;
-      overflow: auto;
-      scrollbar-width: none;
-      background: #fff;
-      transition: opacity .28s ease, transform .38s ease;
-      scroll-behavior: smooth;
-    }
-
-    .wechat-list::-webkit-scrollbar { display: none; }
-
-    .phone-sim.is-chat .wechat-list {
-      opacity: 0;
-      transform: translateX(-18%);
-    }
-
-    .wechat-row {
-      position: relative;
-      display: grid;
-      grid-template-columns: 40px 1fr auto;
-      gap: 10px;
-      min-height: 57px;
-      padding: 8px 12px;
-      border-bottom: 1px solid #ececec;
-      align-items: center;
-      background: #fff;
-      transition: background .2s ease;
-    }
-
-    .wechat-row.is-active { background: #dcdcdc; }
-
-    .wechat-avatar {
-      display: grid;
-      width: 40px;
-      height: 40px;
-      border-radius: 5px;
-      place-items: center;
-      color: white;
-      background: #36c777;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .wechat-avatar.school { background: #e8a844; }
-    .wechat-avatar.family { background: #f58b9e; }
-    .wechat-avatar.finance { background: #5188d8; }
-    .wechat-avatar.factory { background: #5b6f83; }
-    .wechat-avatar.property { background: #07a99a; }
-    .wechat-avatar.report { background: #8667cc; }
-    .wechat-avatar.delivery { background: #ee8d35; }
-
-    .wechat-row-copy {
-      min-width: 0;
-    }
-
-    .wechat-row-copy strong {
-      display: block;
-      overflow: hidden;
-      color: #171717;
-      font-size: 11px;
-      font-weight: 500;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .wechat-row-copy small {
-      display: block;
-      margin-top: 6px;
-      overflow: hidden;
-      color: #999;
-      font-size: 8px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .wechat-row time {
-      align-self: start;
-      color: #bbb;
-      font-size: 7px;
-    }
-
-    .wechat-unread {
-      position: absolute;
-      right: 10px;
-      bottom: 9px;
-      min-width: 19px;
-      padding: 3px 5px;
-      border-radius: 999px;
-      color: white;
-      background: #fa5151;
-      font: 7px/1 Arial, sans-serif;
-      text-align: center;
-    }
-
-    .wechat-tabs {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: grid;
-      height: 46px;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid #d6d6d6;
-      background: #f7f7f7;
-    }
-
-    .wechat-tabs span {
-      display: grid;
-      place-content: center;
-      color: #888;
-      font-size: 7px;
-      line-height: 1.45;
-      text-align: center;
-    }
-
-    .wechat-tabs span:first-child { color: #07c160; }
-
-    .phone-chat {
-      position: absolute;
-      top: 28px;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      opacity: 0;
-      background: #ededed;
-      pointer-events: none;
-      transform: translateX(16%);
-      transition: opacity .28s ease, transform .38s ease;
-    }
-
-    .phone-sim.is-chat .phone-chat {
-      opacity: 1;
-      transform: none;
-    }
-
-    .chat-head {
-      display: flex;
-      height: 44px;
-      padding: 0 13px;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #d7d7d7;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .chat-head::before { content: "‹"; font-size: 22px; font-weight: 300; }
-    .chat-head::after { content: "•••"; letter-spacing: 1px; }
-
-    .chat-content {
-      position: absolute;
-      top: 44px;
-      right: 0;
-      bottom: 44px;
-      left: 0;
-      display: flex;
-      padding: 15px 10px;
-      overflow: auto;
-      flex-direction: column;
-      gap: 7px;
-      scrollbar-width: none;
-      scroll-behavior: smooth;
-    }
-
-    .chat-content::-webkit-scrollbar { display: none; }
-
-    .phone-sender {
-      margin: 2px 0 -3px 2px;
-      color: #999;
-      font-size: 7px;
-    }
-
-    .phone-bubble {
-      max-width: 82%;
-      padding: 7px 9px;
-      border-radius: 5px;
-      color: #171717;
-      background: white;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
-      font-size: 8px;
-      line-height: 1.55;
-    }
-
-    .phone-bubble.me {
-      align-self: flex-end;
-      background: #95ec69;
-    }
-
-    .phone-input {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      height: 44px;
-      border-top: 1px solid #d3d3d3;
-      background: #f7f7f7;
-    }
-
-    .phone-touch {
-      position: absolute;
-      z-index: 4;
-      top: 112px;
-      right: 22px;
-      width: 18px;
-      height: 18px;
-      border: 1px solid rgba(255, 255, 255, .9);
-      border-radius: 50%;
-      background: rgba(7, 193, 96, .55);
-      box-shadow: 0 0 0 6px rgba(7, 193, 96, .12);
-      opacity: 0;
-      transition: top .4s ease, opacity .2s ease, transform .18s ease;
-    }
-
-    .world.is-phone-active .phone-touch { opacity: 1; }
-    .phone-touch.is-tapping { transform: scale(.55); }
-
-    .message-field {
-      position: absolute;
-      z-index: 3;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      transform: scale(.82);
-      transition: opacity .8s ease, transform 1s cubic-bezier(.2, .8, .2, 1), filter .5s ease;
-    }
-
-    .world.is-resolved .message-field {
-      opacity: 1;
-      pointer-events: auto;
-      transform: none;
-    }
-
-    .world.is-resolved .message-chip {
-      opacity: .46;
-      filter: saturate(.55) contrast(.92);
-    }
-
-    .message-chip {
-      position: absolute;
-      display: grid;
-      grid-template-columns: 38px minmax(126px, 1fr) auto;
-      align-items: center;
-      gap: 9px;
-      min-width: 222px;
-      padding: 9px 10px;
-      border: 1px solid rgba(255, 255, 255, .34);
-      border-radius: 13px;
-      color: #171717;
-      background: rgba(247, 247, 247, .9);
-      box-shadow: 0 18px 46px rgba(0, 0, 0, .32);
-      backdrop-filter: blur(16px);
-      animation: message-drift 3.4s ease-in-out infinite alternate;
-      transition: opacity .35s ease, transform .35s ease, min-width .35s ease, border-color .35s ease, background .35s ease, box-shadow .35s ease;
-    }
-
-    .chip-avatar {
-      display: grid;
-      width: 38px;
-      height: 38px;
-      border-radius: 6px;
-      place-items: center;
-      color: white;
-      background:
-        linear-gradient(90deg, transparent 48%, rgba(255,255,255,.82) 48% 52%, transparent 52%),
-        linear-gradient(transparent 48%, rgba(255,255,255,.82) 48% 52%, transparent 52%),
-        #36c777;
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    .chip-avatar.school { background-color: #e5a248; }
-    .chip-avatar.family { background-color: #ef8fa0; }
-
-    .chip-copy {
-      min-width: 0;
-    }
-
-    .chip-copy strong {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      color: #171717;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .chip-copy time {
-      color: #aaa;
-      font-size: 7px;
-      font-weight: 400;
-    }
-
-    .chip-copy > small {
-      display: block;
-      max-width: 150px;
-      margin-top: 5px;
-      overflow: hidden;
-      color: #888;
-      font-size: 8px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .chip-unread {
-      min-width: 26px;
-      padding: 4px 5px;
-      border-radius: 999px;
-      color: white;
-      background: #fa5151;
-      font: 7px/1 ui-monospace, monospace;
-      font-weight: 500;
-      text-align: center;
-    }
-
-    .chip-preview {
-      grid-column: 1 / -1;
-      max-width: 0;
-      max-height: 0;
-      margin: 0;
-      overflow: hidden;
-      color: #525252;
-      font-size: 8px;
-      line-height: 1.55;
-      opacity: 0;
-      transition: max-width .35s ease, max-height .35s ease, opacity .25s ease, margin .35s ease;
-    }
-
-    .chip-preview span {
-      display: block;
-      margin-top: 5px;
-      padding: 7px 8px;
-      border-radius: 4px;
-      background: #ededed;
-    }
-
-    .chip-preview em {
-      display: block;
-      margin-top: 8px;
-      color: #07a958;
-      font-style: normal;
-      font-weight: 600;
-    }
-
-    .message-chip:hover,
-    .message-chip.is-expanded {
-      z-index: 8;
-      min-width: 330px;
-      opacity: .98;
-      border-color: rgba(7, 193, 96, .58);
-      background: rgba(255, 255, 255, .96);
-      box-shadow: 0 24px 66px rgba(0, 0, 0, .42);
-      filter: none;
-      animation-play-state: paused;
-      transform: rotate(0) scale(1.03);
-    }
-
-    .message-chip:hover .chip-preview,
-    .message-chip.is-expanded .chip-preview {
-      max-width: 310px;
-      max-height: 210px;
-      margin-top: 7px;
-      opacity: 1;
-    }
-
-    .chip-a { top: 22%; left: 5%; transform: rotate(-4deg); }
-    .chip-b { top: 59%; left: 7%; transform: rotate(3deg); animation-delay: -.7s; }
-    .chip-c { top: 66%; left: 38%; transform: rotate(-2deg); animation-delay: -1.4s; }
-
-    .focus-stack {
-      position: absolute;
-      z-index: 5;
-      top: 15%;
-      right: clamp(48px, 7vw, 112px);
-      width: min(430px, 38vw);
-      max-height: 76vh;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, .42);
-      border-radius: 28px;
-      color: #111;
-      background: #ededed;
-      box-shadow: 0 38px 110px rgba(0, 0, 0, .62), 0 0 0 5px rgba(0, 0, 0, .24);
-      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(28px) scale(.92) rotateY(-5deg);
-      transition: opacity .55s ease, transform .75s cubic-bezier(.2, .8, .2, 1);
-    }
-
-    .hermes-status {
-      display: flex;
-      height: 28px;
-      padding: 7px 16px 0;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    .focus-head {
-      display: grid;
-      height: 48px;
-      padding: 0 16px;
-      grid-template-columns: 38px 1fr 38px;
-      border-bottom: 1px solid #d4d4d4;
-      align-items: center;
-      background: #ededed;
-      font-size: 15px;
-      text-align: center;
-    }
-
-    .focus-head::before { content: "‹"; font-size: 28px; font-weight: 300; text-align: left; }
-    .focus-head::after { content: "⚙"; font-size: 19px; font-weight: 400; text-align: right; }
-
-    .focus-head strong { font-weight: 600; }
-
-    .focus-head small {
-      padding: 2px 4px;
-      border-radius: 4px;
-      color: white;
-      background: #aaa;
-      font-size: 8px;
-      vertical-align: 2px;
-    }
-
-    .hermes-chat {
-      max-height: calc(76vh - 120px);
-      padding: 14px 14px 18px;
-      overflow: auto;
-      scrollbar-width: none;
-    }
-
-    .hermes-chat::-webkit-scrollbar { display: none; }
-
-    .hermes-user {
-      max-width: 82%;
-      margin-left: auto;
-      padding: 10px 12px;
-      border-radius: 5px;
-      background: #95ec69;
-      font-size: 11px;
-      line-height: 1.55;
-    }
-
-    .hermes-time {
-      margin: 12px 0;
-      color: #aaa;
-      font-size: 8px;
-      text-align: center;
-    }
-
-    .hermes-answer {
-      position: relative;
-      width: calc(100% - 38px);
-      padding: 14px 14px 12px;
-      border-radius: 5px;
-      background: white;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-      font-size: 10px;
-      line-height: 1.58;
-    }
-
-    .hermes-answer::before {
-      position: absolute;
-      top: 12px;
-      left: -7px;
-      width: 14px;
-      height: 14px;
-      background: white;
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    .hermes-answer > p { margin: 0 0 10px; color: #555; }
-    .hermes-answer h4 {
-      margin: 0 0 9px;
-      padding-top: 10px;
-      border-top: 1px solid #ececec;
-      font-size: 12px;
-    }
-
-    .hermes-answer ol {
-      display: grid;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .hermes-answer li {
-      display: grid;
-      grid-template-columns: 26px 1fr;
-      gap: 8px;
-      align-items: start;
-    }
-
-    .hermes-answer li b {
-      display: grid;
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      place-items: center;
-      color: white;
-      background: #07c160;
-      font-size: 9px;
-    }
-
-    .hermes-answer li strong { display: block; font-size: 10px; }
-    .hermes-answer li span { display: block; margin-top: 2px; color: #777; font-size: 9px; }
-
-    .hermes-input {
-      display: grid;
-      height: 44px;
-      padding: 0 13px;
-      grid-template-columns: 26px 1fr 52px;
-      gap: 8px;
-      border-top: 1px solid #d4d4d4;
-      align-items: center;
-      background: #f7f7f7;
-      font-size: 15px;
-    }
-
-    .hermes-input span:nth-child(2) {
-      height: 30px;
-      border-radius: 4px;
-      background: white;
-    }
-
-    .hermes-input span:last-child {
-      letter-spacing: 8px;
-      white-space: nowrap;
-    }
-
-    .world.is-ai-open .message-field {
-      opacity: .16;
-      filter: blur(2px);
-      pointer-events: none;
-      transform: scale(.92);
-    }
-
-    .world.is-ai-open .focus-stack {
-      opacity: 1;
-      pointer-events: auto;
-      transform: none;
-    }
-
-    .gesture {
-      position: absolute;
-      z-index: 6;
-      right: clamp(24px, 5vw, 76px);
-      bottom: max(34px, env(safe-area-inset-bottom));
-      display: grid;
-      width: 118px;
-      height: 118px;
-      place-items: center;
-      border: 0;
-      border-radius: 50%;
-      outline: none;
-      background: transparent;
-      cursor: pointer;
-      touch-action: none;
-    }
-
-    .gesture-ring,
-    .gesture-ring::before,
-    .gesture-ring::after {
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(231, 198, 107, .28);
-      border-radius: 50%;
-      content: "";
-      transition: .45s cubic-bezier(.2, .8, .2, 1);
-    }
-
-    .gesture-ring::before { inset: 9px; border-color: rgba(72, 217, 163, .16); }
-    .gesture-ring::after { inset: 19px; border-style: dashed; animation: spin 12s linear infinite; }
-
-    .gesture strong {
-      font-family: "Songti SC", serif;
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: .18em;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .gesture small {
-      display: block;
-      margin-top: 4px;
-      color: rgba(242, 240, 232, .36);
-      font-family: system-ui, sans-serif;
-      font-size: 8px;
-      letter-spacing: .12em;
-    }
-
-    .gesture:hover .gesture-ring,
-    .world.is-ai-open .gesture-ring {
-      border-color: rgba(231, 198, 107, .72);
-      box-shadow: 0 0 44px rgba(231, 198, 107, .14);
-      transform: scale(1.08);
-    }
-
-    .world.is-ai-open .gesture-ring::before { transform: scale(.8); }
-    .world.is-ai-open .gesture strong { color: var(--gold); }
-
-    .chapter-preview {
-      position: absolute;
-      z-index: 4;
-      inset: 0;
-      display: grid;
-      padding: 10vh clamp(24px, 8vw, 130px);
-      place-content: center;
-      pointer-events: none;
-      opacity: 0;
-      transform: translateY(54px);
-    }
-
-    .chapter-preview p {
-      margin: 0 0 18px;
-      color: var(--jade);
-      font-size: 10px;
-      letter-spacing: .32em;
-    }
-
-    .chapter-preview h2 {
-      max-width: 900px;
-      margin: 0;
-      font-family: "Songti SC", "STSong", serif;
-      font-size: clamp(40px, 6.8vw, 104px);
-      font-weight: 400;
-      letter-spacing: -.055em;
-      line-height: 1.06;
-    }
-
-    .chapter-preview h2 em {
-      color: var(--gold);
-      font-style: normal;
-    }
-
-    .corner {
-      position: absolute;
-      z-index: 4;
-      bottom: 34px;
-      left: clamp(22px, 4vw, 64px);
-      color: rgba(242, 240, 232, .22);
-      font: 9px/1.6 ui-monospace, monospace;
-      letter-spacing: .1em;
-      pointer-events: none;
-    }
-
-    .story {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      overflow: clip;
-      margin-top: -1px;
-      background:
-        radial-gradient(circle at 78% 13%, rgba(72, 217, 163, .055), transparent 25rem),
-        radial-gradient(circle at 18% 48%, rgba(231, 198, 107, .045), transparent 28rem),
-        #050705;
-    }
-
-    .project-wechat { order: 1; }
-    .project-fitness { order: 2; }
-    .project-tools { order: 3; }
-    .project-delivery { order: 4; }
-    .project-tax { order: 5; }
-    .project-gesture { order: 6; }
-    .project-capabilities { order: 7; }
-    .closing { order: 8; }
-
-    .story::before {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      width: 1px;
-      content: "";
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(72, 217, 163, .3), transparent 8%, rgba(231, 198, 107, .14) 54%, transparent 93%);
-    }
-
-    .project {
-      position: relative;
-      width: min(1320px, 100%);
-      min-height: 108svh;
-      margin: 0 auto;
-      padding: clamp(120px, 15vw, 220px) clamp(28px, 6vw, 96px);
-      opacity: .18;
-      transform: translateY(70px);
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .8, .2, 1);
-    }
-
-    .project.is-visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    .project-grid {
-      display: grid;
-      grid-template-columns: minmax(280px, .72fr) minmax(460px, 1.28fr);
-      gap: clamp(48px, 8vw, 128px);
-      align-items: start;
-    }
-
-    .project-copy {
-      position: sticky;
-      top: 21vh;
-      z-index: 2;
-      align-self: start;
-    }
-
-    .project-type {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      margin-bottom: 24px;
-      color: var(--jade);
-      font: 10px/1 ui-monospace, "SFMono-Regular", monospace;
-      letter-spacing: .24em;
-      text-transform: uppercase;
-    }
-
-    .project-type::before {
-      width: 26px;
-      height: 1px;
-      background: currentColor;
-      content: "";
-    }
-
-    .project h3 {
-      max-width: 660px;
-      margin: 0;
-      font-family: "Songti SC", "STSong", serif;
-      font-size: clamp(42px, 5.4vw, 82px);
-      font-weight: 400;
-      letter-spacing: -.055em;
-      line-height: 1.03;
-    }
-
-    .project-lead {
-      max-width: 480px;
-      margin: 30px 0 0;
-      color: rgba(242, 240, 232, .58);
-      font-size: clamp(13px, 1.1vw, 16px);
-      line-height: 2;
-    }
-
-    .project-facts {
-      display: grid;
-      gap: 10px;
-      margin: 30px 0 0;
-      padding: 0;
-      color: rgba(242, 240, 232, .42);
-      font-size: 11px;
-      letter-spacing: .06em;
-      list-style: none;
-    }
-
-    .project-facts li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .project-facts li::before {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 10px rgba(231, 198, 107, .7);
-      content: "";
-    }
-
-    .project-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 18px;
-      margin-top: 34px;
-      padding: 11px 14px;
-      border: 1px solid rgba(231, 198, 107, .48);
-      color: #f4c76d;
-      background: rgba(231, 198, 107, .075);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
-      font-size: 12px;
-      letter-spacing: .08em;
-      text-decoration: none;
-      transition: gap .25s ease, color .25s ease, border-color .25s ease, background .25s ease, transform .25s ease;
-    }
-
-    .project-link span {
-      color: var(--jade);
-    }
-
-    .project-link:hover,
-    .project-link:focus-visible {
-      gap: 28px;
-      border-color: var(--gold);
-      color: #ffe29a;
-      background: rgba(231, 198, 107, .14);
-      outline: none;
-      transform: translateY(-2px);
-    }
-
-    .project-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 28px;
-    }
-
-    .project-status {
-      display: block;
-      margin-top: 16px;
-      color: rgba(242, 240, 232, .28);
-      font: 9px/1.6 ui-monospace, "SFMono-Regular", monospace;
-      letter-spacing: .12em;
-    }
-
-    .tool-callout {
-      display: table;
-      margin-top: 26px;
-      padding: 8px 12px;
-      border: 1px solid rgba(244, 184, 74, .48);
-      color: #1c1407;
-      background: #f4b84a;
-      box-shadow: 0 10px 32px rgba(244, 184, 74, .12);
-      font: 10px/1 ui-monospace, "SFMono-Regular", monospace;
-      letter-spacing: .08em;
-    }
-
-    .project-tools .tool-callout + .project-link {
-      margin-top: 12px;
-      border-bottom-color: rgba(244, 184, 74, .72);
-      color: #f4c76d;
-    }
-
-    .project-wechat {
-      width: min(1480px, 100%);
-      min-height: 118svh;
-    }
-
-    .project-wechat::after {
-      position: absolute;
-      z-index: -1;
-      top: 14%;
-      right: -20%;
-      width: 58vw;
-      height: 58vw;
-      border-radius: 50%;
-      content: "";
-      pointer-events: none;
-      background: radial-gradient(circle, rgba(72, 217, 163, .07), transparent 66%);
-    }
-
-    .project-wechat .project-grid {
-      grid-template-columns: minmax(320px, .72fr) minmax(600px, 1.38fr);
-      gap: clamp(54px, 7vw, 110px);
-      align-items: center;
-    }
-
-    .project-wechat .project-copy {
-      top: 16vh;
-    }
-
-    .wechat-play-link {
-      border: 1px solid rgba(231, 198, 107, .48);
-      background: rgba(231, 198, 107, .075);
-      cursor: pointer;
-    }
-
-    .wechat-demo-stage {
-      position: relative;
-      min-height: 680px;
-      display: grid;
-      align-content: center;
-      perspective: 1400px;
-    }
-
-    .wechat-video-shell {
-      --tilt-x: 0deg;
-      --tilt-y: 0deg;
-      position: relative;
-      overflow: hidden;
-      width: min(850px, 100%);
-      margin: 0;
-      aspect-ratio: 16 / 9;
-      border: 1px solid rgba(242, 240, 232, .16);
-      background: #07100b;
-      box-shadow: 0 46px 130px rgba(0, 0, 0, .58), 0 0 80px rgba(72, 217, 163, .05);
-      clip-path: polygon(22px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%, 0 22px);
-      transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-      transform-style: preserve-3d;
-      transition: transform .28s ease, border-color .3s ease, box-shadow .3s ease;
-    }
-
-    .wechat-video-shell:hover {
-      border-color: rgba(72, 217, 163, .4);
-      box-shadow: 0 52px 150px rgba(0, 0, 0, .66), 0 0 100px rgba(72, 217, 163, .08);
-    }
-
-    .wechat-video-shell::after {
-      position: absolute;
-      z-index: 2;
-      inset: 0;
-      content: "";
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(5, 7, 5, .08), transparent 58%, rgba(5, 7, 5, .68));
-    }
-
-    .wechat-video-shell video {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .wechat-video-shell figcaption {
-      position: absolute;
-      z-index: 4;
-      right: 22px;
-      bottom: 18px;
-      left: 22px;
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      pointer-events: none;
-    }
-
-    .wechat-video-shell figcaption small {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--jade);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .13em;
-    }
-
-    .wechat-video-shell figcaption strong {
-      font-family: "Songti SC", serif;
-      font-size: 18px;
-      font-weight: 400;
-    }
-
-    .wechat-video-shell figcaption em {
-      color: rgba(242, 240, 232, .4);
-      font: 8px/1 ui-monospace, monospace;
-      font-style: normal;
-      letter-spacing: .08em;
-    }
-
-    .wechat-video-button {
-      position: absolute;
-      z-index: 5;
-      top: 50%;
-      left: 50%;
-      display: grid;
-      width: 112px;
-      height: 112px;
-      border: 1px solid rgba(242, 240, 232, .3);
-      border-radius: 50%;
-      place-content: center;
       color: var(--paper);
-      background: rgba(5, 8, 6, .62);
-      backdrop-filter: blur(14px);
-      cursor: pointer;
-      transform: translate(-50%, -50%);
-      transition: color .25s ease, border-color .25s ease, opacity .3s ease, transform .3s ease;
-    }
-
-    .wechat-video-button:hover,
-    .wechat-video-button:focus-visible {
-      border-color: var(--jade);
-      color: var(--jade);
-      outline: none;
-      transform: translate(-50%, -50%) scale(1.06);
-    }
-
-    .wechat-video-button span {
-      font-size: 22px;
-      transform: translateX(2px);
-    }
-
-    .wechat-video-button small {
-      display: block;
-      margin-top: 8px;
-      font-size: 8px;
-      letter-spacing: .08em;
-    }
-
-    .wechat-video-shell.is-playing .wechat-video-button {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .wechat-video-shell.is-playing figcaption { opacity: 0; }
-
-    .wechat-capabilities {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1px;
-      width: min(720px, 88%);
-      margin: -1px auto 0;
-      background: rgba(242, 240, 232, .1);
-    }
-
-    .wechat-capabilities span {
-      padding: 13px 8px;
-      color: rgba(242, 240, 232, .42);
-      background: #080c09;
-      font-size: 9px;
-      letter-spacing: .08em;
-      text-align: center;
-    }
-
-    .media-deck {
-      position: relative;
-      min-height: 780px;
-      perspective: 1200px;
-    }
-
-    .project-gesture .media-deck {
-      min-height: 720px;
-    }
-
-    .media-shell {
-      --roll: 0deg;
-      --tilt-x: 0deg;
-      --tilt-y: 0deg;
-      position: absolute;
-      overflow: hidden;
-      width: clamp(270px, 25vw, 354px);
-      margin: 0;
-      aspect-ratio: 9 / 16;
-      border: 1px solid rgba(242, 240, 232, .16);
-      background: #0b0f0c;
-      box-shadow: 0 34px 90px rgba(0, 0, 0, .46);
-      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-      transform: rotate(var(--roll)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-      transform-style: preserve-3d;
-      transition: transform .42s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, box-shadow .3s ease, opacity .35s ease, filter .35s ease;
-    }
-
-    .media-shell::after {
-      position: absolute;
-      inset: 0;
-      content: "";
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(5, 7, 5, .46), transparent 18%, transparent 72%, rgba(5, 7, 5, .72)),
-        linear-gradient(90deg, rgba(231, 198, 107, .08), transparent 20%);
-    }
-
-    .media-shell:hover {
-      z-index: 4;
-      border-color: rgba(231, 198, 107, .5);
-      box-shadow: 0 44px 110px rgba(0, 0, 0, .62), 0 0 50px rgba(72, 217, 163, .06);
-    }
-
-    .media-shell video,
-    .media-shell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .media-a {
-      --roll: -5deg;
-      top: 4%;
-      left: 10%;
-      z-index: 2;
-    }
-
-    .media-b {
-      --roll: 5deg;
-      top: 16%;
-      right: 10%;
-      bottom: auto;
-      z-index: 1;
-    }
-
-    .project-gesture .media-shell {
-      opacity: .56;
-      filter: saturate(.55) brightness(.7);
-    }
-
-    .project-gesture .media-shell.is-active {
-      z-index: 6;
-      opacity: 1;
-      border-color: rgba(72, 217, 163, .58);
-      filter: none;
-      box-shadow: 0 48px 120px rgba(0, 0, 0, .68), 0 0 64px rgba(72, 217, 163, .1);
-      transform: rotate(var(--roll)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px) scale(1.025);
-    }
-
-    .project-gesture .media-shell.is-arming {
-      opacity: .86;
-      border-color: rgba(231, 198, 107, .72);
-      filter: saturate(.9) brightness(.9);
-    }
-
-    .switch-hint {
-      position: absolute;
-      z-index: 4;
-      right: 18px;
-      bottom: 74px;
-      left: 18px;
-      padding: 8px 10px;
-      color: rgba(242, 240, 232, .64);
-      background: rgba(5, 7, 5, .62);
-      font: 8px/1.4 ui-monospace, monospace;
-      letter-spacing: .08em;
-      text-align: center;
-      backdrop-filter: blur(8px);
-    }
-
-    .media-shell.is-active .switch-hint {
-      color: var(--jade);
-    }
-
-    .media-topline {
-      position: absolute;
-      z-index: 3;
-      top: 18px;
-      right: 18px;
-      left: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: rgba(255, 255, 255, .72);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .13em;
-    }
-
-    .real-mark {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .real-mark::before {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--jade);
-      box-shadow: 0 0 10px var(--jade);
-      content: "";
-    }
-
-    .media-name {
-      position: absolute;
-      z-index: 3;
-      right: 20px;
-      bottom: 22px;
-      left: 20px;
-      padding-right: 38px;
-    }
-
-    .media-name small {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--gold);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .16em;
-    }
-
-    .media-name strong {
-      font-family: "Songti SC", serif;
-      font-size: 20px;
-      font-weight: 400;
-      letter-spacing: .02em;
-    }
-
-    .media-control {
-      position: absolute;
-      z-index: 4;
-      right: 16px;
-      bottom: 17px;
-      display: grid;
-      width: 34px;
-      height: 34px;
-      place-items: center;
-      border: 1px solid rgba(255, 255, 255, .3);
-      border-radius: 50%;
-      color: white;
-      background: rgba(5, 7, 5, .5);
-      backdrop-filter: blur(8px);
-      cursor: pointer;
-    }
-
-    .media-control:hover,
-    .media-control:focus-visible {
-      border-color: var(--gold);
-      color: var(--gold);
-      outline: none;
-    }
-
-    .project-tools .project-grid {
-      grid-template-columns: minmax(500px, 1.28fr) minmax(280px, .72fr);
-    }
-
-    .project-tools .project-copy {
-      grid-column: 2;
-    }
-
-    .project-tools .evidence-stage {
-      grid-row: 1;
-      grid-column: 1;
-    }
-
-    .project-delivery {
-      width: min(1420px, 100%);
-    }
-
-    .project-delivery .project-type {
-      color: #f4b84a;
-    }
-
-    .delivery-stage {
-      position: relative;
-      min-height: 760px;
-      perspective: 1200px;
-    }
-
-    .project-delivery .media-shell {
-      width: clamp(420px, 45vw, 650px);
-      aspect-ratio: 16 / 10;
-      background: #06100c;
-    }
-
-    .delivery-video-a {
-      --roll: -2.5deg;
-      top: 2%;
-      left: 0;
-      z-index: 3;
-    }
-
-    .delivery-video-b {
-      --roll: 3deg;
-      top: 44%;
-      right: 0;
-      z-index: 2;
-    }
-
-    .delivery-chipline {
-      position: absolute;
-      z-index: 5;
-      top: 36%;
-      right: 8%;
-      display: flex;
-      gap: 8px;
-      transform: rotate(2deg);
-    }
-
-    .delivery-chipline span {
-      padding: 7px 10px;
-      border: 1px solid rgba(244, 184, 74, .32);
-      color: rgba(242, 240, 232, .7);
-      background: rgba(5, 7, 5, .72);
-      font: 9px/1 ui-monospace, monospace;
-      letter-spacing: .08em;
-      backdrop-filter: blur(10px);
-    }
-
-    .project-fitness {
-      width: min(1420px, 100%);
-    }
-
-    .project-fitness .project-type {
-      color: #48d9a3;
-    }
-
-    .fitness-stage {
-      position: relative;
-      min-height: 720px;
-      perspective: 1200px;
-    }
-
-    .fitness-interface {
-      --tilt-x: 0deg;
-      --tilt-y: 0deg;
-      position: absolute;
-      top: 4%;
-      left: 0;
-      z-index: 2;
-      overflow: hidden;
-      width: clamp(520px, 48vw, 760px);
-      margin: 0;
-      aspect-ratio: 1280 / 920;
-      border: 1px solid rgba(242, 240, 232, .16);
-      background: #eef1ec;
-      box-shadow: 0 40px 110px rgba(0, 0, 0, .5), 0 0 58px rgba(72, 217, 163, .06);
-      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-      transform: rotate(-1.5deg) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-      transform-style: preserve-3d;
-      transition: transform .35s ease, border-color .3s ease, box-shadow .3s ease;
-    }
-
-    .fitness-interface:hover {
-      border-color: rgba(72, 217, 163, .48);
-      box-shadow: 0 50px 130px rgba(0, 0, 0, .58), 0 0 80px rgba(72, 217, 163, .08);
-      transform: rotate(0deg) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px);
-    }
-
-    .fitness-interface img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-    }
-
-    .fitness-interface figcaption {
-      position: absolute;
-      right: 16px;
-      bottom: 16px;
-      padding: 8px 10px;
-      color: #10130f;
-      background: rgba(255, 255, 255, .92);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-    }
-
-    .fitness-action-video {
-      --roll: 4deg;
-      right: 2%;
-      bottom: 5%;
-      z-index: 5;
-      width: clamp(230px, 21vw, 320px);
-      aspect-ratio: 1;
-      background: #f5f6f2;
-      box-shadow: 0 36px 95px rgba(0, 0, 0, .56);
-    }
-
-    .fitness-action-video video {
-      object-fit: cover;
-    }
-
-    .fitness-metric-strip {
-      position: absolute;
-      z-index: 6;
-      right: 10%;
-      bottom: 0;
-      display: flex;
-      gap: 8px;
-      transform: rotate(-1deg);
-    }
-
-    .fitness-metric-strip span {
-      padding: 9px 11px;
-      border: 1px solid rgba(72, 217, 163, .26);
-      color: rgba(242, 240, 232, .72);
-      background: rgba(5, 7, 5, .72);
-      font: 9px/1 ui-monospace, monospace;
-      letter-spacing: .08em;
-      backdrop-filter: blur(10px);
-    }
-
-    .fitness-metric-strip b {
-      color: var(--jade);
-      font-weight: 700;
-    }
-
-    .evidence-stage {
-      position: relative;
-      min-height: 780px;
-      perspective: 1200px;
-    }
-
-    .evidence-video {
-      --roll: -3deg;
-      top: 2%;
-      left: 0;
-      z-index: 3;
-    }
-
-    .proof-sheet {
-      position: absolute;
-      z-index: 1;
-      top: 12%;
-      right: 0;
-      overflow: hidden;
-      width: clamp(300px, 29vw, 430px);
-      height: 620px;
-      margin: 0;
-      border: 1px solid rgba(242, 240, 232, .15);
-      background: #111;
-      box-shadow: 0 34px 90px rgba(0, 0, 0, .45);
-      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-      transform: rotate(3deg);
-      transition: transform .5s cubic-bezier(.2, .8, .2, 1), border-color .3s ease;
-    }
-
-    .proof-sheet:hover {
-      z-index: 5;
-      border-color: rgba(231, 198, 107, .45);
-      transform: rotate(0) translateY(-12px);
-    }
-
-    .proof-sheet img {
-      width: 100%;
-      height: auto;
-      min-height: 100%;
-      object-fit: cover;
-      object-position: top;
-      transition: transform 6s cubic-bezier(.15, .65, .2, 1);
-    }
-
-    .proof-sheet:hover img {
-      transform: translateY(-25%);
-    }
-
-    .proof-label {
-      position: absolute;
-      z-index: 2;
-      top: 16px;
-      left: 16px;
-      padding: 8px 10px;
-      color: #10130f;
-      background: var(--paper);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-    }
-
-    .process-line {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      max-width: 520px;
-      margin-top: 32px;
-      background: rgba(242, 240, 232, .1);
-    }
-
-    .process-line span {
-      padding: 13px 8px;
-      color: rgba(242, 240, 232, .5);
-      background: #070907;
-      font-size: 10px;
-      text-align: center;
-    }
-
-    .tax-stage .proof-sheet:first-child {
-      top: 0;
-      left: 3%;
-      right: auto;
-      z-index: 2;
-      width: clamp(330px, 33vw, 480px);
-      height: 690px;
-      transform: rotate(-2deg);
-    }
-
-    .tax-stage .proof-sheet:last-child {
-      top: 28%;
-      right: 0;
-      z-index: 3;
-      width: clamp(220px, 20vw, 290px);
-      height: 500px;
-      transform: rotate(5deg);
-    }
-
-    .tax-stage .proof-sheet:hover {
-      z-index: 5;
-      transform: rotate(0) translateY(-10px);
-    }
-
-    .tax-stage .proof-sheet {
-      transition: transform .5s cubic-bezier(.2, .8, .2, 1), border-color .3s ease, opacity .45s ease, filter .45s ease, box-shadow .45s ease;
-    }
-
-    .tax-stage[data-focus="result"] .proof-sheet:first-child,
-    .tax-stage[data-focus="feedback"] .proof-sheet:last-of-type {
-      z-index: 6;
-      opacity: 1;
-      border-color: rgba(72, 217, 163, .58);
-      filter: none;
-      box-shadow: 0 42px 110px rgba(0, 0, 0, .62), 0 0 54px rgba(72, 217, 163, .08);
-    }
-
-    .tax-stage[data-focus="result"] .proof-sheet:last-of-type,
-    .tax-stage[data-focus="feedback"] .proof-sheet:first-child {
-      opacity: .38;
-      filter: saturate(.45) brightness(.68);
-    }
-
-    .tax-narration {
-      position: absolute;
-      z-index: 8;
-      right: 4%;
-      bottom: 0;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .tax-narration button {
-      display: flex;
-      min-width: 250px;
-      padding: 11px 14px;
-      border: 1px solid rgba(244, 184, 74, .55);
-      align-items: center;
-      gap: 12px;
-      color: #251806;
-      background: #f4b84a;
-      box-shadow: 0 18px 46px rgba(0, 0, 0, .34);
-      text-align: left;
-    }
-
-    .tax-narration button::before {
-      display: grid;
-      width: 30px;
-      height: 30px;
-      flex: 0 0 auto;
-      border: 1px solid rgba(37, 24, 6, .28);
-      border-radius: 50%;
-      place-items: center;
-      content: "▶";
-      font-size: 10px;
-    }
-
-    .tax-narration button.is-playing::before {
-      content: "Ⅱ";
-    }
-
-    .tax-narration small,
-    .tax-narration strong {
-      display: block;
-    }
-
-    .tax-narration small {
-      margin-bottom: 4px;
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .12em;
-    }
-
-    .tax-narration strong {
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .code-ribbon {
-      position: absolute;
-      z-index: 0;
-      top: 8%;
-      right: -14%;
-      color: rgba(72, 217, 163, .08);
-      font: clamp(58px, 8vw, 118px)/.92 ui-monospace, monospace;
-      letter-spacing: -.06em;
-      writing-mode: vertical-rl;
-      pointer-events: none;
-    }
-
-    .project-capabilities {
-      width: min(1400px, 100%);
-    }
-
-    .capability-board {
-      display: grid;
-      gap: 12px;
-      perspective: 1200px;
-    }
-
-    .capability-card {
-      position: relative;
-      display: grid;
-      min-height: 150px;
-      padding: 24px 26px 22px 92px;
-      overflow: hidden;
-      border: 1px solid rgba(242, 240, 232, .12);
-      background: linear-gradient(110deg, rgba(13, 20, 15, .9), rgba(6, 9, 7, .62));
-      clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-      transition: border-color .3s ease, transform .35s ease, background .35s ease;
-    }
-
-    .capability-card:hover {
-      border-color: rgba(72, 217, 163, .42);
-      background: linear-gradient(110deg, rgba(17, 31, 22, .96), rgba(7, 11, 8, .72));
-      transform: translateX(-10px);
-    }
-
-    .capability-card > b {
-      position: absolute;
-      top: 25px;
-      left: 25px;
-      color: var(--gold);
-      font: 23px/1 Georgia, serif;
-      font-weight: 400;
-    }
-
-    .capability-card h4 {
-      margin: 0;
-      font-family: "Songti SC", serif;
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    .capability-card p {
-      margin: 11px 0 0;
-      color: rgba(242, 240, 232, .48);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    .capability-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 14px;
-    }
-
-    .capability-tags span {
-      padding: 6px 8px;
-      border: 1px solid rgba(72, 217, 163, .16);
-      color: rgba(72, 217, 163, .72);
-      font: 8px/1 ui-monospace, monospace;
-      letter-spacing: .08em;
-    }
-
-    .closing {
-      position: relative;
-      display: grid;
-      min-height: 92svh;
-      padding: 14vh clamp(24px, 8vw, 130px);
-      place-content: center;
-      text-align: center;
-    }
-
-    .contact-layout {
-      display: grid;
-      width: min(1040px, calc(100vw - 48px));
-      grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
-      gap: clamp(56px, 9vw, 130px);
-      align-items: center;
-      text-align: left;
-    }
-
-    .contact-copy {
-      min-width: 0;
-    }
-
-    .contact-copy > span { margin-left: 0; }
-
-    .contact-phone {
-      display: inline-flex;
-      margin-top: 38px;
-      flex-direction: column;
-      color: var(--paper);
-      text-decoration: none;
-    }
-
-    .contact-phone strong {
-      font: clamp(32px, 4.5vw, 64px)/1 ui-monospace, "SFMono-Regular", monospace;
-      font-weight: 400;
-      letter-spacing: -.055em;
-    }
-
-    .contact-phone small {
-      margin-top: 11px;
-      color: var(--jade);
-      font-size: 10px;
-      letter-spacing: .2em;
-    }
-
-    .contact-qr {
-      position: relative;
-      width: min(330px, 100%);
-      margin: 0;
-      padding: 14px;
-      border: 1px solid rgba(242, 240, 232, .16);
-      background: white;
-      box-shadow: 0 38px 100px rgba(0, 0, 0, .5);
-      transform: rotate(2deg);
-      transition: transform .35s ease, border-color .3s ease;
-    }
-
-    .contact-qr:hover {
-      border-color: rgba(72, 217, 163, .5);
-      transform: rotate(0) translateY(-8px);
-    }
-
-    .contact-qr img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    .contact-qr figcaption {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-      left: 18px;
-      padding: 11px 12px;
-      color: #121512;
-      background: rgba(255, 255, 255, .9);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-align: center;
-    }
-
-    .closing::before {
-      position: absolute;
-      top: 12%;
-      left: 50%;
-      width: 1px;
-      height: 16vh;
-      background: linear-gradient(var(--jade), transparent);
-      content: "";
-    }
-
-    .closing p {
-      margin: 0 0 24px;
-      color: var(--gold);
-      font: 10px/1 ui-monospace, monospace;
-      letter-spacing: .26em;
-    }
-
-    .closing h2 {
-      max-width: 1000px;
-      margin: 0;
-      font-family: "Songti SC", serif;
-      font-size: clamp(48px, 7.6vw, 116px);
-      font-weight: 400;
-      letter-spacing: -.065em;
-      line-height: 1.02;
-    }
-
-    .closing span {
-      display: block;
-      max-width: 580px;
-      margin: 34px auto 0;
-      color: rgba(242, 240, 232, .46);
-      font-size: 13px;
-      line-height: 2;
-    }
-
-    /* 真实人物首屏：封面只负责定场，手机点击后才开始讲故事。 */
-    .stage { height: 150svh; }
-
-    .world::before {
-      background:
-        linear-gradient(90deg, rgba(5, 7, 5, .28), rgba(5, 7, 5, .03) 48%, rgba(5, 7, 5, .16)),
-        linear-gradient(180deg, rgba(5, 7, 5, .42), transparent 28%, transparent 68%, rgba(5, 7, 5, .82));
-    }
-
-    .hero-film {
-      object-position: center;
-      filter: brightness(.8) saturate(.92) contrast(1.04);
-      transform: scale(1.01);
-    }
-
-    .topbar {
-      gap: clamp(18px, 3vw, 42px);
-      padding: 9px 12px 9px 9px;
-      border: 1px solid rgba(231, 198, 107, .2);
-      border-radius: 999px;
-      background: linear-gradient(105deg, rgba(7, 11, 8, .84), rgba(12, 15, 13, .68));
-      box-shadow:
-        0 18px 55px rgba(0, 0, 0, .42),
-        inset 0 1px 0 rgba(255, 255, 255, .05);
-      -webkit-backdrop-filter: blur(22px) saturate(1.15);
-      backdrop-filter: blur(22px) saturate(1.15);
-    }
-
-    .anchor-nav {
-      display: flex;
-      min-width: 0;
-      margin-left: auto;
-      align-items: center;
-      gap: clamp(11px, 1.5vw, 23px);
-    }
-
-    .anchor-nav a {
-      position: relative;
-      color: rgba(242, 240, 232, .56);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color .24s ease;
-    }
-
-    .anchor-nav a::after {
-      position: absolute;
-      right: 0;
-      bottom: -7px;
-      left: 0;
-      height: 1px;
-      background: linear-gradient(90deg, var(--gold), var(--jade));
-      content: "";
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .24s ease;
-    }
-
-    .anchor-nav a:hover,
-    .anchor-nav a:focus-visible {
-      color: var(--paper);
-      outline: none;
-    }
-
-    .anchor-nav a:hover::after,
-    .anchor-nav a:focus-visible::after { transform: scaleX(1); }
-
-    .hero-copy {
-      top: 34%;
-      left: clamp(28px, 6vw, 100px);
-      width: min(410px, 30vw);
-      transform: translateY(-46%);
-    }
-
-    .hero-copy h1 {
-      font-size: clamp(44px, 4.5vw, 72px);
+      font-size: clamp(46px, 8vw, 112px);
+      font-weight: 880;
       line-height: .94;
+      letter-spacing: 0;
+      text-wrap: balance;
     }
 
-    .hero-copy h1 span {
-      color: rgba(242, 240, 232, .88);
-      -webkit-text-stroke: 0;
-      text-shadow: 0 12px 45px rgba(0, 0, 0, .52);
+    .lede {
+      max-width: 38em;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.5vw, 20px);
+      line-height: 1.78;
     }
 
-    .hero-copy .intro { max-width: 390px; }
-
-    .phone-sim {
-      z-index: 8;
-      top: 72.53%;
-      left: calc(50% - 26.25svh);
-      width: 10.31svh;
-      aspect-ratio: 9 / 20.5;
-      padding: 3px;
-      opacity: 1;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) rotate(-5deg);
-      filter: brightness(1.12);
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, .48),
-        0 0 0 2px rgba(0, 0, 0, .38),
-        0 0 24px rgba(72, 217, 163, .2);
-      transition:
-        top 2s cubic-bezier(.42, 0, .2, 1),
-        left 2s cubic-bezier(.42, 0, .2, 1),
-        width 2s cubic-bezier(.42, 0, .2, 1),
-        padding 2s cubic-bezier(.42, 0, .2, 1),
-        border-radius 1.3s ease,
-        filter 1s ease,
-        box-shadow 1.2s ease,
-        transform 2s cubic-bezier(.42, 0, .2, 1);
+    .proof-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: rgba(246, 240, 227, .78);
+      font-size: 13px;
     }
 
-    .world.is-phone-active .phone-sim,
-    .world.is-resolved .phone-sim {
-      opacity: 1;
-      transform: translate(-50%, -50%) rotate(-5deg);
-    }
-
-    .phone-sim:not(.is-zoomed) {
-      padding: 0;
-      border: 0;
-      border-radius: 12px;
-      background: transparent;
-      animation: phoneInvite 5.2s ease-in-out infinite;
-    }
-
-    .phone-sim:not(.is-zoomed) .phone-screen {
-      border: 1px solid rgba(220, 231, 225, .72);
-      border-radius: 11px;
-      filter: brightness(.98) saturate(.98);
-      box-shadow: inset 0 0 9px rgba(255, 255, 255, .12);
-    }
-
-    .phone-sim.is-zoomed {
-      z-index: 14;
-      top: 14%;
-      left: clamp(30px, 5vw, 82px);
-      width: clamp(230px, 19vw, 300px);
-      padding: 8px;
-      border-radius: 36px;
-      filter: none;
-      box-shadow:
-        0 42px 120px rgba(0, 0, 0, .72),
-        0 0 0 5px rgba(0, 0, 0, .34),
-        0 0 58px rgba(72, 217, 163, .1);
-      transform: none;
-    }
-
-    .world.is-phone-active .phone-sim.is-zoomed,
-    .world.is-resolved .phone-sim.is-zoomed {
-      transform: none;
-    }
-
-    .wechat-unread {
-      opacity: 0;
-      transform: scale(.5);
-      transition: opacity .18s ease, transform .24s cubic-bezier(.2, .9, .3, 1.4);
-    }
-
-    .wechat-unread.is-visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .phone-story-control {
-      position: absolute;
-      z-index: 7;
-      bottom: 44px;
-      left: 50%;
-      display: grid;
-      width: min(260px, 88%);
-      min-height: 70px;
-      padding: 11px 16px;
-      border: 1px solid rgba(231, 198, 107, .48);
-      border-radius: 18px;
-      place-content: center;
-      color: var(--paper);
-      background: rgba(5, 7, 5, .84);
-      box-shadow: 0 18px 46px rgba(0, 0, 0, .48);
-      backdrop-filter: blur(16px);
-      cursor: pointer;
-      text-align: center;
-      transform: translateX(-50%);
-      transition: opacity .25s ease, transform .25s ease, border-color .25s ease;
-    }
-
-    .phone-story-control:hover,
-    .phone-story-control:focus-visible {
-      border-color: var(--gold);
-      outline: none;
-      transform: translateX(-50%) translateY(-3px);
-    }
-
-    .phone-story-control b {
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .12em;
-    }
-
-    .phone-story-control small {
-      margin-top: 5px;
-      color: rgba(242, 240, 232, .48);
-      font-size: 8px;
-      letter-spacing: .08em;
-    }
-
-    .phone-story-control.is-running {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-50%) translateY(12px);
-    }
-
-    .phone-sim:not(.is-zoomed) .phone-story-control {
-      inset: 0;
-      width: 100%;
-      min-height: 0;
-      padding: 0;
-      border: 0;
-      border-radius: inherit;
-      background: transparent;
-      box-shadow: inset 0 0 16px rgba(72, 217, 163, .08);
-      backdrop-filter: none;
-      transform: none;
-      animation: screenInvite 5.2s ease-in-out infinite;
-    }
-
-    .phone-sim:not(.is-zoomed) .phone-story-control::after {
-      display: grid;
-      width: 22px;
-      height: 22px;
-      border: 1px solid rgba(255, 255, 255, .76);
-      border-radius: 50%;
-      place-items: center;
-      color: white;
-      background: rgba(5, 7, 5, .48);
-      content: "▶";
-      font-size: 8px;
-      animation: playInvite 1.7s ease-in-out infinite;
-    }
-
-    .phone-sim:not(.is-zoomed) .phone-story-control b,
-    .phone-sim:not(.is-zoomed) .phone-story-control small {
-      display: none;
-    }
-
-    .phone-sim:not(.is-zoomed) .phone-story-control:hover,
-    .phone-sim:not(.is-zoomed) .phone-story-control:focus-visible {
-      transform: none;
-    }
-
-    @keyframes phoneInvite {
-      0%, 55%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
-      62% { transform: translate(-50%, -50%) rotate(-7.2deg) scale(1.018); }
-      69% { transform: translate(-50%, -50%) rotate(-2.8deg) scale(1.025); }
-      76% { transform: translate(-50%, -50%) rotate(-5.8deg) scale(1.01); }
-      83% { transform: translate(-50%, -50%) rotate(-5deg); }
-    }
-
-    @media (min-width: 721px) and (min-aspect-ratio: 1671 / 941) {
-      .phone-sim {
-        top: calc(50% + 12.69vw);
-        left: 35.22%;
-        width: 5.8vw;
-      }
-    }
-
-    @keyframes screenInvite {
-      0%, 52%, 100% { background: transparent; box-shadow: inset 0 0 16px rgba(72, 217, 163, .08); }
-      60%, 72% { background: rgba(255, 255, 255, .13); box-shadow: inset 0 0 24px rgba(72, 217, 163, .3), 0 0 15px rgba(72, 217, 163, .22); }
-      66%, 78% { background: rgba(72, 217, 163, .04); }
-    }
-
-    @keyframes playInvite {
-      0%, 100% { opacity: .76; transform: scale(.9); }
-      50% { opacity: 1; transform: scale(1.14); box-shadow: 0 0 16px rgba(72, 217, 163, .55); }
-    }
-
-    .capability-audio {
+    .proof {
       display: inline-flex;
-      margin-top: 28px;
-      padding: 12px 16px;
-      border: 1px solid rgba(244, 199, 109, .5);
+      min-height: 38px;
       align-items: center;
-      gap: 12px;
-      color: #f4c76d;
-      background: rgba(244, 199, 109, .07);
-      cursor: pointer;
-      transition: border-color .25s ease, background .25s ease, transform .25s ease;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid rgba(246, 240, 227, .16);
+      background: rgba(9, 12, 11, .42);
+      backdrop-filter: blur(12px);
     }
 
-    .capability-audio:hover,
-    .capability-audio:focus-visible,
-    .capability-audio.is-playing {
-      border-color: #ffd889;
-      background: rgba(244, 199, 109, .13);
-      outline: none;
-      transform: translateY(-2px);
+    .proof b {
+      color: var(--gold);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 15px;
     }
 
-    .capability-audio > span:first-child {
-      display: grid;
-      width: 28px;
-      height: 28px;
-      border: 1px solid currentColor;
-      border-radius: 50%;
-      place-items: center;
-      font-size: 10px;
-    }
 
-    .capability-audio strong,
-    .capability-audio small { display: block; }
 
-    .capability-audio strong {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .08em;
-    }
-
-    .capability-audio small {
-      margin-top: 4px;
-      color: rgba(242, 240, 232, .46);
-      font-size: 8px;
-    }
-
-    .page-scroll-hint {
-      position: fixed;
-      z-index: 60;
-      bottom: max(18px, env(safe-area-inset-bottom));
-      left: 50%;
+    .fluid-controls {
       display: flex;
-      padding: 9px 13px;
-      border: 1px solid rgba(242, 240, 232, .15);
+      width: fit-content;
+      max-width: min(560px, calc(100vw - 32px));
+      padding: 6px;
+      border: 1px solid rgba(246, 240, 227, .15);
       border-radius: 999px;
-      align-items: center;
-      gap: 9px;
-      color: rgba(242, 240, 232, .62);
-      background: rgba(5, 7, 5, .7);
-      backdrop-filter: blur(16px);
-      cursor: pointer;
-      font-size: 9px;
-      letter-spacing: .16em;
-      transform: translateX(-50%);
-      transition: opacity .25s ease, transform .25s ease, border-color .25s ease;
+      gap: 6px;
+      background: rgba(5, 7, 5, .44);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .32);
+      -webkit-backdrop-filter: blur(18px) saturate(1.18);
+      backdrop-filter: blur(18px) saturate(1.18);
     }
 
-    .page-scroll-hint:hover,
-    .page-scroll-hint:focus-visible {
-      border-color: rgba(72, 217, 163, .48);
-      color: var(--paper);
-      outline: none;
-      transform: translateX(-50%) translateY(-3px);
-    }
-
-    .page-scroll-hint.is-hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-50%) translateY(12px);
-    }
-
-    .scroll-chevrons {
-      position: relative;
-      width: 11px;
-      height: 14px;
-    }
-
-    .scroll-chevrons::before,
-    .scroll-chevrons::after {
-      position: absolute;
-      left: 2px;
-      width: 6px;
-      height: 6px;
-      border-right: 1px solid var(--jade);
-      border-bottom: 1px solid var(--jade);
-      content: "";
-      transform: rotate(45deg);
-      animation: scroll-chevron 1.4s ease-in-out infinite;
-    }
-
-    .scroll-chevrons::before { top: 0; }
-    .scroll-chevrons::after { top: 5px; animation-delay: -.32s; }
-
-    .contact-float {
-      position: fixed;
-      z-index: 70;
-      right: max(20px, env(safe-area-inset-right));
-      bottom: max(18px, env(safe-area-inset-bottom));
-    }
-
-    .contact-float-trigger {
-      display: flex;
-      min-width: 98px;
-      padding: 11px 15px;
-      border: 1px solid rgba(244, 199, 109, .48);
+    .fluid-control {
+      display: inline-flex;
+      min-height: 34px;
+      padding: 8px 12px;
+      border: 1px solid transparent;
       border-radius: 999px;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      color: #f4c76d;
-      background: rgba(5, 7, 5, .78);
-      box-shadow: 0 16px 46px rgba(0, 0, 0, .34);
-      backdrop-filter: blur(16px);
+      gap: 7px;
+      color: rgba(246, 240, 227, .68);
+      background: rgba(255, 255, 255, .035);
       cursor: pointer;
       font-size: 10px;
-      letter-spacing: .12em;
-      transition: border-color .25s ease, transform .25s ease, background .25s ease;
+      letter-spacing: .08em;
+      white-space: nowrap;
+      transition: color .22s ease, border-color .22s ease, background .22s ease, transform .22s ease;
     }
 
-    .contact-float-trigger::before {
+    .fluid-control::before {
+      display: block;
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--jade);
-      box-shadow: 0 0 12px rgba(72, 217, 163, .8);
+      background: var(--fluid-accent);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--fluid-accent) 68%, transparent);
       content: "";
     }
 
-    .contact-float-trigger:hover,
-    .contact-float-trigger:focus-visible,
-    .contact-float-trigger[aria-expanded="true"] {
-      border-color: #f4c76d;
-      background: rgba(18, 22, 18, .94);
-      outline: none;
-      transform: translateY(-3px);
-    }
-
-    .contact-popover {
-      position: absolute;
-      right: 0;
-      bottom: calc(100% + 12px);
-      width: min(290px, calc(100vw - 32px));
-      padding: 18px;
-      border: 1px solid rgba(242, 240, 232, .16);
-      border-radius: 18px;
+    .fluid-control:hover,
+    .fluid-control:focus-visible,
+    .fluid-control[aria-pressed="true"] {
+      border-color: color-mix(in srgb, var(--fluid-accent) 44%, transparent);
       color: var(--paper);
-      background: rgba(7, 10, 8, .94);
-      box-shadow: 0 26px 80px rgba(0, 0, 0, .58);
-      backdrop-filter: blur(22px);
+      background: rgba(255, 255, 255, .075);
+      outline: none;
+      transform: translateY(-2px);
     }
 
-    .contact-popover[hidden] { display: none; }
-
-    .contact-popover small {
-      display: block;
-      margin-bottom: 13px;
-      color: rgba(242, 240, 232, .42);
-      font-size: 8px;
-      letter-spacing: .16em;
-    }
-
-    .contact-popover a,
-    .contact-popover button {
+    .case-rail {
+      position: relative;
       display: grid;
-      width: 100%;
-      padding: 12px 13px;
-      border: 1px solid rgba(242, 240, 232, .1);
+      grid-template-columns: repeat(5, minmax(176px, 1fr));
+      gap: 14px;
+      align-items: end;
+      padding: 12px 2px 8px;
+      perspective: 900px;
+    }
+
+    .case-card {
+      position: relative;
+      display: block;
+      min-height: 168px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(246, 240, 227, .14);
+      border-radius: 8px;
+      background: rgba(9, 12, 11, .68);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .32);
       color: var(--paper);
-      background: rgba(255, 255, 255, .035);
-      cursor: pointer;
-      text-align: left;
       text-decoration: none;
-      transition: border-color .22s ease, background .22s ease;
+      isolation: isolate;
+      text-align: left;
+      cursor: pointer;
+      transform: translateY(var(--drop, 0)) rotate(var(--tilt, 0deg)) scale(1);
+      transform-origin: 50% 92%;
+      transition: transform .24s ease, border-color .22s ease, box-shadow .22s ease, filter .22s ease;
+      appearance: none;
     }
 
-    .contact-popover button { margin-top: 8px; }
+    .case-card:nth-child(1) { --tilt: -2.6deg; --drop: 12px; }
+    .case-card:nth-child(2) { --tilt: 1.7deg; --drop: -2px; }
+    .case-card:nth-child(3) { --tilt: -.8deg; --drop: 18px; }
+    .case-card:nth-child(4) { --tilt: 2.4deg; --drop: 5px; }
+    .case-card:nth-child(5) { --tilt: -1.5deg; --drop: 14px; }
 
-    .contact-popover a:hover,
-    .contact-popover a:focus-visible,
-    .contact-popover button:hover,
-    .contact-popover button:focus-visible {
-      border-color: rgba(72, 217, 163, .42);
-      background: rgba(72, 217, 163, .07);
-      outline: none;
+    .case-card:hover {
+      border-color: rgba(228, 192, 106, .52);
+      box-shadow: 0 28px 86px rgba(0, 0, 0, .5);
+      filter: saturate(1.08);
+      transform: translateY(calc(var(--drop, 0px) - 12px)) rotate(0deg) scale(1.06);
+      z-index: 4;
     }
 
-    .contact-popover strong {
+    .case-card:focus-visible {
+      border-color: var(--jade);
+      outline: 2px solid var(--jade);
+      outline-offset: 5px;
+    }
+
+    .case-card img {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(.9) brightness(.72);
+      transform: scale(1.03);
+      transition: transform .4s ease, filter .4s ease;
+    }
+
+    .case-card:hover img {
+      filter: saturate(1) brightness(.86);
+      transform: scale(1.11);
+    }
+
+    .case-card::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      background: linear-gradient(180deg, rgba(9, 12, 11, .18), rgba(9, 12, 11, .88));
+    }
+
+    .case-card::before {
+      position: absolute;
+      inset: 8px;
+      z-index: 1;
+      border: 1px solid rgba(246, 240, 227, .12);
+      border-radius: 5px;
+      content: "";
+      pointer-events: none;
+    }
+
+    .play-badge {
+      position: absolute;
+      z-index: 3;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgba(246, 240, 227, .28);
+      border-radius: 50%;
+      background: rgba(9, 12, 11, .58);
+      color: var(--paper);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(10px);
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .case-card:hover .play-badge {
+      background: rgba(57, 212, 157, .9);
+      color: #07100d;
+      transform: scale(1.08);
+    }
+
+    .case-index {
+      position: absolute;
+      z-index: 3;
+      top: 16px;
+      left: 16px;
+      color: rgba(246, 240, 227, .62);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+
+    .case-copy {
+      position: absolute;
+      z-index: 3;
+      inset: auto 14px 13px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .case-type {
+      color: var(--gold);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+
+    .case-title {
+      font-size: 17px;
+      font-weight: 780;
+      line-height: 1.28;
+    }
+
+    .case-note {
+      color: rgba(246, 240, 227, .56);
       font-size: 12px;
-      font-weight: 500;
+      line-height: 1.45;
     }
 
-    .contact-popover span {
-      margin-top: 4px;
-      color: rgba(242, 240, 232, .48);
-      font-size: 9px;
+    body.modal-open {
+      overflow: hidden;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes breathe { 50% { opacity: .36; transform: scale(.7); } }
-    @keyframes trace { 50% { opacity: .35; transform: translateX(8px); } }
-    @keyframes sound-wave { to { transform: scaleY(.35); } }
-    @keyframes message-drift { to { translate: 0 -11px; } }
-    @keyframes scroll-chevron {
-      0%, 100% { opacity: .24; transform: translateY(-2px) rotate(45deg); }
-      50% { opacity: 1; transform: translateY(2px) rotate(45deg); }
+    .player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
     }
 
-    @media (max-width: 720px) {
-      .stage { height: 145svh; }
-      .topbar {
-        top: max(14px, env(safe-area-inset-top));
-        right: 14px;
-        left: 14px;
-        width: auto;
-        flex-wrap: wrap;
-        border-radius: 18px;
-        transform: none;
-      }
-      .anchor-nav {
-        order: 3;
-        width: 100%;
-        padding: 4px 2px 3px;
+    .player-modal[aria-hidden="false"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      min-height: 0;
+      border: 0;
+      background: rgba(3, 5, 5, .78);
+      cursor: zoom-out;
+      backdrop-filter: blur(18px);
+    }
+
+    .player-shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: min(1040px, calc(100vw - 34px));
+      max-height: min(86svh, 760px);
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid rgba(246, 240, 227, .2);
+      border-radius: 8px;
+      background: #090c0b;
+      box-shadow: 0 30px 110px rgba(0, 0, 0, .62);
+    }
+
+    .player-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 46px;
+      gap: 18px;
+      align-items: center;
+      min-height: 74px;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(246, 240, 227, .14);
+      background: rgba(17, 23, 20, .92);
+    }
+
+    .player-head h3 {
+      margin: 0;
+      font-size: clamp(18px, 2.2vw, 28px);
+      line-height: 1.16;
+    }
+
+    .player-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .modal-close {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      place-items: center;
+      border: 1px solid rgba(246, 240, 227, .2);
+      border-radius: 50%;
+      background: rgba(246, 240, 227, .08);
+      color: var(--paper);
+      cursor: pointer;
+    }
+
+    .media-frame {
+      display: grid;
+      min-height: 0;
+      place-items: center;
+      background:
+        linear-gradient(90deg, rgba(246, 240, 227, .035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(246, 240, 227, .03) 1px, transparent 1px),
+        #050706;
+      background-size: 42px 42px;
+    }
+
+    .media-frame video,
+    .media-frame img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(86svh - 76px);
+      object-fit: contain;
+    }
+
+    .section {
+      position: relative;
+      z-index: 3;
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 82px 0 92px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, .82fr) minmax(260px, .46fr);
+      gap: 42px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .work-list {
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr) 160px;
+      gap: 20px;
+      align-items: center;
+      min-height: 98px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .work-tag {
+      color: var(--faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+    }
+
+    .work-title {
+      margin: 0;
+      font-size: clamp(22px, 2.8vw, 36px);
+      line-height: 1.18;
+    }
+
+    .work-state {
+      justify-self: end;
+      color: var(--jade);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .case-rail {
+        grid-template-columns: repeat(5, minmax(220px, 42vw));
         overflow-x: auto;
-        gap: 18px;
+        padding: 18px 10px 16px;
+        scroll-snap-type: x mandatory;
         scrollbar-width: none;
       }
-      .anchor-nav::-webkit-scrollbar { display: none; }
-      .hero-copy {
-        top: 23%;
-        right: auto;
-        bottom: auto;
-        left: 22px;
-        width: 54vw;
-        transform: none;
+
+      .case-rail::-webkit-scrollbar { display: none; }
+
+      .case-card {
+        scroll-snap-align: start;
       }
-      .hero-copy h1 { font-size: clamp(39px, 11.4vw, 58px); }
-      h1 span { margin-left: 0; }
-      .hero-copy .intro { display: none; }
-      .hero-film { object-position: center; }
-      .phone-sim {
-        top: 52.15%;
-        left: calc(50% - 14.74svh);
-        width: 3.53svh;
-        padding: 0;
-        border: 0;
-        border-radius: 6px;
-        background: transparent;
-        transform: translate(-50%, -50%) rotate(-3deg);
-      }
-      .phone-sim:not(.is-zoomed) { aspect-ratio: 9 / 19.7; }
-      .phone-sim:not(.is-zoomed) {
-        padding: 0;
-        border: 0;
-        border-radius: 6px;
-        background: transparent;
-        box-shadow: 0 0 18px rgba(72, 217, 163, .2);
-        animation-name: phoneInviteMobile;
-      }
-      .phone-sim:not(.is-zoomed) .phone-screen { border-radius: 5px; }
-      .world.is-phone-active .phone-sim,
-      .world.is-resolved .phone-sim {
-        transform: translate(-50%, -50%) rotate(-3deg);
-      }
-      @keyframes phoneInviteMobile {
-        0%, 55%, 100% { transform: translate(-50%, -50%) rotate(-3deg); }
-        62% { transform: translate(-50%, -50%) rotate(-4.2deg) scale(1.018); }
-        69% { transform: translate(-50%, -50%) rotate(-1.8deg) scale(1.025); }
-        76% { transform: translate(-50%, -50%) rotate(-3.6deg) scale(1.01); }
-        83% { transform: translate(-50%, -50%) rotate(-3deg); }
-      }
-      .phone-sim.is-zoomed {
-        top: 17%;
-        left: 14px;
-        width: min(210px, 54vw);
-        transform: none;
-      }
-      .world.is-phone-active .phone-sim.is-zoomed,
-      .world.is-resolved .phone-sim.is-zoomed { transform: none; }
-      .phone-story-control { bottom: 30px; min-height: 58px; }
-      .gesture { right: 20px; bottom: 80px; width: 98px; height: 98px; }
-      .page-scroll-hint { bottom: max(13px, env(safe-area-inset-bottom)); }
-      .page-scroll-hint > span:last-child { display: none; }
-      .contact-float {
-        right: 13px;
-        bottom: max(13px, env(safe-area-inset-bottom));
-      }
-      .contact-float-trigger { min-width: 88px; padding: 10px 13px; }
-      .corner { bottom: 24px; }
-      .chapter-preview { align-content: center; }
-      .top-actions { gap: 8px; }
-      .mode { display: none; }
-      .sound-toggle { padding: 8px; }
-      .sound-label { display: none; }
-      .quick-projects { display: none; }
-      .message-chip {
-        min-width: 190px;
-        grid-template-columns: 32px minmax(108px, 1fr) auto;
-        padding: 8px 9px;
-      }
-      .chip-avatar { width: 32px; height: 32px; }
-      .message-chip.is-expanded {
-        right: auto;
-        left: 12px;
-        min-width: min(330px, calc(100vw - 24px));
-      }
-      .chip-a { top: 16%; right: auto; left: 18px; }
-      .chip-b { top: 62%; right: auto; left: 12px; }
-      .chip-c { top: 72%; right: auto; left: 42%; }
-      .focus-stack {
-        top: 10%;
-        right: 16px;
-        left: 16px;
-        width: auto;
-        max-height: 76svh;
-        border-radius: 24px;
-      }
-      .hermes-chat { max-height: calc(76svh - 120px); }
-      .story::before { left: 22px; }
-      .project {
-        min-height: auto;
-        padding: 110px 22px 130px;
-        opacity: 1;
-        transform: none;
-      }
-      .project-grid,
-      .project-tools .project-grid,
-      .project-wechat .project-grid {
+
+      .section-head,
+      .work-item {
         grid-template-columns: 1fr;
-        gap: 58px;
       }
-      .project-copy,
-      .project-tools .project-copy,
-      .project-wechat .project-copy {
-        position: relative;
-        top: auto;
-        grid-column: 1;
+
+      .work-item {
+        gap: 10px;
+        align-items: start;
+        padding: 22px 0;
       }
-      .project h3 { font-size: clamp(42px, 12vw, 66px); }
-      .project-capabilities h3 { font-size: clamp(38px, 10vw, 56px); }
-      .project-lead { max-width: 92%; }
-      .capability-card {
-        min-height: 0;
-        padding: 22px 20px 20px 68px;
+
+      .work-state {
+        justify-self: start;
       }
-      .capability-card > b { top: 23px; left: 22px; font-size: 19px; }
-      .contact-layout {
-        width: calc(100vw - 44px);
-        grid-template-columns: 1fr;
-        gap: 50px;
-      }
-      .contact-phone strong { font-size: clamp(31px, 10vw, 46px); }
-      .contact-qr { width: min(300px, 88vw); margin: 0 auto; }
-      .media-deck,
-      .evidence-stage,
-      .delivery-stage { min-height: 620px; }
-      .media-shell { width: min(58vw, 260px); }
-      .media-a { top: 0; left: 2%; }
-      .media-b { top: 18%; right: 2%; bottom: auto; }
-      .project-delivery .media-shell {
-        width: min(86vw, 390px);
-        aspect-ratio: 16 / 10;
-      }
-      .delivery-video-a { top: 0; left: 0; }
-      .delivery-video-b { top: 43%; right: 0; }
-      .delivery-chipline {
-        top: 38%;
-        right: auto;
-        left: 12px;
-        flex-wrap: wrap;
-        max-width: calc(100vw - 44px);
-      }
-      .fitness-stage { min-height: 620px; }
-      .fitness-interface {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: 100%;
-        transform: rotate(-1deg);
-      }
-      .fitness-interface:hover {
-        transform: rotate(0) translateY(-6px);
-      }
-      .fitness-action-video {
-        top: 45%;
-        right: 0;
-        bottom: auto;
-        width: min(50vw, 220px);
-      }
-      .fitness-metric-strip {
-        right: auto;
-        bottom: 12px;
-        left: 0;
-        flex-wrap: wrap;
-        max-width: calc(100vw - 44px);
-      }
-      .project-tools .evidence-stage {
-        grid-row: 2;
-        grid-column: 1;
-      }
-      .wechat-demo-stage { min-height: auto; }
-      .wechat-video-shell { width: 100%; }
-      .wechat-video-button { width: 88px; height: 88px; }
-      .wechat-video-shell figcaption em { display: none; }
-      .wechat-capabilities {
-        width: 94%;
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .evidence-video { width: min(58vw, 260px); }
-      .proof-sheet {
-        top: 15%;
-        width: min(58vw, 280px);
-        height: 510px;
-      }
-      .tax-stage .proof-sheet:first-child {
-        left: 0;
-        width: min(66vw, 300px);
-        height: 560px;
-      }
-      .tax-stage .proof-sheet:last-child {
-        top: 31%;
-        width: min(49vw, 220px);
-        height: 400px;
-      }
-      .tax-narration {
-        right: 0;
-        bottom: -8px;
-      }
-      .tax-narration button {
-        min-width: 0;
-        max-width: 76vw;
-      }
-      .process-line {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 360px;
-      }
-      .closing { min-height: 82svh; padding-inline: 22px; }
     }
 
-    @media (pointer: coarse) {
-      .world { cursor: default; }
+    @media (max-width: 620px) {
+      .hero-photo {
+        content: url("assets/hero/xiaowu-holding-phone-mobile-v3.jpg");
+        object-position: center top;
+        filter: saturate(.92) contrast(1.02) brightness(.74);
+      }
+
+      .hero::after {
+        background:
+          linear-gradient(180deg, rgba(9, 12, 11, .56) 0%, rgba(9, 12, 11, .22) 30%, rgba(9, 12, 11, .78) 60%, rgba(9, 12, 11, .94) 100%),
+          linear-gradient(90deg, rgba(9, 12, 11, .66), rgba(9, 12, 11, .12));
+      }
+
+      .topbar {
+        width: min(calc(100vw - 22px), 1180px);
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .hero-inner {
+        width: min(calc(100vw - 22px), 1180px);
+        padding-top: 84px;
+      }
+
+      .copy {
+        padding-top: 42svh;
+        padding-bottom: 8px;
+      }
+
+      h1 {
+        max-width: 7.8em;
+        font-size: clamp(40px, 14vw, 64px);
+      }
+
+      .section h2 {
+        font-size: clamp(31px, 10vw, 44px);
+        line-height: 1.06;
+      }
+
+      .lede {
+        font-size: 15px;
+      }
+
+      .proof-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .fluid-controls {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 16px;
+        scrollbar-width: none;
+      }
+
+      .fluid-controls::-webkit-scrollbar { display: none; }
+
+      .fluid-control {
+        min-width: max-content;
+        min-height: 36px;
+        padding-inline: 11px;
+      }
+
+
+      .proof {
+        min-width: 0;
+        font-size: 12px;
+      }
+
+      .case-rail {
+        grid-template-columns: repeat(5, 76vw);
+      }
+
+      .case-card {
+        min-height: 190px;
+      }
+
+      .case-card:nth-child(n) {
+        --tilt: 0deg;
+        --drop: 0px;
+      }
+
+      .player-modal {
+        padding: 12px;
+      }
+
+      .player-head {
+        grid-template-columns: minmax(0, 1fr) 40px;
+        min-height: 68px;
+        padding: 13px;
+      }
+
+      .modal-close {
+        width: 38px;
+        height: 38px;
+        min-height: 38px;
+      }
+
+      .section {
+        width: min(calc(100vw - 22px), 1180px);
+        padding-top: 58px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="ai-cursor" id="aiCursor" aria-hidden="true">
-    <svg viewBox="0 0 24 30" focusable="false">
-      <path d="M3 2.5v22.3l5.8-5.5 4.7 8.2 4-2.3-4.6-8 8-1.5L3 2.5Z" fill="#050505" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <div class="topbar">
-    <div class="brand">
-      <span class="brand-mark">伍</span>
-      <span>小伍工作室</span>
-    </div>
-    <nav class="anchor-nav" aria-label="页面锚点导航">
-      <a href="#wechat-ai">微信助手</a>
-      <a href="#fitness-project">动作库</a>
-      <a href="#ppt-project">PPT</a>
-      <a href="#delivery-project">送货助手</a>
-      <a href="#tax-project">税务编码</a>
-      <a href="#gesture-project">浪漫实验</a>
-      <a href="#capabilities">我能做什么</a>
-      <a href="#contact">联系我</a>
+  <canvas class="fluid-backdrop" id="fluidBackdrop" aria-hidden="true"></canvas>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="小伍工作室首页">
+      <span class="mark">伍</span>
+      <span>
+        <strong>小伍工作室</strong>
+        <span>real projects, useful tools</span>
+      </span>
+    </a>
+    <nav class="nav" aria-label="主页导航">
+      <a href="#cases">项目案例</a>
+      <a href="#work">工作方向</a>
+      <a href="#contact">联系合作</a>
     </nav>
-    <div class="top-actions">
-      <div class="mode"><span>INTERACTIVE FIELD</span> 实时交互中</div>
-    </div>
-  </div>
-  <main class="stage" id="home" aria-label="小伍工作室交互首页">
-    <section class="world is-phone-active" id="world">
-      <picture class="hero-picture">
-        <source media="(max-width: 720px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
-        <img class="hero-film" src="assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠侧身拿着手机站在雪山前">
-      </picture>
+  </header>
 
-      <div class="hero-copy" id="heroCopy">
-        <div class="eyebrow">伍建忠 / 小伍工作室</div>
-        <h1 aria-label="一天被 999+ 条消息切成碎片">一天被 <b>999+</b><span>条消息切成碎片</span></h1>
-        <p class="intro">工作群、学校群、家人和杂事一起涌来。<br>点击左侧手机，看消息如何从 0 开始淹没一天。</p>
-      </div>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <img class="hero-photo" src="assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠手持手机站在山路前的主视觉">
+      <div class="hero-inner">
+        <div class="copy">
+          <span class="eyebrow">小伍工作室 / 伍建忠</span>
+          <h1 id="title">把现场问题做成能用的工具</h1>
+          <p class="lede">把现场经验、项目想法和客户需求做成能交给客户、同事和自己每天使用的工具：从游戏特效到工厂报表，从税务编码到微信 AI 助手，都尽量做到能看、能点、能落地。</p>
+          <div class="proof-row" aria-label="主页核心信息">
+            <span class="proof"><b>游戏</b> 手势、剑阵、Canvas</span>
+            <span class="proof"><b>工具</b> PPT、编码、安装包</span>
+            <span class="proof"><b>现场</b> 水产、维修、工厂</span>
+            <span class="proof"><b>AI</b> 记忆、自动化、协作</span>
+          </div>
 
-      <div class="phone-sim" id="phoneSim" aria-label="微信消息交互演示">
-        <div class="phone-screen">
-          <div class="wechat-thumbnail" aria-hidden="true">
-            <div class="thumb-status"><b>10:48</b><span>▮▮ 5G　94</span></div>
-            <div class="thumb-title"><i>●●</i><b>微信</b><em>＋</em></div>
-            <div class="thumb-search">⌕　搜索</div>
-            <div class="thumb-login"><span>▣</span><span>Mac 微信已登录</span></div>
-            <div class="thumb-list">
-              <div class="thumb-row">
-                <span class="thumb-avatar">AI</span>
-                <span class="thumb-copy"><b>AI 超级助手</b><small>今日重点已经整理完成</small></span>
-                <time>10:48</time>
-              </div>
-              <div class="thumb-row">
-                <span class="thumb-avatar green">销</span>
-                <span class="thumb-copy"><b>华东销售群</b><small>订单与回款情况已更新</small></span>
-                <time>10:45</time>
-              </div>
-              <div class="thumb-row">
-                <span class="thumb-avatar gold">校</span>
-                <span class="thumb-copy"><b>一年级三班家长群</b><small>明天统一穿校服</small></span>
-                <time>10:37</time>
-              </div>
-              <div class="thumb-row">
-                <span class="thumb-avatar blue">物</span>
-                <span class="thumb-copy"><b>物业群</b><small>维修登记与费用提醒</small></span>
-                <time>09:52</time>
-              </div>
-            </div>
-            <div class="thumb-tabs"><span>微信</span><span>通讯录</span><span>发现</span><span>我</span></div>
+          <div class="fluid-controls" data-fluid-controls aria-label="流体背板控制">
+            <button class="fluid-control" type="button" data-fluid-action="palette"><span>深色光谱</span></button>
+            <button class="fluid-control" type="button" data-fluid-action="splash"><span>掀起</span></button>
+            <button class="fluid-control" type="button" data-fluid-action="capture"><span>留影</span></button>
+            <button class="fluid-control" type="button" data-fluid-action="pause" aria-pressed="false"><span>暂停</span></button>
           </div>
-          <span class="phone-notch"></span>
-          <div class="phone-status"><span>9:41</span><span>5G　▰</span></div>
-          <div class="wechat-head"><strong>微信</strong><span>⌕ ＋</span></div>
-          <div class="wechat-list">
-            <div class="wechat-row" data-phone-row="work">
-              <span class="wechat-avatar">销</span>
-              <span class="wechat-row-copy"><strong>华东销售群</strong><small>今天新增订单已经更新……</small></span>
-              <time>10:28</time><b class="wechat-unread" data-target="86">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="school">
-              <span class="wechat-avatar school">校</span>
-              <span class="wechat-row-copy"><strong>一年级三班家长群</strong><small>老师：明天统一穿校服……</small></span>
-              <time>10:16</time><b class="wechat-unread" data-target="52">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="family">
-              <span class="wechat-avatar family">家</span>
-              <span class="wechat-row-copy"><strong>媳妇</strong><small>下班记得买牛奶和鸡蛋</small></span>
-              <time>09:52</time><b class="wechat-unread" data-target="18">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="finance">
-              <span class="wechat-avatar finance">财</span>
-              <span class="wechat-row-copy"><strong>财务协同群</strong><small>两笔回款还没有确认……</small></span>
-              <time>09:31</time><b class="wechat-unread" data-target="73">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="life">
-              <span class="wechat-avatar">杂</span>
-              <span class="wechat-row-copy"><strong>家庭杂事</strong><small>周六家宴，下午接孩子</small></span>
-              <time>08:46</time><b class="wechat-unread" data-target="41">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="factory">
-              <span class="wechat-avatar factory">厂</span>
-              <span class="wechat-row-copy"><strong>综合工作群</strong><small>今天现场情况已经更新……</small></span>
-              <time>08:31</time><b class="wechat-unread" data-target="64">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="property">
-              <span class="wechat-avatar property">物</span>
-              <span class="wechat-row-copy"><strong>物业群</strong><small>维修登记和物业费提醒</small></span>
-              <time>昨天</time><b class="wechat-unread" data-target="34">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="report">
-              <span class="wechat-avatar report">报</span>
-              <span class="wechat-row-copy"><strong>每日工作汇报群</strong><small>请在下班前提交今日进度</small></span>
-              <time>昨天</time><b class="wechat-unread" data-target="29">0</b>
-            </div>
-            <div class="wechat-row" data-phone-row="delivery">
-              <span class="wechat-avatar delivery">递</span>
-              <span class="wechat-row-copy"><strong>快递与取件提醒</strong><small>丰巢柜中有 3 个包裹待取</small></span>
-              <time>周一</time><b class="wechat-unread" data-target="12">0</b>
-            </div>
-          </div>
-          <div class="phone-chat">
-            <div class="chat-head" id="phoneChatTitle">华东销售群</div>
-            <div class="chat-content" id="phoneChatContent"></div>
-            <div class="phone-input"></div>
-          </div>
-          <div class="wechat-tabs"><span>微信</span><span>通讯录</span><span>发现</span><span>我</span></div>
-          <span class="phone-touch"></span>
         </div>
-        <audio id="heroNotifyAudio" src="assets/audio/wechat-notify.m4a" preload="auto"></audio>
-        <button class="phone-story-control" id="heroPhonePlay" type="button">
-          <b id="heroPhonePlayLabel">▶ 点击播放微信消息</b>
-          <small>从 0 条开始 · 使用微信提示音</small>
-        </button>
-      </div>
 
-      <div class="chapter-preview" id="chapterPreview">
-        <p>01 / 让信息替你工作</p>
-        <h2>消息不该成为负担，<br><em>它只是还没被整理的数据。</em></h2>
+        <div class="case-rail" id="cases" aria-label="重点项目预览">
+          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="assets/story/wechat-ai-super-assistant-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-natural.mp4">
+            <img src="assets/story/wechat-ai-super-assistant-poster.jpg" alt="微信 AI 超级助手界面">
+            <span class="case-index">01</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">AI ASSISTANT</span>
+              <span class="case-title">微信 AI 超级助手</span>
+              <span class="case-note">消息、群聊、客户资料统一处理</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="assets/story/ppt-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop-narrated.mp4">
+            <img src="assets/story/ppt-result-real.jpg" alt="整改 PPT 真实页面">
+            <span class="case-index">02</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">PPT TOOL</span>
+              <span class="case-title">整改 PPT 一键生成</span>
+              <span class="case-note">从照片和说明直接变成汇报材料</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="assets/story/tax-result-real.jpg">
+            <img src="assets/story/tax-result-real.jpg" alt="税务编码匹配表格">
+            <span class="case-index">03</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">DATA CHECK</span>
+              <span class="case-title">税收分类编码匹配</span>
+              <span class="case-note">批量核对、修正、导入前检查</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="assets/story/gesture-sword-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self-sound.mp4">
+            <img src="assets/story/gesture-sword-poster.jpg" alt="手势操控剑阵项目">
+            <span class="case-index">04</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">GAME EFFECT</span>
+              <span class="case-title">手势操控大庚剑阵</span>
+              <span class="case-note">游戏感、粒子效果、移动端体验</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="客户对账汇总" data-note="现场数据整理成老板看得懂的结果" data-poster="assets/story/delivery-report-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3">
+            <img src="assets/story/delivery-report-poster.jpg" alt="客户汇总报表界面">
+            <span class="case-index">05</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">BUSINESS REPORT</span>
+              <span class="case-title">客户对账汇总</span>
+              <span class="case-note">现场数据整理成老板看得懂的结果</span>
+            </span>
+          </button>
+        </div>
       </div>
+    </section>
 
-      <div class="corner">XIAOWU STUDIO<br>SHANDONG · CHINA</div>
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-head">
+        <h2 id="work-title">主页应该展示“真实产出”，不是堆链接。</h2>
+        <p>这一版先把个人主页改成作品集入口：真人主视觉建立信任，真实项目截图证明能力，卡片点击后直接播放项目片段。</p>
+      </div>
+      <div class="work-list">
+        <article class="work-item">
+          <span class="work-tag">GAME / VISUAL</span>
+          <h3 class="work-title">鲲鹏游戏、剑阵、粒子和移动端交互</h3>
+          <span class="work-state">重点展示</span>
+        </article>
+        <article class="work-item">
+          <span class="work-tag">AI / OFFICE</span>
+          <h3 class="work-title">PPT、税务编码、微信助手和知识库自动化</h3>
+          <span class="work-state">可成交</span>
+        </article>
+        <article class="work-item" id="contact">
+          <span class="work-tag">INDUSTRY</span>
+          <h3 class="work-title">坤鹏水产、小凯维修和工厂现场经验</h3>
+          <span class="work-state">补照片</span>
+        </article>
+      </div>
     </section>
   </main>
 
-  <section class="story" aria-label="小伍工作室真实项目">
-    <article class="project project-wechat" id="wechat-ai" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">主推产品 / WECHAT AI COPILOT</div>
-          <h3>微信里的<br>第二大脑。</h3>
-          <p class="project-lead">不需要再翻几十个群。待办、晨报、日报、经营汇总和旧资料搜索，都可以直接在微信里问。它把散落在聊天记录里的信息，重新变成能够行动的答案。</p>
-          <ul class="project-facts">
-            <li>从海量群消息中提取销售、财务与生产重点</li>
-            <li>自动整理待办、晨报、日报和管理汇总</li>
-            <li>按一句话搜索旧聊天、图片、合同和历史文件</li>
-          </ul>
-          <button class="project-link wechat-play-link" type="button" data-wechat-video-control>
-            播放 42 秒电脑微信演示 <span>▶</span>
-          </button>
-          <span class="project-status">电脑端微信界面 · 自然旁白与轻配乐 · 视频使用脱敏演示数据</span>
+  <div class="player-modal" id="playerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+    <button class="modal-backdrop" type="button" data-close-player aria-label="关闭预览"></button>
+    <div class="player-shell">
+      <div class="player-head">
+        <div>
+          <h3 id="playerTitle">项目预览</h3>
+          <p id="playerNote">点击项目后播放对应片段。</p>
         </div>
-
-        <div class="wechat-demo-stage">
-          <figure class="wechat-video-shell" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-natural.mp4" poster="assets/story/wechat-ai-super-assistant-poster.jpg" controls playsinline preload="metadata" data-wechat-video data-narrative-video></video>
-            <figcaption>
-              <span><small>SCENE DEMO / 00:42</small><strong>999+ 消息 → 3 件重点</strong></span>
-              <em>电脑微信演示 · 数据已脱敏</em>
-            </figcaption>
-            <button class="wechat-video-button" type="button" aria-label="播放微信AI超级助手演示视频" data-wechat-video-control>
-              <span>▶</span><small>播放完整演示</small>
-            </button>
-          </figure>
-          <div class="wechat-capabilities" aria-hidden="true">
-            <span>待办</span><span>晨报</span><span>日报</span><span>汇总</span><span>资料搜索</span>
-          </div>
-        </div>
+        <button class="modal-close" type="button" data-close-player aria-label="关闭预览">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
-    </article>
-
-    <article class="project project-fitness" id="fitness-project" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">资料产品 / FITNESS MOTION LIBRARY</div>
-          <h3>1324 个健身动作，手机里直接查。</h3>
-          <p class="project-lead">把开源动作数据集整理成“小伍健身动作库”：中文动作名、中文步骤、肌群筛选、器械筛选、收藏和随机动作都能在手机上直接用。不是下载一堆文件，而是打开网页就能查动作、看演示。</p>
-          <ul class="project-facts">
-            <li>1324 个动作，覆盖胸、背、肩、腿、手臂、腰腹和有氧</li>
-            <li>动作 GIF 演示、180x180 缩略图、中文步骤和英文原名对照</li>
-            <li>支持手机添加到主屏幕，像一个轻量动作库 App</li>
-          </ul>
-          <div class="project-actions">
-            <a class="project-link" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noopener">
-              打开小伍健身动作库 <span>↗</span>
-            </a>
-            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/fitness/" target="_blank" rel="noopener">
-              备用公网入口 <span>↗</span>
-            </a>
-          </div>
-          <span class="project-status">已发布到 fitness.xiaowustudio.cn · 图片与动作演示使用真实上线素材</span>
-        </div>
-
-        <div class="fitness-stage" aria-label="小伍健身动作库真实截图和动作视频">
-          <figure class="fitness-interface" data-tilt>
-            <img src="assets/story/fitness-library-poster.png" alt="小伍健身动作库真实网页截图" loading="lazy">
-            <figcaption>真实页面截图 / 1324 个动作</figcaption>
-          </figure>
-
-          <figure class="media-shell fitness-action-video" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo.mp4" poster="assets/story/fitness-chest-poster.jpg" loop playsinline preload="metadata" data-narrative-video></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">动作演示</span><span>00:20</span></span>
-              <span class="media-name"><small>CHEST / BODYWEIGHT</small><strong>胸肌动作 GIF 转视频</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放健身动作演示视频" data-video-control>▶</button>
-          </figure>
-
-          <div class="fitness-metric-strip" aria-hidden="true">
-            <span><b>1324</b> 动作</span>
-            <span><b>10</b> 部位</span>
-            <span><b>PWA</b> 手机可装</span>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project project-gesture" id="gesture-project" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">浪漫实验 / HAND AS INTERFACE</div>
-          <h3>手，能不能成为一种新的鼠标？</h3>
-          <p class="project-lead">不点按钮。握拳、张手、转动手腕，画面就开始聚拢、旋转、散场。技术藏到背后，只留下人与画面之间最直觉的回应。</p>
-          <ul class="project-facts">
-            <li>两段均为本人实拍，不使用他人演示视频</li>
-            <li>手机、平板、电脑均可体验</li>
-            <li>一套手势语言，控制两种完全不同的粒子世界</li>
-          </ul>
-          <div class="project-actions">
-            <a class="project-link" href="https://sword.xiaowustudio.cn/" target="_blank" rel="noopener">
-              体验大庚剑阵 <span>↗</span>
-            </a>
-            <a class="project-link" href="https://xmas.xiaowustudio.cn/" target="_blank" rel="noopener">
-              体验手势圣诞树 <span>↗</span>
-            </a>
-          </div>
-          <span class="project-status">最新版已完成性能优化，支持摄像头手势与鼠标御剑</span>
-        </div>
-
-        <div class="media-deck" aria-label="手势项目本人实拍视频">
-          <figure class="media-shell media-a is-active" data-tilt data-gesture-card="sword">
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self-sound.mp4" poster="assets/story/gesture-sword-poster.jpg" loop playsinline preload="metadata" data-narrative-video data-gesture-video="sword"></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:20</span></span>
-              <span class="switch-hint">当前播放 · 剑阵原声</span>
-              <span class="media-name"><small>GESTURE / SWORD</small><strong>手势操控大庚剑阵</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放手势剑阵视频" data-video-control>▶</button>
-          </figure>
-
-          <figure class="media-shell media-b" data-tilt data-gesture-card="xmas">
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-xmas-self-sound.mp4" poster="assets/story/gesture-xmas-poster.jpg" loop playsinline preload="metadata" data-narrative-video data-gesture-video="xmas"></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">本人实拍</span><span>00:18</span></span>
-              <span class="switch-hint">鼠标停留 1 秒 · 切换圣诞音乐</span>
-              <span class="media-name"><small>GESTURE / XMAS</small><strong>左手出画，右手散场</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放手势圣诞树视频" data-video-control>▶</button>
-          </figure>
-        </div>
-      </div>
-    </article>
-
-    <article class="project project-tools" id="ppt-project" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">现场工具 / INSPECTION LOOP</div>
-          <h3>边拍边写，检查结束，PPT 也基本完成。</h3>
-          <p class="project-lead">现场拍照、自动拆页、逐项整改、重新成稿。它不是帮人做一张漂亮 PPT，而是把发现问题到完成整改的闭环真正跑通。</p>
-          <div class="process-line" aria-label="PPT工具工作流程">
-            <span>现场拍照</span>
-            <span>一键拆解</span>
-            <span>整改替换</span>
-            <span>自动成稿</span>
-          </div>
-          <span class="tool-callout">重点工具 · 手机打开即可现场使用</span>
-          <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/caresun-ppt-tool.html" target="_blank" rel="noopener">
-            打开 PPT 工具 <span>↗</span>
-          </a>
-          <span class="project-status">自然旁白演示：检查 → 整改 → 重新生成</span>
-        </div>
-
-        <div class="evidence-stage" aria-label="PPT工具真实演示和生成结果">
-          <figure class="media-shell evidence-video" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop-narrated.mp4" poster="assets/story/ppt-closed-loop-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">闭环实测</span><span>00:32</span></span>
-              <span class="media-name"><small>PHOTO → PPT</small><strong>边拍边写，一键拆解</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放PPT闭环演示视频" data-video-control>▶</button>
-          </figure>
-
-          <figure class="proof-sheet">
-            <img src="assets/story/ppt-result-real.jpg" alt="PPT工具生成的真实检查整改页面" loading="lazy">
-            <figcaption class="proof-label">真实生成结果 / 向下悬停查看</figcaption>
-          </figure>
-        </div>
-      </div>
-    </article>
-
-    <article class="project project-delivery" id="delivery-project" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">生产工具 / AI DELIVERY ASSISTANT</div>
-          <h3>供应商一句话报货，系统自动生成送货单。</h3>
-          <p class="project-lead">给经常收货、对账、导出表格的工厂场景做的工具。手机录音说清客户、商品、规格、数量和单价，AI 先生成草稿，人再确认入库，最后自动汇总订单和导出 Excel。</p>
-          <ul class="project-facts">
-            <li>语音录入 → AI 解析订单 → 人工确认 → 保存数据库</li>
-            <li>客户、商品、规格、单位和历史价格可持续积累</li>
-            <li>老板看板按日/周/月/年汇总，支持客户对账和 Excel 导出</li>
-          </ul>
-          <div class="project-actions">
-            <a class="project-link" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noopener">
-              打开 AI 送货助手 <span>↗</span>
-            </a>
-            <a class="project-link" href="https://wiujianzhong.github.io/kunpeng-yuechao/delivery/" target="_blank" rel="noopener">
-              查看静态演示页 <span>↗</span>
-            </a>
-          </div>
-          <span class="project-status">真实客户图文手册截图制作 · 手机开单与电脑看账双端适配</span>
-        </div>
-
-        <div class="delivery-stage" aria-label="AI送货助手两段功能演示视频">
-          <figure class="media-shell delivery-video-a" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-voice-order.mp4?v=delivery-yunxi-v3" poster="assets/story/delivery-voice-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">真实界面</span><span>00:10</span></span>
-              <span class="media-name"><small>VOICE → ORDER</small><strong>语音开单，确认后入库</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放AI送货助手语音开单演示视频" data-video-control>▶</button>
-          </figure>
-
-          <figure class="media-shell delivery-video-b" data-tilt>
-            <video src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3" poster="assets/story/delivery-report-poster.jpg" playsinline preload="metadata" data-narrative-video></video>
-            <figcaption>
-              <span class="media-topline"><span class="real-mark">真实汇总</span><span>00:10</span></span>
-              <span class="media-name"><small>ORDER → REPORT</small><strong>订单管理，客户对账</strong></span>
-            </figcaption>
-            <button class="media-control" type="button" aria-label="播放AI送货助手报表汇总演示视频" data-video-control>▶</button>
-          </figure>
-
-          <div class="delivery-chipline" aria-hidden="true">
-            <span>语音开单</span><span>人工确认</span><span>Excel 导出</span><span>客户汇总</span>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project project-tax" id="tax-project" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">数据工具 / 19-DIGIT MATCHING</div>
-          <h3>把杂乱清单，变成可核对的 19 位编码。</h3>
-          <p class="project-lead">批量匹配、候选比对、风险标记、导出复核。确定的交给系统自动跑，模糊的明确留下给人判断，不用“看起来像对的”结果糊弄过去。</p>
-          <ul class="project-facts">
-            <li>直接处理真实 Excel 商品清单</li>
-            <li>标记模糊项，保留人工确认入口</li>
-            <li>结果可追溯、可复核、可继续修改</li>
-          </ul>
-          <a class="project-link" href="https://swbm.xiaowustudio.cn" target="_blank" rel="noopener">
-            打开税务编码工具 <span>↗</span>
-          </a>
-          <span class="project-status">下方为真实匹配结果与使用反馈，不是效果图</span>
-        </div>
-
-        <div class="evidence-stage tax-stage" data-focus="result" aria-label="税务编码真实结果">
-          <figure class="proof-sheet">
-            <img src="assets/story/tax-result-real.jpg" alt="商品和服务税收分类编码真实匹配结果" loading="lazy">
-            <figcaption class="proof-label">真实 Excel 结果</figcaption>
-          </figure>
-          <figure class="proof-sheet">
-            <img src="assets/story/tax-proof-real.jpg" alt="税务编码工具实际使用反馈" loading="lazy">
-            <figcaption class="proof-label">实际使用反馈</figcaption>
-          </figure>
-          <div class="code-ribbon" aria-hidden="true">19·DIGIT·CODE</div>
-          <div class="tax-narration">
-            <audio src="assets/audio/tax-intro.m4a" preload="metadata" data-narrative-audio></audio>
-            <button type="button" data-tax-audio-control>
-              <span><small>13 秒真实案例讲解</small><strong data-tax-caption>先看左侧生成结果</strong></span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project project-capabilities" id="capabilities" data-reveal>
-      <div class="project-grid">
-        <div class="project-copy">
-          <div class="project-type">解决问题 / FROM PAIN TO SYSTEM</div>
-          <h3>把重复、麻烦、容易出错的事，做成能长期使用的系统。</h3>
-          <p class="project-lead">我不只做一个漂亮页面。更擅长从真实工作里的痛点出发，把流程拆开、把数据接起来，再做成普通人也能直接使用的软件和智能体。</p>
-          <ul class="project-facts">
-            <li>先理解现场怎么工作，再决定技术怎么做</li>
-            <li>能本地部署，也能接入网页、微信和现有流程</li>
-            <li>围绕实际结果持续修改，不交一次性演示</li>
-          </ul>
-          <audio src="assets/audio/xiaowu-capabilities-intro.m4a?v=20260703c" preload="metadata" data-capabilities-audio></audio>
-          <button class="capability-audio" type="button" data-capabilities-audio-control>
-            <span data-capabilities-audio-icon>▶</span>
-            <span><strong>听工作室介绍 · 12 秒</strong><small>点击播放，不自动打扰</small></span>
-          </button>
-        </div>
-
-        <div class="capability-board" aria-label="小伍工作室可解决的问题">
-          <article class="capability-card">
-            <b>01</b>
-            <h4>重复工作自动化</h4>
-            <p>把反复复制、整理、汇总、制表和生成文档的工作交给程序，减少人工操作和低级错误。</p>
-            <div class="capability-tags"><span>Excel 批处理</span><span>PPT 自动生成</span><span>报表汇总</span><span>资料整理</span></div>
-          </article>
-          <article class="capability-card">
-            <b>02</b>
-            <h4>工厂设备与管理软件</h4>
-            <p>围绕巡检、维修、异常、产线数据和管理提醒，做贴合现场的小工具、看板和业务系统。</p>
-            <div class="capability-tags"><span>设备巡检</span><span>维修台账</span><span>异常闭环</span><span>经营看板</span></div>
-          </article>
-          <article class="capability-card">
-            <b>03</b>
-            <h4>企业小系统</h4>
-            <p>把散落在表格、聊天和纸面上的流程收进一个清晰入口，让查询、审批、留痕和复核更简单。</p>
-            <div class="capability-tags"><span>税务编码</span><span>数据查询</span><span>流程审批</span><span>内部协同</span></div>
-          </article>
-          <article class="capability-card">
-            <b>04</b>
-            <h4>智能体与知识库部署</h4>
-            <p>让 AI 读懂企业自己的资料和工作记录，提供微信助手、内部问答、自动提醒和本地知识库。</p>
-            <div class="capability-tags"><span>微信 AI 助手</span><span>企业知识库</span><span>本地部署</span><span>自动提醒</span></div>
-          </article>
-        </div>
-      </div>
-    </article>
-
-    <footer class="closing" id="contact" data-reveal>
-      <div class="contact-layout">
-        <div class="contact-copy">
-          <p>CONTACT / 联系小伍工作室</p>
-          <h2>有麻烦事，<br>我们把它做成工具。</h2>
-          <span>重复劳动、工厂管理软件、业务小系统、智能体和企业知识库，都可以先聊清楚问题，再决定怎么做。</span>
-          <a class="contact-phone" href="tel:19009925522">
-            <strong>190 0992 5522</strong>
-            <small>电话 / 微信同号</small>
-          </a>
-        </div>
-        <figure class="contact-qr">
-          <img src="assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy">
-          <figcaption>扫码添加微信 · 伍建忠</figcaption>
-        </figure>
-      </div>
-    </footer>
-  </section>
-
-  <button class="page-scroll-hint" id="pageScrollHint" type="button" aria-label="向下滑动一屏">
-    <span class="scroll-chevrons" aria-hidden="true"></span>
-    <span>向下滑动</span>
-  </button>
-
-  <aside class="contact-float" aria-label="快捷联系小伍工作室">
-    <button class="contact-float-trigger" id="contactFloatTrigger" type="button"
-            aria-expanded="false" aria-controls="contactPopover">
-      联系我
-    </button>
-    <div class="contact-popover" id="contactPopover" hidden>
-      <small>CONTACT / 小伍工作室</small>
-      <a href="tel:19009925522">
-        <strong>电话</strong>
-        <span>190 0992 5522</span>
-      </a>
-      <button type="button" id="copyWechat" data-wechat="19009925522">
-        <strong>微信</strong>
-        <span id="copyWechatStatus">19009925522 · 点击复制</span>
-      </button>
+      <div class="media-frame" id="mediaFrame"></div>
     </div>
-  </aside>
+  </div>
 
-  <script src="assets/vendor/three.min.js"></script>
+  <script src="assets/fluid/fluid-backdrop.js"></script>
   <script>
-    const world = document.querySelector("#world");
-    const heroCopy = document.querySelector("#heroCopy");
-    const chapterPreview = document.querySelector("#chapterPreview");
-    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = matchMedia("(pointer: coarse)").matches;
+    const modal = document.getElementById("playerModal");
+    const mediaFrame = document.getElementById("mediaFrame");
+    const playerTitle = document.getElementById("playerTitle");
+    const playerNote = document.getElementById("playerNote");
 
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050705, 0.055);
+    function openPlayer(card) {
+      const title = card.dataset.title;
+      const note = card.dataset.note;
+      const poster = card.dataset.poster;
+      const video = card.dataset.video;
 
-    const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 15);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: !coarse, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.35 : 1.8));
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    world.prepend(renderer.domElement);
-
-    const root = new THREE.Group();
-    root.position.x = innerWidth > 820 ? 2.8 : 0;
-    scene.add(root);
-
-    const particleCount = 0;
-    const drift = new Float32Array(particleCount * 3);
-    const sword = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
-    const randoms = new Float32Array(particleCount);
-    const gold = new THREE.Color(0xe7c66b);
-    const jade = new THREE.Color(0x48d9a3);
-    const pale = new THREE.Color(0xf3ecd3);
-    const tempColor = new THREE.Color();
-
-    function pointInSword(i) {
-      const p = i / particleCount;
-      let x;
-      let y;
-      let z;
-
-      if (p < .78) {
-        const row = Math.min(2, Math.floor(p / .26));
-        const rowT = (p - row * .26) / .26;
-        x = THREE.MathUtils.lerp(-2.45, 2.45, rowT) + THREE.MathUtils.randFloatSpread(.16);
-        y = 1.55 - row * 1.55 + THREE.MathUtils.randFloatSpread(.16);
-        z = THREE.MathUtils.randFloatSpread(.3);
-      } else {
-        const a = Math.random() * Math.PI * 2;
-        const r = THREE.MathUtils.randFloat(3.7, 5.1);
-        x = Math.cos(a) * r;
-        y = Math.sin(a) * r * .62;
-        z = THREE.MathUtils.randFloatSpread(.65);
-      }
-      return [x, y, z];
+      playerTitle.textContent = title;
+      playerNote.textContent = note;
+      mediaFrame.innerHTML = video
+        ? `<video src="${video}" poster="${poster}" controls autoplay muted playsinline></video>`
+        : `<img src="${poster}" alt="${title}预览图">`;
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+      const videoElement = mediaFrame.querySelector("video");
+      if (videoElement) videoElement.play().catch(() => {});
     }
 
-    for (let i = 0; i < particleCount; i++) {
-      const i3 = i * 3;
-      const radius = THREE.MathUtils.randFloat(2.8, 7.7);
-      const angle = Math.random() * Math.PI * 2;
-      const band = Math.random() - .5;
-
-      drift[i3] = Math.cos(angle) * radius + THREE.MathUtils.randFloatSpread(1.8);
-      drift[i3 + 1] = Math.sin(angle) * radius * .66 + band * 3.2;
-      drift[i3 + 2] = THREE.MathUtils.randFloatSpread(6.5) - radius * .07;
-
-      const s = pointInSword(i);
-      sword[i3] = s[0];
-      sword[i3 + 1] = s[1];
-      sword[i3 + 2] = s[2];
-
-      tempColor.copy(Math.random() > .42 ? gold : jade);
-      if (Math.random() > .92) tempColor.copy(pale);
-      tempColor.multiplyScalar(THREE.MathUtils.randFloat(.62, 1.08));
-      colors[i3] = tempColor.r;
-      colors[i3 + 1] = tempColor.g;
-      colors[i3 + 2] = tempColor.b;
-      sizes[i] = THREE.MathUtils.randFloat(.65, 1.85);
-      randoms[i] = Math.random();
+    function closePlayer() {
+      const video = mediaFrame.querySelector("video");
+      if (video) video.pause();
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
+      mediaFrame.innerHTML = "";
     }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(drift.slice(), 3));
-    geometry.setAttribute("aDrift", new THREE.BufferAttribute(drift, 3));
-    geometry.setAttribute("aSword", new THREE.BufferAttribute(sword, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
-    geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
-
-    const material = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexColors: true,
-      uniforms: {
-        uTime: { value: 0 },
-        uForm: { value: 0 },
-        uScroll: { value: 0 },
-        uPixelRatio: { value: renderer.getPixelRatio() }
-      },
-      vertexShader: `
-        uniform float uTime;
-        uniform float uForm;
-        uniform float uScroll;
-        uniform float uPixelRatio;
-        attribute vec3 aDrift;
-        attribute vec3 aSword;
-        attribute float aSize;
-        attribute float aRandom;
-        varying vec3 vColor;
-        varying float vAlpha;
-
-        float ease(float x) { return x * x * (3.0 - 2.0 * x); }
-
-        void main() {
-          float form = ease(uForm);
-          vec3 restless = aDrift;
-          restless.x += sin(uTime * (.14 + aRandom * .25) + aDrift.y) * (.18 + aRandom * .18);
-          restless.y += cos(uTime * (.12 + aRandom * .18) + aDrift.x) * .16;
-          restless.z += sin(uTime * .22 + aRandom * 9.0) * .16;
-
-          vec3 formed = aSword;
-          formed.x += sin(uTime * 1.6 + aSword.y * 3.0 + aRandom * 4.0) * .025 * (1.0 - form);
-          formed.z += sin(uTime + aRandom * 12.0) * .045;
-
-          vec3 pos = mix(restless, formed, form);
-          float tunnel = smoothstep(.2, 1.0, uScroll);
-          pos.z += tunnel * (aRandom * 10.0 - 3.0);
-          pos.xy *= mix(1.0, .28 + aRandom * 1.9, tunnel);
-
-          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          gl_PointSize = aSize * uPixelRatio * (42.0 / -mvPosition.z) * mix(1.5, 2.35, form);
-          vColor = color;
-          vAlpha = mix(.28 + aRandom * .52, .7 + aRandom * .3, form);
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
-        void main() {
-          vec2 uv = gl_PointCoord - .5;
-          float d = length(uv);
-          if (d > .5) discard;
-          float core = smoothstep(.5, 0.0, d);
-          float glow = pow(core, 2.2);
-          gl_FragColor = vec4(vColor * (1.0 + glow * .8), vAlpha * core);
-        }
-      `
+    document.querySelectorAll(".case-card").forEach((card) => {
+      card.addEventListener("click", () => openPlayer(card));
     });
 
-    const particles = new THREE.Points(geometry, material);
-    root.add(particles);
-
-    const swordShape = new THREE.Shape();
-    swordShape.moveTo(0, 4.05);
-    swordShape.lineTo(.46, 2.72);
-    swordShape.lineTo(.36, -2.7);
-    swordShape.lineTo(1.65, -3.03);
-    swordShape.lineTo(.42, -3.38);
-    swordShape.lineTo(.22, -4.82);
-    swordShape.lineTo(-.22, -4.82);
-    swordShape.lineTo(-.42, -3.38);
-    swordShape.lineTo(-1.65, -3.03);
-    swordShape.lineTo(-.36, -2.7);
-    swordShape.lineTo(-.46, 2.72);
-    swordShape.closePath();
-
-    const swordGeometry = new THREE.ShapeGeometry(swordShape);
-    const swordSoul = new THREE.Mesh(swordGeometry, new THREE.MeshBasicMaterial({
-      color: 0xe7c66b,
-      transparent: true,
-      opacity: 0,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      side: THREE.DoubleSide
-    }));
-    swordSoul.position.z = -.16;
-    swordSoul.visible = false;
-    root.add(swordSoul);
-
-    const swordEdge = new THREE.LineSegments(
-      new THREE.EdgesGeometry(swordGeometry),
-      new THREE.LineBasicMaterial({
-        color: 0x9fffd9,
-        transparent: true,
-        opacity: 0,
-        blending: THREE.AdditiveBlending
-      })
-    );
-    swordEdge.position.z = -.08;
-    swordEdge.visible = false;
-    root.add(swordEdge);
-
-    const haloMaterial = new THREE.MeshBasicMaterial({
-      color: 0xe7c66b,
-      transparent: true,
-      opacity: .08,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      side: THREE.DoubleSide
-    });
-
-    const halo = new THREE.Mesh(new THREE.TorusGeometry(4.1, .012, 4, 144), haloMaterial);
-    halo.rotation.x = 1.16;
-    halo.rotation.z = -.25;
-    root.add(halo);
-
-    const haloTwo = new THREE.Mesh(new THREE.TorusGeometry(5.2, .008, 4, 144), haloMaterial.clone());
-    haloTwo.rotation.set(1.32, .3, .6);
-    haloTwo.material.color.set(0x48d9a3);
-    haloTwo.material.opacity = .045;
-    root.add(haloTwo);
-
-    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-    let form = 0;
-    let scrollProgress = 0;
-    const phoneSim = document.querySelector("#phoneSim");
-    const phoneList = phoneSim.querySelector(".wechat-list");
-    const phoneTouch = phoneSim.querySelector(".phone-touch");
-    const phoneChatTitle = document.querySelector("#phoneChatTitle");
-    const phoneChatContent = document.querySelector("#phoneChatContent");
-    const heroPhonePlay = document.querySelector("#heroPhonePlay");
-    const heroPhonePlayLabel = document.querySelector("#heroPhonePlayLabel");
-    const heroNotifyAudio = document.querySelector("#heroNotifyAudio");
-    const phoneRows = [...phoneSim.querySelectorAll("[data-phone-row]")];
-    const unreadBadges = [...phoneSim.querySelectorAll(".wechat-unread[data-target]")];
-    const phoneStories = [
-      {
-        row: "work",
-        title: "华东销售群",
-        messages: [
-          ["刘经理", "今天订单和回款情况谁汇总一下？"],
-          ["销售一部", "上午新增 68 单，金额 12.4 万。"],
-          ["销售二部", "新增 41 单，重点客户追加 18 单。"],
-          ["财务小周", "两笔客户回款暂时还没有到账。"],
-          ["王主管", "3 个异常订单缺少价格确认。"],
-          ["仓储", "下午第一批货可以按时发出。"],
-          ["刘经理", "异常订单两点前给我最终结果。"],
-          ["我", "收到，我会处理。", true]
-        ]
-      },
-      {
-        row: "school",
-        title: "一年级三班家长群",
-        messages: [
-          ["班主任", "各位家长请留意明天的安排。"],
-          ["班主任", "明天全班统一穿校服。"],
-          ["数学老师", "口算练习完成第 18 页。"],
-          ["语文老师", "今晚阅读课文并签字。"],
-          ["美术老师", "手工作业今晚 19:00 前上传。"],
-          ["家委会", "周五放学时间提前十分钟。"],
-          ["班主任", "收到请在群里回复一下。"],
-          ["我", "收到，我会安排。", true]
-        ]
-      },
-      {
-        row: "family",
-        title: "媳妇",
-        messages: [
-          ["媳妇", "下班记得买牛奶和鸡蛋。"],
-          ["媳妇", "儿童牙膏也快用完了。"],
-          ["媳妇", "丰巢里有三个快递待取。"],
-          ["媳妇", "最早那个今晚开始收费。"],
-          ["媳妇", "周六中午家里有家宴。"],
-          ["媳妇", "下午别忘了接孩子。"],
-          ["媳妇", "物业费这周也到期了。"],
-          ["我", "收到，我都会处理。", true]
-        ]
-      }
-    ];
-    let storyTimers = [];
-
-    function queueStory(callback, delay) {
-      const timer = setTimeout(callback, delay);
-      storyTimers.push(timer);
-      return timer;
-    }
-
-    function playMessageDing() {
-      const sound = heroNotifyAudio.cloneNode();
-      sound.volume = .82;
-      sound.play().catch(() => {});
-    }
-
-    function animateUnreadCounts() {
-      unreadBadges.forEach((badge) => {
-        badge.textContent = "0";
-        badge.classList.remove("is-visible");
-      });
-      for (let step = 1; step <= 8; step++) {
-        queueStory(() => {
-          const progress = step / 8;
-          unreadBadges.forEach((badge) => {
-            const target = Number(badge.dataset.target);
-            badge.textContent = String(Math.round(target * progress));
-            badge.classList.add("is-visible");
-          });
-          playMessageDing();
-        }, step * 175);
-      }
-    }
-
-    function showPhoneStory(story, index) {
-      phoneRows.forEach((row) => row.classList.toggle("is-active", row.dataset.phoneRow === story.row));
-      phoneChatTitle.textContent = story.title;
-      phoneChatContent.replaceChildren();
-      story.messages.forEach(([sender, text, isMe]) => {
-        if (!isMe) {
-          const senderLabel = document.createElement("div");
-          senderLabel.className = "phone-sender";
-          senderLabel.textContent = sender;
-          phoneChatContent.append(senderLabel);
-        }
-        const bubble = document.createElement("div");
-        bubble.className = `phone-bubble${isMe ? " me" : ""}`;
-        bubble.textContent = text;
-        phoneChatContent.append(bubble);
-      });
-      phoneChatContent.scrollTop = 0;
-      phoneSim.classList.remove("is-chat");
-      phoneList.scrollTo({ top: 0, behavior: "smooth" });
-      phoneTouch.style.top = `${110 + index * 57}px`;
-      phoneTouch.classList.add("is-tapping");
-      playMessageDing();
-      queueStory(() => {
-        phoneTouch.classList.remove("is-tapping");
-        phoneSim.classList.add("is-chat");
-      }, 220);
-      queueStory(() => {
-        phoneChatContent.scrollTo({ top: phoneChatContent.scrollHeight, behavior: "smooth" });
-      }, 560);
-      queueStory(() => phoneSim.classList.remove("is-chat"), 1950);
-    }
-
-    function startHeroStory() {
-      storyTimers.forEach(clearTimeout);
-      storyTimers = [];
-      world.classList.add("is-phone-active");
-      world.classList.add("is-story-playing");
-      phoneSim.classList.add("is-zoomed");
-      phoneSim.classList.remove("is-chat");
-      phoneRows.forEach((row) => row.classList.remove("is-active"));
-      unreadBadges.forEach((badge) => {
-        badge.textContent = "0";
-        badge.classList.remove("is-visible");
-      });
-      phoneList.scrollTop = 0;
-      heroPhonePlay.disabled = true;
-      heroPhonePlay.classList.add("is-running");
-      heroPhonePlayLabel.textContent = "正在播放微信消息";
-      queueStory(animateUnreadCounts, 1800);
-      phoneStories.forEach((story, index) => {
-        queueStory(() => showPhoneStory(story, index), 3900 + index * 2700);
-      });
-      queueStory(() => {
-        phoneSim.classList.remove("is-chat");
-        phoneSim.classList.remove("is-zoomed");
-        world.classList.remove("is-story-playing");
-        phoneRows.forEach((row) => row.classList.remove("is-active"));
-        unreadBadges.forEach((badge) => {
-          badge.textContent = "0";
-          badge.classList.remove("is-visible");
-        });
-        heroPhonePlay.disabled = false;
-        heroPhonePlay.classList.remove("is-running");
-        heroPhonePlayLabel.textContent = "↻ 再播放一次";
-      }, 12400);
-    }
-
-    function stopHeroStory() {
-      storyTimers.forEach(clearTimeout);
-      storyTimers = [];
-      phoneSim.classList.remove("is-chat", "is-zoomed");
-      world.classList.remove("is-story-playing");
-      heroPhonePlay.disabled = false;
-      heroPhonePlay.classList.remove("is-running");
-      heroPhonePlayLabel.textContent = "▶ 点击播放微信消息";
-    }
-
-    function updatePointer(event) {
-      pointer.tx = (event.clientX / innerWidth - .5) * 2;
-      pointer.ty = (event.clientY / innerHeight - .5) * -2;
-    }
-
-    world.addEventListener("pointermove", updatePointer, { passive: true });
-
-    heroPhonePlay.addEventListener("click", (event) => {
-      event.stopPropagation();
-      window.xiaowuAudioUnlocked = true;
-      window.dispatchEvent(new Event("xiaowu:hero-audio"));
-      startHeroStory();
-      playMessageDing();
-    });
-
-    addEventListener("pointerdown", (event) => {
-      window.xiaowuAudioUnlocked = true;
-      if (!event.target.closest("[data-wechat-video-control], [data-video-control], [data-tax-audio-control], [data-capabilities-audio-control], #heroPhonePlay")) {
-        window.dispatchEvent(new Event("xiaowu:audio-unlocked"));
-      }
-    }, { once: true, passive: true });
-    window.addEventListener("xiaowu:narrative-play", () => {
-      stopHeroStory();
-    });
-
-    stopHeroStory();
-
-    function onScroll() {
-      const rect = document.querySelector(".stage").getBoundingClientRect();
-      const distance = Math.max(1, rect.height - innerHeight);
-      scrollProgress = THREE.MathUtils.clamp(-rect.top / distance, 0, 1);
-      const reveal = THREE.MathUtils.smoothstep(scrollProgress, .42, .86);
-      heroCopy.style.opacity = String(1 - THREE.MathUtils.smoothstep(scrollProgress, .08, .42));
-      heroCopy.style.transform = innerWidth <= 720
-        ? `translateY(-${scrollProgress * 34}px)`
-        : `translateY(calc(-46% - ${scrollProgress * 34}px))`;
-      chapterPreview.style.opacity = String(reveal);
-      chapterPreview.style.transform = `translateY(${(1 - reveal) * 54}px)`;
-    }
-
-    function resize() {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.35 : 1.8));
-      renderer.setSize(innerWidth, innerHeight);
-      material.uniforms.uPixelRatio.value = renderer.getPixelRatio();
-      root.position.x = innerWidth > 820 ? 2.8 : 0;
-    }
-
-    addEventListener("scroll", onScroll, { passive: true });
-    addEventListener("resize", resize);
-    onScroll();
-
-    const clock = new THREE.Clock();
-    function render() {
-      const elapsed = clock.getElapsedTime();
-      pointer.x += (pointer.tx - pointer.x) * .085;
-      pointer.y += (pointer.ty - pointer.y) * .085;
-      form += (0 - form) * .032;
-
-      material.uniforms.uTime.value = elapsed;
-      material.uniforms.uForm.value = form;
-      material.uniforms.uScroll.value += (scrollProgress - material.uniforms.uScroll.value) * .045;
-
-      root.rotation.y = pointer.x * .38 + Math.sin(elapsed * .09) * .04;
-      root.rotation.x = pointer.y * .16;
-      particles.rotation.z = Math.sin(elapsed * .08) * .025;
-      halo.rotation.z += .00055;
-      haloTwo.rotation.z -= .00038;
-      halo.material.opacity = .035 + form * .17;
-      haloTwo.material.opacity = .025 + form * .075;
-      swordSoul.material.opacity = 0;
-      swordEdge.material.opacity = 0;
-
-      camera.position.x += (pointer.x * .24 - camera.position.x) * .025;
-      camera.position.y += (pointer.y * .13 - camera.position.y) * .025;
-      camera.lookAt(0, 0, 0);
-
-      renderer.render(scene, camera);
-    }
-    render();
-  </script>
-  <script>
-    const wechatVideo = document.querySelector("[data-wechat-video]");
-    const wechatVideoShell = wechatVideo.closest(".wechat-video-shell");
-    const revealTargets = document.querySelectorAll("[data-reveal]");
-    const narrativeVideos = [...document.querySelectorAll("[data-narrative-video]")];
-    const standardNarrativeVideos = narrativeVideos.filter((video) => !video.matches("[data-gesture-video]"));
-    const gestureVideos = [...document.querySelectorAll("[data-gesture-video]")];
-    const gestureProject = document.querySelector("#gesture-project");
-    const gestureCards = [...document.querySelectorAll("[data-gesture-card]")];
-    const taxProject = document.querySelector("#tax-project");
-    const taxStage = document.querySelector(".tax-stage");
-    const taxAudio = document.querySelector("[data-narrative-audio]");
-    const taxAudioControl = document.querySelector("[data-tax-audio-control]");
-    const taxCaption = document.querySelector("[data-tax-caption]");
-    const capabilitiesAudio = document.querySelector("[data-capabilities-audio]");
-    const capabilitiesAudioControl = document.querySelector("[data-capabilities-audio-control]");
-    const capabilitiesAudioIcon = document.querySelector("[data-capabilities-audio-icon]");
-    const autoNarrativeMedia = [...narrativeVideos, taxAudio];
-    const narrativeMedia = [...autoNarrativeMedia, capabilitiesAudio];
-    const narrativeVisibility = new Map(autoNarrativeMedia.map((media) => [media, 0]));
-    let capabilitiesManualPlayback = false;
-    let activeGestureVideo = gestureVideos.find((video) => video.dataset.gestureVideo === "sword");
-    let gestureSectionRatio = 0;
-    let gestureHoverTimer = null;
-    let gestureReturnTimer = null;
-
-    const pauseNarrativesExcept = (activeMedia = null) => {
-      narrativeMedia.forEach((media) => {
-        if (media !== activeMedia && !media.paused) media.pause();
-      });
-    };
-
-    const playNarrative = async (media) => {
-      if (!media || !window.xiaowuAudioUnlocked) return;
-      if (media !== capabilitiesAudio) capabilitiesManualPlayback = false;
-      pauseNarrativesExcept(media);
-      window.dispatchEvent(new Event("xiaowu:narrative-play"));
-      media.muted = false;
-      media.volume = .96;
-      if (media.ended) media.currentTime = 0;
-      await media.play().catch(() => {});
-    };
-
-    const playMostVisibleNarrative = () => {
-      if (capabilitiesManualPlayback) return;
-      const visible = [...narrativeVisibility.entries()]
-        .filter(([, ratio]) => ratio >= .42)
-        .sort((a, b) => b[1] - a[1]);
-      if (!visible.length) {
-        pauseNarrativesExcept();
-        return;
-      }
-      playNarrative(visible[0][0]);
-    };
-
-    const setGestureActive = (video, restart = false) => {
-      if (!video) return;
-      activeGestureVideo = video;
-      if (restart) video.currentTime = 0;
-      gestureVideos.forEach((item) => {
-        narrativeVisibility.set(item, item === video ? gestureSectionRatio : 0);
-      });
-      gestureCards.forEach((card) => {
-        const active = card.querySelector("video") === video;
-        const mode = card.dataset.gestureCard;
-        card.classList.toggle("is-active", active);
-        const hint = card.querySelector(".switch-hint");
-        if (active) {
-          hint.textContent = mode === "sword" ? "当前播放 · 剑阵原声" : "当前播放 · 圣诞音乐";
-        } else {
-          hint.textContent = mode === "xmas" ? "鼠标停留 1 秒 · 切换圣诞音乐" : "移入即可切回剑阵原声";
-        }
-      });
-      playMostVisibleNarrative();
-    };
-
-    const syncWechatVideo = () => {
-      const playing = !wechatVideo.paused;
-      wechatVideoShell.classList.toggle("is-playing", playing);
-      document.querySelectorAll("[data-wechat-video-control]").forEach((control) => {
-        control.setAttribute("aria-label", playing ? "暂停微信AI超级助手演示视频" : "播放微信AI超级助手演示视频");
-      });
-    };
-
-    document.querySelectorAll("[data-wechat-video-control]").forEach((control) => {
-      control.addEventListener("click", async () => {
-        if (wechatVideo.paused) {
-          window.xiaowuAudioUnlocked = true;
-          await playNarrative(wechatVideo);
-        } else {
-          wechatVideo.pause();
-        }
-      });
-    });
-
-    wechatVideo.addEventListener("click", () => {
-      if (!wechatVideo.paused) wechatVideo.pause();
-    });
-    wechatVideo.addEventListener("play", syncWechatVideo);
-    wechatVideo.addEventListener("pause", syncWechatVideo);
-    wechatVideo.addEventListener("ended", syncWechatVideo);
-
-    const setVideoState = (video) => {
-      const control = video.closest(".media-shell")?.querySelector("[data-video-control]");
-      if (!control) return;
-      const playing = !video.paused;
-      control.textContent = playing ? "Ⅱ" : "▶";
-      control.setAttribute("aria-label", playing ? "暂停视频" : "播放视频");
-    };
-
-    const syncTaxAudioState = () => {
-      const playing = !taxAudio.paused;
-      taxAudioControl.classList.toggle("is-playing", playing);
-      taxAudioControl.setAttribute("aria-label", playing ? "暂停税务编码案例讲解" : "播放税务编码案例讲解");
-    };
-
-    taxAudio.addEventListener("timeupdate", () => {
-      const showingFeedback = taxAudio.currentTime >= 7.25;
-      taxStage.dataset.focus = showingFeedback ? "feedback" : "result";
-      taxCaption.textContent = showingFeedback ? "再看右侧客户真实反馈" : "先看左侧生成结果";
-    });
-    taxAudio.addEventListener("play", syncTaxAudioState);
-    taxAudio.addEventListener("pause", syncTaxAudioState);
-    taxAudio.addEventListener("ended", syncTaxAudioState);
-
-    taxAudioControl.addEventListener("click", () => {
-      window.xiaowuAudioUnlocked = true;
-      if (taxAudio.paused) {
-        if (taxAudio.ended) taxAudio.currentTime = 0;
-        playNarrative(taxAudio);
-      } else {
-        taxAudio.pause();
-      }
-    });
-
-    const syncCapabilitiesAudioState = () => {
-      const playing = !capabilitiesAudio.paused;
-      capabilitiesAudioControl.classList.toggle("is-playing", playing);
-      capabilitiesAudioControl.setAttribute("aria-label", playing ? "暂停工作室能力介绍" : "播放工作室能力介绍");
-      capabilitiesAudioIcon.textContent = playing ? "Ⅱ" : "▶";
-    };
-
-    capabilitiesAudio.addEventListener("play", syncCapabilitiesAudioState);
-    capabilitiesAudio.addEventListener("pause", () => {
-      capabilitiesManualPlayback = false;
-      syncCapabilitiesAudioState();
-    });
-    capabilitiesAudio.addEventListener("ended", () => {
-      capabilitiesManualPlayback = false;
-      syncCapabilitiesAudioState();
-    });
-
-    capabilitiesAudioControl.addEventListener("click", () => {
-      window.xiaowuAudioUnlocked = true;
-      if (capabilitiesAudio.paused) {
-        if (capabilitiesAudio.ended) capabilitiesAudio.currentTime = 0;
-        capabilitiesManualPlayback = true;
-        pauseNarrativesExcept(capabilitiesAudio);
-        window.dispatchEvent(new Event("xiaowu:narrative-play"));
-        capabilitiesAudio.muted = false;
-        capabilitiesAudio.volume = .72;
-        capabilitiesAudio.play().catch((error) => {
-          capabilitiesManualPlayback = false;
-          console.warn("工作室语音播放失败：", error.name);
-        });
-      } else {
-        capabilitiesManualPlayback = false;
-        capabilitiesAudio.pause();
-      }
-    });
-
-    const xmasCard = document.querySelector('[data-gesture-card="xmas"]');
-    const swordCard = document.querySelector('[data-gesture-card="sword"]');
-
-    xmasCard.addEventListener("pointerenter", () => {
-      clearTimeout(gestureReturnTimer);
-      xmasCard.classList.add("is-arming");
-      gestureHoverTimer = setTimeout(() => {
-        xmasCard.classList.remove("is-arming");
-        setGestureActive(xmasCard.querySelector("video"), true);
-      }, 1000);
-    });
-
-    xmasCard.addEventListener("pointerleave", () => {
-      clearTimeout(gestureHoverTimer);
-      xmasCard.classList.remove("is-arming");
-      if (activeGestureVideo === xmasCard.querySelector("video")) {
-        gestureReturnTimer = setTimeout(() => setGestureActive(swordCard.querySelector("video"), true), 350);
-      }
-    });
-
-    swordCard.addEventListener("pointerenter", () => {
-      clearTimeout(gestureHoverTimer);
-      clearTimeout(gestureReturnTimer);
-      if (activeGestureVideo !== swordCard.querySelector("video")) {
-        setGestureActive(swordCard.querySelector("video"), true);
-      }
-    });
-
-    if ("IntersectionObserver" in window) {
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          revealObserver.unobserve(entry.target);
-        });
-      }, { threshold: .12 });
-
-      revealTargets.forEach((target) => revealObserver.observe(target));
-
-      const narrativeObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          narrativeVisibility.set(entry.target, entry.intersectionRatio);
-        });
-        playMostVisibleNarrative();
-      }, { threshold: [0, .2, .42, .6, .8, 1] });
-
-      standardNarrativeVideos.forEach((video) => narrativeObserver.observe(video));
-
-      const taxObserver = new IntersectionObserver((entries) => {
-        const entry = entries[0];
-        narrativeVisibility.set(taxAudio, entry.intersectionRatio);
-        playMostVisibleNarrative();
-      }, { threshold: [0, .2, .42, .6, .8] });
-      taxObserver.observe(taxProject);
-
-      const gestureObserver = new IntersectionObserver((entries) => {
-        gestureSectionRatio = entries[0].intersectionRatio;
-        gestureVideos.forEach((video) => {
-          narrativeVisibility.set(video, video === activeGestureVideo ? gestureSectionRatio : 0);
-        });
-        playMostVisibleNarrative();
-      }, { threshold: [0, .2, .42, .6, .8] });
-      gestureObserver.observe(gestureProject);
-    } else {
-      revealTargets.forEach((target) => target.classList.add("is-visible"));
-    }
-
-    window.addEventListener("xiaowu:audio-unlocked", playMostVisibleNarrative);
-    window.addEventListener("xiaowu:hero-audio", () => pauseNarrativesExcept());
-
-    narrativeMedia.forEach((media) => {
-      media.addEventListener("play", () => {
-        pauseNarrativesExcept(media);
-        setVideoState(media);
-      });
-      media.addEventListener("pause", () => setVideoState(media));
-      media.addEventListener("ended", () => setVideoState(media));
-    });
-
-    document.querySelectorAll("[data-video-control]").forEach((control) => {
-      control.addEventListener("click", () => {
-        const video = control.closest(".media-shell").querySelector("video");
-        if (video.matches("[data-gesture-video]")) {
-          window.xiaowuAudioUnlocked = true;
-          if (video === activeGestureVideo && !video.paused) {
-            video.pause();
-          } else {
-            setGestureActive(video, true);
-            playNarrative(video);
-          }
-          return;
-        }
-        if (video.paused) {
-          if (video.matches("[data-narrative-video]")) {
-            window.xiaowuAudioUnlocked = true;
-            playNarrative(video);
-          } else {
-            video.play().catch(() => setVideoState(video));
-          }
-        } else {
-          video.pause();
-        }
-      });
-    });
-
-    const pageScrollHint = document.querySelector("#pageScrollHint");
-    const contactFloat = document.querySelector(".contact-float");
-    const contactFloatTrigger = document.querySelector("#contactFloatTrigger");
-    const contactPopover = document.querySelector("#contactPopover");
-    const copyWechat = document.querySelector("#copyWechat");
-    const copyWechatStatus = document.querySelector("#copyWechatStatus");
-
-    const syncScrollHint = () => {
-      const nearBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 120;
-      pageScrollHint.classList.toggle("is-hidden", nearBottom);
-    };
-
-    pageScrollHint.addEventListener("click", () => {
-      scrollBy({ top: Math.round(innerHeight * .82), behavior: "smooth" });
-    });
-
-    contactFloatTrigger.addEventListener("click", () => {
-      const willOpen = contactPopover.hidden;
-      contactPopover.hidden = !willOpen;
-      contactFloatTrigger.setAttribute("aria-expanded", String(willOpen));
-    });
-
-    document.addEventListener("pointerdown", (event) => {
-      if (contactPopover.hidden || contactFloat.contains(event.target)) return;
-      contactPopover.hidden = true;
-      contactFloatTrigger.setAttribute("aria-expanded", "false");
+    document.querySelectorAll("[data-close-player]").forEach((button) => {
+      button.addEventListener("click", closePlayer);
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || contactPopover.hidden) return;
-      contactPopover.hidden = true;
-      contactFloatTrigger.setAttribute("aria-expanded", "false");
-      contactFloatTrigger.focus();
+      if (event.key === "Escape" && modal.getAttribute("aria-hidden") === "false") closePlayer();
     });
-
-    copyWechat.addEventListener("click", async () => {
-      const wechat = copyWechat.dataset.wechat;
-      try {
-        await navigator.clipboard.writeText(wechat);
-        copyWechatStatus.textContent = "已复制微信号";
-      } catch {
-        copyWechatStatus.textContent = `微信号：${wechat}`;
-      }
-      setTimeout(() => {
-        copyWechatStatus.textContent = `${wechat} · 点击复制`;
-      }, 1800);
-    });
-
-    addEventListener("scroll", syncScrollHint, { passive: true });
-    syncScrollHint();
-
-    const aiCursor = document.querySelector("#aiCursor");
-    const finePointer = matchMedia("(pointer: fine)").matches;
-
-    if (finePointer) {
-      document.body.classList.add("cursor-ready");
-
-      addEventListener("pointermove", (event) => {
-        aiCursor.style.left = `${event.clientX}px`;
-        aiCursor.style.top = `${event.clientY}px`;
-        aiCursor.classList.add("is-visible");
-      }, { passive: true });
-
-      addEventListener("pointerdown", (event) => {
-        if (event.button !== 0) return;
-        aiCursor.classList.add("is-pressed");
-        const ring = document.createElement("span");
-        ring.className = "ai-click-ring";
-        ring.style.left = `${event.clientX}px`;
-        ring.style.top = `${event.clientY}px`;
-        document.body.append(ring);
-        ring.addEventListener("animationend", () => ring.remove(), { once: true });
-      }, { passive: true });
-
-      addEventListener("pointerup", () => {
-        aiCursor.classList.remove("is-pressed");
-      }, { passive: true });
-
-      document.documentElement.addEventListener("mouseleave", () => {
-        aiCursor.classList.remove("is-visible", "is-pressed");
-      });
-    }
-
-    if (matchMedia("(pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.querySelectorAll("[data-tilt]").forEach((card) => {
-        card.addEventListener("pointermove", (event) => {
-          const rect = card.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width - .5;
-          const y = (event.clientY - rect.top) / rect.height - .5;
-          card.style.setProperty("--tilt-x", `${y * -5}deg`);
-          card.style.setProperty("--tilt-y", `${x * 7}deg`);
-        });
-        card.addEventListener("pointerleave", () => {
-          card.style.setProperty("--tilt-x", "0deg");
-          card.style.setProperty("--tilt-y", "0deg");
-        });
-      });
-    }
   </script>
 </body>
 </html>
