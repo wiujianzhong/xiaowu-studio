@@ -46,7 +46,7 @@
       position: fixed;
       inset: 0;
       z-index: 2;
-      display: block;
+      display: none;
       width: 100vw;
       height: 100vh;
       opacity: .38;
@@ -285,7 +285,7 @@
 
 
     .fluid-controls {
-      display: flex;
+      display: none;
       width: fit-content;
       max-width: min(560px, calc(100vw - 32px));
       padding: 6px;
@@ -1229,8 +1229,8 @@
   <main>
     <section class="hero" aria-labelledby="title">
       <picture class="hero-picture">
-        <source media="(max-width: 620px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
-        <img class="hero-photo" src="assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠手持手机站在山路前的主视觉" fetchpriority="high" decoding="async">
+        <source media="(max-width: 620px)" srcset="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
+        <img class="hero-photo" src="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/xiaowu-holding-phone-retouched-v3.png" alt="伍建忠手持手机站在山路前的主视觉" fetchpriority="high" decoding="async">
       </picture>
       <div class="hero-inner">
         <div class="copy">
@@ -1253,8 +1253,8 @@
         </div>
 
         <div class="case-rail" id="cases" data-case-rail aria-label="重点项目预览">
-          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="assets/story/wechat-ai-super-assistant-poster.jpg" data-video="assets/story/wechat-ai-super-assistant-natural.mp4">
-            <img src="assets/story/wechat-ai-super-assistant-poster.jpg" alt="微信 AI 超级助手界面" decoding="async">
+          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-natural.mp4">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-poster.jpg" alt="微信 AI 超级助手界面" decoding="async">
             <span class="case-index">01</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1267,8 +1267,8 @@
               <span class="case-note">消息、群聊、客户资料统一处理</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="assets/story/ppt-result-real.jpg" data-video="assets/story/ppt-closed-loop-narrated.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
-            <img src="assets/story/ppt-result-real.jpg" alt="整改 PPT 真实页面" decoding="async">
+          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop-narrated.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-result-real.jpg" alt="整改 PPT 真实页面" decoding="async">
             <span class="case-index">02</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1281,8 +1281,8 @@
               <span class="case-note">从照片和说明直接变成汇报材料</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="assets/story/tax-result-real.jpg" data-video="assets/story/tax-code-demo-sound.mp4" data-link="https://swbm.xiaowustudio.cn/">
-            <img src="assets/story/tax-result-real.jpg" alt="税务编码匹配表格" decoding="async">
+          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-code-demo-sound.mp4" data-link="https://swbm.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-result-real.jpg" alt="税务编码匹配表格" decoding="async">
             <span class="case-index">03</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1295,8 +1295,8 @@
               <span class="case-note">批量核对、修正、导入前检查</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="assets/story/gesture-sword-poster.jpg" data-video="assets/story/gesture-sword-self-sound.mp4" data-link="https://sword.xiaowustudio.cn/">
-            <img src="assets/story/gesture-sword-poster.jpg" alt="手势操控剑阵项目" decoding="async">
+          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self-sound.mp4" data-link="https://sword.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-poster.jpg" alt="手势操控剑阵项目" decoding="async">
             <span class="case-index">04</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1309,8 +1309,8 @@
               <span class="case-note">游戏感、粒子效果、移动端体验</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出" data-poster="assets/story/delivery-report-poster.jpg" data-video="assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3" data-link="https://delivery.xiaowustudio.cn/">
-            <img src="assets/story/delivery-report-poster.jpg" alt="AI 送货助手报表界面" decoding="async">
+          <button class="case-card" type="button" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3" data-link="https://delivery.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-poster.jpg" alt="AI 送货助手报表界面" decoding="async">
             <span class="case-index">05</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1323,8 +1323,8 @@
               <span class="case-note">语音开单、客户对账、汇总导出</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="assets/story/fitness-library-poster.png" data-video="assets/story/fitness-chest-demo-sound.mp4" data-link="https://fitness.xiaowustudio.cn/">
-            <img src="assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" decoding="async">
+          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo-sound.mp4" data-link="https://fitness.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" decoding="async">
             <span class="case-index">06</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1413,7 +1413,7 @@
               </div>
             </div>
             <figure class="contact-qr">
-              <img src="assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy" decoding="async">
+              <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy" decoding="async">
               <figcaption>扫码添加微信 · 伍建忠</figcaption>
             </figure>
           </div>
@@ -1439,24 +1439,6 @@
     </div>
   </div>
 
-  <script>
-    function loadFluidBackdrop() {
-      if (document.querySelector("script[data-fluid-script]")) return;
-      const script = document.createElement("script");
-      script.src = "assets/fluid/fluid-backdrop.js";
-      script.defer = true;
-      script.dataset.fluidScript = "true";
-      document.body.appendChild(script);
-    }
-
-    window.addEventListener("load", () => {
-      if (window.matchMedia("(max-width: 620px)").matches) return;
-      const loadLater = window.requestIdleCallback
-        ? (callback) => window.requestIdleCallback(callback, { timeout: 1600 })
-        : (callback) => window.setTimeout(callback, 700);
-      loadLater(loadFluidBackdrop);
-    }, { once: true });
-  </script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
