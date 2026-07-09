@@ -2085,6 +2085,7 @@
         function setupCaseRail() {
           const rail = document.querySelector("[data-case-rail]");
           if (!rail) return;
+          const flow = rail.closest(".case-flow") || rail;
           const cards = Array.from(rail.querySelectorAll(".case-card"));
           if (cards.length === 0) return;
           const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -2136,6 +2137,7 @@
           let suppressClick = false;
           let hoverPaused = false;
           let focusPaused = false;
+          let keyboardFocus = false;
           let manualPauseUntil = 0;
           let startX = 0;
           let startScroll = 0;
@@ -2146,7 +2148,7 @@
           let pausedState = null;
 
           function isPaused() {
-            return reducedMotion.matches || !railVisible || hoverPaused || focusPaused || dragging || Date.now() < manualPauseUntil;
+            return !railVisible || hoverPaused || focusPaused || dragging || Date.now() < manualPauseUntil;
           }
 
           function syncPausedState() {
@@ -2183,7 +2185,7 @@
             lastAutoTime = time;
             const paused = isPaused() || document.visibilityState !== "visible";
             if (!paused) {
-              const speed = mobileMotion.matches ? .048 : .024;
+              const speed = reducedMotion.matches ? .018 : mobileMotion.matches ? .052 : .026;
               const pulse = 1 + Math.sin(time / 920) * .14 + Math.sin(time / 1680) * .06;
               rail.scrollLeft += delta * speed * pulse;
               normalizePosition();
@@ -2196,18 +2198,18 @@
           queueAutoScroll();
 
           if ("IntersectionObserver" in window) {
-            railVisible = false;
             const railObserver = new IntersectionObserver((entries) => {
               railVisible = entries.some((entry) => entry.isIntersecting);
               lastAutoTime = 0;
               syncPausedState();
-            }, { threshold: 0.02 });
-            railObserver.observe(rail);
+            }, { rootMargin: "220px 0px", threshold: 0 });
+            railObserver.observe(flow);
             syncPausedState();
           }
 
           rail.addEventListener("pointerdown", (event) => {
             if (event.pointerType === "mouse" && event.button !== 0) return;
+            keyboardFocus = false;
             pressedCard = event.target.closest(".case-card");
             if (pressedCard) pressedCard.classList.add("is-pressed");
             if (event.target.closest(".case-action")) {
@@ -2274,7 +2276,7 @@
             }
           });
           rail.addEventListener("focusin", () => {
-            focusPaused = true;
+            focusPaused = keyboardFocus;
             syncPausedState();
           });
           rail.addEventListener("focusout", () => {
@@ -2300,6 +2302,7 @@
             openPlayer(card);
           });
           rail.addEventListener("keydown", (event) => {
+            keyboardFocus = true;
             if (event.target.closest(".case-action")) return;
             if (event.key !== "Enter" && event.key !== " ") return;
             const card = event.target.closest(".case-card");
