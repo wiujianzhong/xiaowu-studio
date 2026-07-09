@@ -7,6 +7,19 @@
   <meta name="description" content="小伍工作室：把现场问题做成 AI 与 Web 工具。">
   <link rel="preconnect" href="https://wiujianzhong.github.io">
   <title>小伍工作室｜让信息替你工作</title>
+  <script>
+    (() => {
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      const cleanUrl = `${window.location.pathname}${window.location.search}`;
+      if (window.location.hash) history.replaceState(null, document.title, cleanUrl);
+      const scrollHome = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      window.addEventListener("pageshow", () => {
+        scrollHome();
+        window.setTimeout(scrollHome, 80);
+        window.setTimeout(scrollHome, 260);
+      });
+    })();
+  </script>
   <style>
     :root {
       color-scheme: dark;
@@ -2317,6 +2330,7 @@
 
         function setupNavTracking() {
           const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+          const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
           const targets = links
             .map((link) => document.querySelector(link.getAttribute("href")))
             .filter(Boolean);
@@ -2332,9 +2346,15 @@
           if (initialTarget) setActive(initialTarget.id);
 
           links.forEach((link) => {
-            link.addEventListener("click", () => {
+            link.addEventListener("click", (event) => {
+              event.preventDefault();
               const target = document.querySelector(link.getAttribute("href"));
-              if (target) setActive(target.id);
+              if (!target) return;
+              setActive(target.id);
+              target.scrollIntoView({
+                behavior: reducedMotion.matches ? "auto" : "smooth",
+                block: "start"
+              });
             });
           });
 
