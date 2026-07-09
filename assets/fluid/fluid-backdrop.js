@@ -422,7 +422,7 @@ function startBackdropControls () {
         immersiveButton.setAttribute('aria-pressed', String(immersiveEnabled));
         immersiveButton.querySelector('span').textContent = immersiveEnabled ? '退出沉浸' : '沉浸式玩耍';
         if (panelToggleText != null)
-            panelToggleText.textContent = immersiveEnabled ? '退出流光' : '流动效果';
+            panelToggleText.textContent = immersiveEnabled ? '退出沉浸' : '沉浸式玩耍';
     }
 
     function applyPauseState () {
