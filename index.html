@@ -344,7 +344,7 @@
 
     .copy {
       display: grid;
-      max-width: min(860px, 72vw);
+      max-width: 660px;
       gap: 16px;
     }
 
@@ -367,7 +367,7 @@
     }
 
     h1 {
-      max-width: 10.8em;
+      max-width: 9.6em;
       margin: 0;
       color: var(--paper);
       font-size: clamp(44px, 7vw, 96px);
@@ -621,35 +621,17 @@
       }
     }
 
-    .case-flow {
-      position: relative;
-      margin-top: clamp(14px, 3vh, 34px);
-      margin-inline: -12px;
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
-      mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
-    }
-
-    .case-flow::after {
-      position: absolute;
-      right: 6%;
-      bottom: 8px;
-      left: 6%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(57, 212, 157, .46), rgba(255, 228, 87, .34), transparent);
-      content: "";
-      pointer-events: none;
-    }
-
     .case-rail {
       position: relative;
       display: flex;
-      gap: clamp(14px, 2vw, 22px);
-      align-items: center;
+      gap: 14px;
+      align-items: end;
+      margin-inline: -12px;
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 24px 12px 32px;
+      padding: 18px 12px 20px;
       perspective: 900px;
+      scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
@@ -662,18 +644,14 @@
 
     .case-rail.is-dragging {
       cursor: grabbing;
-    }
-
-    .case-rail.is-paused .case-card {
-      animation-play-state: paused;
+      scroll-snap-type: none;
     }
 
     .case-card {
       position: relative;
       display: block;
-      flex: 0 0 clamp(292px, 26vw, 382px);
-      aspect-ratio: 16 / 9;
-      min-height: 0;
+      flex: 0 0 clamp(176px, 17.2vw, 228px);
+      min-height: clamp(158px, 16.8vw, 202px);
       padding: 0;
       overflow: hidden;
       border: 1px solid rgba(246, 240, 227, .14);
@@ -689,38 +667,22 @@
       transform-origin: 50% 92%;
       transition: transform .24s ease, border-color .22s ease, box-shadow .22s ease, filter .22s ease;
       appearance: none;
+      scroll-snap-align: start;
       user-select: none;
-      animation: caseWave var(--wave-duration, 7.6s) ease-in-out infinite;
-      animation-delay: var(--wave-delay, 0s);
     }
 
-    .case-card:nth-child(7n+1) { --tilt: -1.8deg; --drop: 10px; --wave: 9px; --sway: .9deg; --wave-delay: -.8s; }
-    .case-card:nth-child(7n+2) { --tilt: 1.2deg; --drop: -2px; --wave: 7px; --sway: -.7deg; --wave-delay: -2.1s; }
-    .case-card:nth-child(7n+3) { --tilt: -.7deg; --drop: 14px; --wave: 10px; --sway: 1deg; --wave-delay: -3.4s; }
-    .case-card:nth-child(7n+4) { --tilt: 1.8deg; --drop: 4px; --wave: 8px; --sway: -.9deg; --wave-delay: -1.3s; }
-    .case-card:nth-child(7n+5) { --tilt: -1.1deg; --drop: 12px; --wave: 11px; --sway: .8deg; --wave-delay: -2.7s; }
-    .case-card:nth-child(7n+6) { --tilt: .9deg; --drop: 0px; --wave: 7px; --sway: -.6deg; --wave-delay: -4s; }
-    .case-card:nth-child(7n+7) { --tilt: -1.4deg; --drop: 8px; --wave: 9px; --sway: .7deg; --wave-delay: -1.8s; }
+    .case-card:nth-child(6n+1) { --tilt: -2.6deg; --drop: 12px; }
+    .case-card:nth-child(6n+2) { --tilt: 1.7deg; --drop: -2px; }
+    .case-card:nth-child(6n+3) { --tilt: -.8deg; --drop: 18px; }
+    .case-card:nth-child(6n+4) { --tilt: 2.4deg; --drop: 5px; }
+    .case-card:nth-child(6n+5) { --tilt: -1.5deg; --drop: 14px; }
+    .case-card:nth-child(6n+6) { --tilt: 1.2deg; --drop: 2px; }
 
-    @keyframes caseWave {
-      0%,
-      100% {
-        transform: translateY(var(--drop, 0px)) rotate(var(--tilt, 0deg)) scale(1);
-      }
-
-      50% {
-        transform: translateY(calc(var(--drop, 0px) - var(--wave, 8px))) rotate(calc(var(--tilt, 0deg) + var(--sway, .8deg))) scale(1.012);
-      }
-    }
-
-    .case-card:hover,
-    .case-card:focus-within,
-    .case-card.is-pressed {
-      animation-play-state: paused;
+    .case-card:hover {
       border-color: rgba(228, 192, 106, .52);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, .54);
-      filter: saturate(1.12) brightness(1.06);
-      transform: translateY(calc(var(--drop, 0px) - 13px)) rotate(-1.2deg) scale(1.045);
+      box-shadow: 0 28px 86px rgba(0, 0, 0, .5);
+      filter: saturate(1.08);
+      transform: translateY(calc(var(--drop, 0px) - 12px)) rotate(0deg) scale(1.1);
       z-index: 4;
     }
 
@@ -737,15 +699,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: saturate(.92) brightness(.74);
+      filter: saturate(.9) brightness(.72);
       transform: scale(1.03);
       transition: transform .4s ease, filter .4s ease;
     }
 
-    .case-card:hover img,
-    .case-card:focus-within img,
-    .case-card.is-pressed img {
-      filter: saturate(1.08) brightness(.9);
+    .case-card:hover img {
+      filter: saturate(1) brightness(.86);
       transform: scale(1.11);
     }
 
@@ -754,9 +714,7 @@
       inset: 0;
       z-index: -1;
       content: "";
-      background:
-        linear-gradient(180deg, rgba(9, 12, 11, .08) 0%, rgba(9, 12, 11, .24) 36%, rgba(9, 12, 11, .9) 100%),
-        linear-gradient(90deg, rgba(9, 12, 11, .36), transparent 54%);
+      background: linear-gradient(180deg, rgba(9, 12, 11, .18), rgba(9, 12, 11, .88));
     }
 
     .case-card::before {
@@ -787,9 +745,7 @@
       transition: background .2s ease, transform .2s ease;
     }
 
-    .case-card:hover .play-badge,
-    .case-card:focus-within .play-badge,
-    .case-card.is-pressed .play-badge {
+    .case-card:hover .play-badge {
       background: rgba(57, 212, 157, .9);
       color: #07100d;
       transform: scale(1.08);
@@ -809,7 +765,7 @@
     .case-copy {
       position: absolute;
       z-index: 3;
-      inset: auto 16px 14px;
+      inset: auto 14px 13px;
       display: grid;
       gap: 7px;
     }
@@ -833,78 +789,74 @@
       line-height: 1.45;
     }
 
-    .case-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 1px;
-    }
+        .project-link-panel {
+          display: grid;
+          width: fit-content;
+          max-width: min(760px, 100%);
+          gap: 10px;
+          margin-top: 18px;
+          padding: 12px;
+          border: 1px solid rgba(57, 212, 157, .24);
+          background: rgba(4, 9, 7, .5);
+          box-shadow: 0 18px 54px rgba(0, 0, 0, .32);
+          backdrop-filter: blur(16px);
+        }
 
-    .case-tag {
-      display: inline-flex;
-      min-height: 22px;
-      align-items: center;
-      padding: 0 7px;
-      border: 1px solid rgba(246, 240, 227, .14);
-      border-radius: 5px;
-      color: rgba(246, 240, 227, .72);
-      background: rgba(246, 240, 227, .055);
-      font-size: 11px;
-      line-height: 1;
-      backdrop-filter: blur(10px);
-    }
+        .project-link-title {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: #ffe457;
+          font-size: 14px;
+          font-weight: 800;
+          letter-spacing: .04em;
+        }
 
-    .case-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 3px;
-    }
+        .project-link-title::before {
+          width: 8px;
+          height: 8px;
+          background: var(--jade);
+          box-shadow: 0 0 18px rgba(57, 212, 157, .75);
+          content: "";
+        }
 
-    .case-action {
-      display: inline-flex;
-      flex: 1 1 0;
-      min-height: 34px;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(246, 240, 227, .18);
-      border-radius: 6px;
-      color: var(--paper);
-      background: rgba(9, 12, 11, .48);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      text-decoration: none;
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-      transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
-    }
+        .project-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
 
-    .case-action:hover,
-    .case-action:focus-visible {
-      border-color: rgba(255, 228, 87, .58);
-      color: #fff7ad;
-      background: rgba(255, 228, 87, .14);
-      transform: translateY(-1px);
-      outline: none;
-    }
+        .project-link {
+          display: inline-flex;
+          min-height: 44px;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 0 16px;
+          border: 1px solid rgba(255, 228, 87, .38);
+          color: #ffe457;
+          background: rgba(255, 228, 87, .1);
+          font-size: clamp(15px, 1.35vw, 18px);
+          font-weight: 850;
+          text-decoration: none;
+          text-shadow: 0 0 16px rgba(255, 228, 87, .42);
+          backdrop-filter: blur(12px);
+          transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
+        }
 
-    .case-demo {
-      border-color: rgba(57, 212, 157, .38);
-      color: #bafce8;
-      background: rgba(57, 212, 157, .12);
-    }
+        .project-link::after {
+          color: #ffe457;
+          content: "↗";
+          font-size: 14px;
+        }
 
-    .case-open::after {
-      margin-left: 6px;
-      color: currentColor;
-      content: "↗";
-      font-size: 12px;
-    }
-
-    .case-open.is-disabled {
-      color: rgba(246, 240, 227, .42);
-      cursor: default;
-    }
+        .project-link:hover,
+        .project-link:focus-visible {
+          border-color: rgba(255, 228, 87, .72);
+          color: #fff7ad;
+          background: rgba(255, 228, 87, .18);
+          transform: translateY(-2px);
+        }
 
     body.modal-open {
       overflow: hidden;
@@ -1345,16 +1297,12 @@
         }
 
     @media (max-width: 980px) {
-      .case-flow {
-        margin-inline: -10px;
-      }
-
       .case-rail {
         padding: 18px 10px 16px;
       }
 
       .case-card {
-        flex-basis: min(64vw, 420px);
+        flex-basis: min(42vw, 260px);
       }
 
           .section-head,
@@ -1472,14 +1420,10 @@
       }
 
       h1 {
-        max-width: 7.4em;
-        font-size: clamp(28px, 7.6vw, 32px);
+        max-width: 100%;
+        font-size: clamp(32px, 8.8vw, 38px);
         line-height: 1.12;
         overflow-wrap: anywhere;
-        word-break: break-all;
-        word-wrap: break-word;
-        line-break: anywhere;
-        text-wrap: wrap;
       }
 
       .section h2 {
@@ -1493,21 +1437,16 @@
 
       .proof-row {
         display: grid;
-        max-width: min(300px, 100%);
-        grid-template-columns: 1fr;
-        gap: 8px;
+        grid-template-columns: 1fr 1fr;
       }
 
-      .proof {
-        min-width: 0;
-        gap: 6px;
-        padding-inline: 9px;
-        font-size: 12px;
-      }
+          .project-link-panel {
+            width: 100%;
+          }
 
-      .proof b {
-        font-size: 13px;
-      }
+          .project-link {
+            flex: 1 1 calc(50% - 5px);
+          }
 
           .profile-modal {
             padding: 12px;
@@ -1541,53 +1480,20 @@
         font-size: 12px;
       }
 
-      .case-flow {
-        margin-top: 18px;
-        margin-inline: -8px;
-        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
-        mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
-      }
-
       .case-rail {
+        margin-inline: -8px;
         margin-top: 18px;
         padding-inline: 8px;
-        gap: 12px;
       }
 
       .case-card {
-        flex-basis: 82vw;
-        min-width: 282px;
+        flex-basis: 76vw;
+        min-height: 190px;
       }
 
-      .case-copy {
-        inset: auto 12px 12px;
-        gap: 6px;
-      }
-
-      .case-title {
-        font-size: 16px;
-      }
-
-      .case-note {
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-      }
-
-      .case-tag {
-        min-height: 20px;
-        padding-inline: 6px;
-        font-size: 10px;
-      }
-
-      .case-actions {
-        gap: 6px;
-      }
-
-      .case-action {
-        min-height: 32px;
-        font-size: 12px;
+      .case-card:nth-child(n) {
+        --tilt: 0deg;
+        --drop: 0px;
       }
 
       .player-modal {
@@ -1678,170 +1584,103 @@
           </div>
         </div>
 
-        <div class="case-flow" id="cases" aria-label="重点项目作品流">
-          <div class="case-rail" data-case-rail>
-            <article class="case-card" tabindex="0" data-title="整改 PPT 一键生成" data-note="从现场照片和整改说明直接变成汇报成稿。" data-poster="assets/generated/portfolio/ppt-cover-v1.jpg" data-video="assets/videos/project-spotlights/ppt-spotlight-promo.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/ppt-cover-v1.jpg" alt="整改 PPT 一键生成项目封面" decoding="async" loading="lazy">
-              <span class="case-index">01</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">PPT TOOL</span>
-                <span class="case-title">整改 PPT 一键生成</span>
-                <span class="case-note">现场照片变成汇报成稿，批注、整改闭环和完成勾选一套带走。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">红色汇报</span>
-                  <span class="case-tag">整改闭环</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://jiaxin-ppt.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="税收分类编码匹配" data-note="批量核对商品表、编码流和导入前风险。" data-poster="assets/generated/portfolio/tax-cover-v1.jpg" data-video="assets/videos/project-spotlights/tax-spotlight-promo.mp4" data-link="https://swbm.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/tax-cover-v1.jpg" alt="税收分类编码匹配项目封面" decoding="async" loading="lazy">
-              <span class="case-index">02</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">DATA CHECK</span>
-                <span class="case-title">税收分类编码匹配</span>
-                <span class="case-note">商品表格、编码匹配、扫描核对，把导入前的风险提前拦住。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">批量核对</span>
-                  <span class="case-tag">编码匹配</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://swbm.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出。" data-poster="assets/generated/portfolio/delivery-cover-v1.jpg" data-video="assets/videos/project-spotlights/delivery-spotlight-promo.mp4" data-link="https://delivery.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/delivery-cover-v1.jpg" alt="AI 送货助手项目封面" decoding="async" loading="lazy">
-              <span class="case-index">03</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">DELIVERY AI</span>
-                <span class="case-title">AI 送货助手</span>
-                <span class="case-note">送货单、语音波形、客户对账和汇总看板合在一条业务线里。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">语音开单</span>
-                  <span class="case-tag">客户对账</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="手势操控大庚剑阵" data-note="手势轨迹、剑光粒子和能量弧线。" data-poster="assets/generated/portfolio/sword-cover-v1.jpg" data-video="assets/videos/project-spotlights/sword-spotlight-promo.mp4" data-link="https://sword.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/sword-cover-v1.jpg" alt="手势操控大庚剑阵项目封面" decoding="async" loading="lazy">
-              <span class="case-index">04</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">GESTURE GAME</span>
-                <span class="case-title">手势操控大庚剑阵</span>
-                <span class="case-note">黑金剑光、荧光轨迹和移动端手势反馈，做成可玩的网页演示。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">手势互动</span>
-                  <span class="case-tag">剑光粒子</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://sword.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="微信 AI 超级助手" data-note="领导安排自动变成定时任务，持续追到结果。" data-poster="assets/videos/project-spotlights/wechat-spotlight-poster.jpg" data-video="assets/videos/project-spotlights/wechat-spotlight-promo.mp4">
-              <img src="assets/videos/project-spotlights/wechat-spotlight-poster.jpg" alt="微信 AI 超级助手项目封面" decoding="async" loading="lazy">
-              <span class="case-index">05</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">AI ASSISTANT</span>
-                <span class="case-title">微信 AI 超级助手</span>
-                <span class="case-note">把群里的安排变成定时触发，到点提醒、持续跟进、追到闭环。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">定时触发</span>
-                  <span class="case-tag">追踪闭环</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <span class="case-action case-open is-disabled" aria-disabled="true">打开项目</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示。" data-poster="assets/generated/portfolio/fitness-cover-v1.jpg" data-video="assets/videos/project-spotlights/fitness-spotlight-promo.mp4" data-link="https://fitness.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/fitness-cover-v1.jpg" alt="小伍健身动作库项目封面" decoding="async" loading="lazy">
-              <span class="case-index">06</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">FITNESS TOOL</span>
-                <span class="case-title">小伍健身动作库</span>
-                <span class="case-note">动作残影、肌肉线条和训练卡片，让手机上看动作更直接。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">动作库</span>
-                  <span class="case-tag">训练卡片</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="case-card" tabindex="0" data-title="圣诞树手势互动" data-note="手势光点、发光圣诞树和节日粒子。" data-poster="assets/generated/portfolio/xmas-cover-v1.jpg" data-video="assets/story/gesture-xmas-self-sound.mp4" data-link="https://xmas.xiaowustudio.cn/">
-              <img src="assets/generated/portfolio/xmas-cover-v1.jpg" alt="圣诞树手势互动项目封面" decoding="async" loading="lazy">
-              <span class="case-index">07</span>
-              <span class="play-badge" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <div class="case-copy">
-                <span class="case-type">HOLIDAY GESTURE</span>
-                <span class="case-title">圣诞树手势互动</span>
-                <span class="case-note">冰蓝粉紫光点跟着手势流动，点亮一棵发光圣诞树。</span>
-                <span class="case-tags" aria-label="项目标签">
-                  <span class="case-tag">节日粒子</span>
-                  <span class="case-tag">手势光点</span>
-                </span>
-                <div class="case-actions">
-                  <button class="case-action case-demo" type="button" data-open-demo>看演示</button>
-                  <a class="case-action case-open" href="https://xmas.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开项目</a>
-                </div>
-              </div>
-            </article>
-          </div>
+        <div class="case-rail" id="cases" data-case-rail aria-label="重点项目预览">
+          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/wechat-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/wechat-spotlight-promo.mp4">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/wechat-spotlight-poster.jpg" alt="微信 AI 超级助手界面" decoding="async">
+            <span class="case-index">01</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">AI ASSISTANT</span>
+              <span class="case-title">微信 AI 超级助手</span>
+              <span class="case-note">消息、群聊、客户资料统一处理</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/ppt-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/ppt-spotlight-promo.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/ppt-spotlight-poster.jpg" alt="整改 PPT 真实页面" decoding="async">
+            <span class="case-index">02</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">PPT TOOL</span>
+              <span class="case-title">整改 PPT 一键生成</span>
+              <span class="case-note">从照片和说明直接变成汇报材料</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/tax-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/tax-spotlight-promo.mp4" data-link="https://swbm.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/tax-spotlight-poster.jpg" alt="税务编码匹配表格" decoding="async">
+            <span class="case-index">03</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">DATA CHECK</span>
+              <span class="case-title">税收分类编码匹配</span>
+              <span class="case-note">批量核对、修正、导入前检查</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/sword-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/sword-spotlight-promo.mp4" data-link="https://sword.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/sword-spotlight-poster.jpg" alt="手势操控剑阵项目" decoding="async">
+            <span class="case-index">04</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">GAME EFFECT</span>
+              <span class="case-title">手势操控大庚剑阵</span>
+              <span class="case-note">游戏感、粒子效果、移动端体验</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/delivery-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/delivery-spotlight-promo.mp4" data-link="https://delivery.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/delivery-spotlight-poster.jpg" alt="AI 送货助手报表界面" decoding="async">
+            <span class="case-index">05</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">BUSINESS REPORT</span>
+              <span class="case-title">AI 送货助手</span>
+              <span class="case-note">语音开单、客户对账、汇总导出</span>
+            </span>
+          </button>
+          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/fitness-spotlight-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/fitness-spotlight-promo.mp4" data-link="https://fitness.xiaowustudio.cn/">
+            <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/fitness-spotlight-poster.jpg" alt="小伍健身动作库网页截图" decoding="async">
+            <span class="case-index">06</span>
+            <span class="play-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="case-copy">
+              <span class="case-type">FITNESS TOOL</span>
+              <span class="case-title">小伍健身动作库</span>
+              <span class="case-note">动作筛选、中文步骤、手机查看演示</span>
+            </span>
+          </button>
         </div>
+            <div class="project-link-panel">
+              <span class="project-link-title">这些是可点击项目入口</span>
+              <div class="project-links" aria-label="项目链接">
+                <a class="project-link" href="https://jiaxin-ppt.xiaowustudio.cn/" target="_blank" rel="noreferrer">PPT 工具</a>
+                <a class="project-link" href="https://swbm.xiaowustudio.cn/" target="_blank" rel="noreferrer">税务编码</a>
+                <a class="project-link" href="https://delivery.xiaowustudio.cn/" target="_blank" rel="noreferrer">AI 送货助手</a>
+                <a class="project-link" href="https://fitness.xiaowustudio.cn/" target="_blank" rel="noreferrer">健身动作库</a>
+                <a class="project-link" href="https://sword.xiaowustudio.cn/" target="_blank" rel="noreferrer">大庚剑阵</a>
+                <a class="project-link" href="https://xmas.xiaowustudio.cn/" target="_blank" rel="noreferrer">圣诞树手势</a>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -2056,16 +1895,11 @@
           if (!rail) return;
           const cards = Array.from(rail.querySelectorAll(".case-card"));
           if (cards.length === 0) return;
-          const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-          const mobileMotion = window.matchMedia("(max-width: 620px)");
 
           function cloneCard(card) {
             const clone = card.cloneNode(true);
             clone.setAttribute("aria-hidden", "true");
             clone.tabIndex = -1;
-            clone.querySelectorAll("a, button, [tabindex]").forEach((item) => {
-              item.tabIndex = -1;
-            });
             return clone;
           }
 
@@ -2081,21 +1915,16 @@
             rail.scrollLeft = segmentWidth();
           });
 
-          function normalizePosition() {
-            const width = segmentWidth();
-            if (width <= 0) return;
-            if (rail.scrollLeft < width * .45) {
-              rail.scrollLeft += width;
-            } else if (rail.scrollLeft > width * 1.55) {
-              rail.scrollLeft -= width;
-            }
-          }
-
           let scrollFrame = 0;
           rail.addEventListener("scroll", () => {
             if (scrollFrame) return;
             scrollFrame = window.requestAnimationFrame(() => {
-              normalizePosition();
+              const width = segmentWidth();
+              if (width > 0 && rail.scrollLeft < width * .45) {
+                rail.scrollLeft += width;
+              } else if (width > 0 && rail.scrollLeft > width * 1.55) {
+                rail.scrollLeft -= width;
+              }
               scrollFrame = 0;
             });
           }, { passive: true });
@@ -2103,56 +1932,12 @@
           let dragging = false;
           let dragged = false;
           let suppressClick = false;
-          let hoverPaused = false;
-          let focusPaused = false;
-          let manualPauseUntil = 0;
           let startX = 0;
           let startScroll = 0;
           let pointerCard = null;
-          let pressedCard = null;
-          let lastAutoTime = 0;
-
-          function isPaused() {
-            return reducedMotion.matches || hoverPaused || focusPaused || dragging || Date.now() < manualPauseUntil;
-          }
-
-          function syncPausedState() {
-            rail.classList.toggle("is-paused", isPaused());
-          }
-
-          function pauseBriefly(delay = 900) {
-            manualPauseUntil = Math.max(manualPauseUntil, Date.now() + delay);
-            syncPausedState();
-          }
-
-          function clearPressedCard() {
-            if (!pressedCard) return;
-            pressedCard.classList.remove("is-pressed");
-            pressedCard = null;
-          }
-
-          function autoScroll(time) {
-            if (!lastAutoTime) lastAutoTime = time;
-            const delta = Math.min(64, time - lastAutoTime);
-            lastAutoTime = time;
-            if (!isPaused() && document.visibilityState === "visible") {
-              rail.scrollLeft += delta * (mobileMotion.matches ? .046 : .026);
-              normalizePosition();
-            }
-            syncPausedState();
-            window.requestAnimationFrame(autoScroll);
-          }
-
-          window.requestAnimationFrame(autoScroll);
 
           rail.addEventListener("pointerdown", (event) => {
-            if (event.pointerType === "mouse" && event.button !== 0) return;
-            pressedCard = event.target.closest(".case-card");
-            if (pressedCard) pressedCard.classList.add("is-pressed");
-            if (event.target.closest(".case-action")) {
-              pauseBriefly();
-              return;
-            }
+            if (event.button !== 0) return;
             unlockAudio();
             dragging = true;
             dragged = false;
@@ -2160,7 +1945,6 @@
             startX = event.clientX;
             startScroll = rail.scrollLeft;
             rail.classList.add("is-dragging");
-            syncPausedState();
             rail.setPointerCapture(event.pointerId);
           });
 
@@ -2174,7 +1958,6 @@
           });
 
           function stopDragging(event) {
-            clearPressedCard();
             if (!dragging) return;
             dragging = false;
             rail.classList.remove("is-dragging");
@@ -2183,56 +1966,26 @@
             }
             if (dragged) {
               suppressClick = true;
-              pauseBriefly(1200);
               window.setTimeout(() => {
                 suppressClick = false;
               }, 0);
             } else if (pointerCard && rail.contains(pointerCard)) {
               suppressClick = true;
               openPlayer(pointerCard);
-              pauseBriefly(1200);
               window.setTimeout(() => {
                 suppressClick = false;
               }, 0);
             }
             pointerCard = null;
-            syncPausedState();
           }
 
           rail.addEventListener("pointerup", stopDragging);
           rail.addEventListener("pointercancel", stopDragging);
-          rail.addEventListener("pointerleave", () => {
-            clearPressedCard();
-            hoverPaused = false;
-            syncPausedState();
-          });
-          rail.addEventListener("pointerenter", (event) => {
-            if (event.pointerType === "mouse") {
-              hoverPaused = true;
-              syncPausedState();
-            }
-          });
           rail.addEventListener("pointerover", (event) => {
             const card = event.target.closest(".case-card");
             if (card && rail.contains(card)) warmMedia(card);
           });
-          rail.addEventListener("focusin", () => {
-            focusPaused = true;
-            syncPausedState();
-          });
-          rail.addEventListener("focusout", () => {
-            focusPaused = false;
-            syncPausedState();
-          });
-          rail.addEventListener("wheel", () => {
-            pauseBriefly(1200);
-          }, { passive: true });
           rail.addEventListener("click", (event) => {
-            if (event.target.closest(".case-open.is-disabled")) {
-              event.preventDefault();
-              return;
-            }
-            if (event.target.closest(".case-open")) return;
             const card = event.target.closest(".case-card");
             if (!card || !rail.contains(card)) return;
             if (suppressClick) {
@@ -2241,19 +1994,6 @@
             }
             unlockAudio();
             openPlayer(card);
-          });
-          rail.addEventListener("keydown", (event) => {
-            if (event.target.closest(".case-action")) return;
-            if (event.key !== "Enter" && event.key !== " ") return;
-            const card = event.target.closest(".case-card");
-            if (!card || !rail.contains(card)) return;
-            event.preventDefault();
-            unlockAudio();
-            openPlayer(card);
-          });
-          document.addEventListener("visibilitychange", () => {
-            lastAutoTime = 0;
-            syncPausedState();
           });
         }
 
