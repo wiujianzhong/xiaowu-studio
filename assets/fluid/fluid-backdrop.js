@@ -42,7 +42,7 @@ let config = {
     PRESSURE: 0.8,
     PRESSURE_ITERATIONS: 20,
     CURL: 24,
-    SPLAT_RADIUS: 0.22,
+    SPLAT_RADIUS: 0.18,
     SPLAT_FORCE: 3600,
     SHADING: true,
     COLORFUL: true,
@@ -79,13 +79,16 @@ let splatStack = [];
 pointers.push(new pointerPrototype());
 
 const fluidPalettes = [
-    { name: '五彩霓虹', accent: '#39e68f', strength: 0.23, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
-    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.24, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
-    { name: '糖果混色', accent: '#ff5ac8', strength: 0.23, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
-    { name: '彩虹随机', accent: '#ffe457', strength: 0.2, random: true }
+    { name: '五彩霓虹', accent: '#39e68f', strength: 0.18, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
+    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.19, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
+    { name: '糖果混色', accent: '#ff5ac8', strength: 0.18, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
+    { name: '彩虹随机', accent: '#ffe457', strength: 0.16, random: true }
 ];
 let fluidPaletteIndex = 0;
 let userPaused = false;
+let backdropReady = false;
+let heroImageReady = false;
+let firstFrameReady = false;
 
 const webglContext = getWebGLContext(canvas);
 const gl = webglContext.gl;
@@ -98,6 +101,7 @@ if (gl == null || ext == null || ext.formatRGBA == null) {
 if (isMobile()) {
     config.SIM_RESOLUTION = 64;
     config.DYE_RESOLUTION = 384;
+    config.SPLAT_RADIUS = 0.15;
     config.BLOOM = false;
     config.SUNRAYS = false;
 }
@@ -109,6 +113,46 @@ if (!ext.supportLinearFiltering) {
 }
 
 startBackdropControls();
+prepareBackdropReveal();
+
+function prepareBackdropReveal () {
+    waitForHeroImageReady().then(() => {
+        heroImageReady = true;
+        revealBackdropIfReady();
+    });
+}
+
+function waitForHeroImageReady () {
+    const image = document.querySelector('.hero-photo');
+    if (image == null)
+        return Promise.resolve();
+
+    const decodeImage = () => {
+        if (typeof image.decode === 'function')
+            return image.decode().catch(() => {});
+        return Promise.resolve();
+    };
+
+    if (image.complete && image.naturalWidth > 0)
+        return decodeImage();
+
+    return new Promise(resolve => {
+        image.addEventListener('load', () => {
+            decodeImage().then(resolve);
+        }, { once: true });
+        image.addEventListener('error', () => {
+            canvas.dataset.fluidStatus = 'waiting-hero';
+        }, { once: true });
+    });
+}
+
+function revealBackdropIfReady () {
+    if (backdropReady || !heroImageReady || !firstFrameReady)
+        return;
+    backdropReady = true;
+    canvas.dataset.fluidStatus = 'ready';
+    document.body.classList.add('fluid-ready');
+}
 
 function getWebGLContext (canvas) {
     const params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
@@ -300,10 +344,12 @@ function startBackdropControls () {
     const backgroundRange = controls.querySelector('[data-fluid-range="background"]');
     const effectRange = controls.querySelector('[data-fluid-range="effect"]');
     const backgroundDefault = Number(backgroundRange?.value || 96);
-    const effectDefault = Math.round((parseFloat(getComputedStyle(canvas).opacity) || 0.34) * 100);
+    const rootStyles = getComputedStyle(document.documentElement);
+    const effectDefault = Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
     const effectMax = Number(effectRange?.max || 86);
     let fluidEnabled = true;
     let immersiveEnabled = false;
+    let lastPanelTouchExitAt = 0;
 
     function syncPalette () {
         const palette = fluidPalettes[fluidPaletteIndex];
@@ -364,16 +410,17 @@ function startBackdropControls () {
     }
 
     function setImmersive (enabled) {
+        if (enabled && !backdropReady) return;
         immersiveEnabled = enabled;
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = Math.min(effectMax, 48);
+            const immersiveEffect = Math.min(effectMax, isMobile() ? 38 : 44);
             if (effectRange != null && Number(effectRange.value) < immersiveEffect) {
                 effectRange.value = String(immersiveEffect);
                 setEffectBrightness(immersiveEffect);
             }
-            splatStack.push(26);
+            splatStack.push(isMobile() ? 12 : 18);
             setPanelOpen(false);
         }
         syncImmersive();
@@ -394,18 +441,32 @@ function startBackdropControls () {
         syncPalette();
         applyPauseState();
         initFramebuffers();
-        multipleSplats(18);
+        multipleSplats(isMobile() ? 8 : 18);
         syncImmersive();
     }
 
-    panelToggle?.addEventListener('click', () => {
-        if (immersiveEnabled) {
-            setImmersive(false);
-            setPanelOpen(false);
+    function exitImmersiveFromToggle (event) {
+        if (!immersiveEnabled) return false;
+        event?.preventDefault?.();
+        event?.stopPropagation?.();
+        lastPanelTouchExitAt = Date.now();
+        setImmersive(false);
+        setPanelOpen(false);
+        return true;
+    }
+
+    panelToggle?.addEventListener('click', event => {
+        if (Date.now() - lastPanelTouchExitAt < 450) {
+            event.preventDefault();
             return;
         }
+        if (exitImmersiveFromToggle(event)) return;
         setPanelOpen(panel?.hidden !== false);
     });
+
+    panelToggle?.addEventListener('touchend', event => {
+        exitImmersiveFromToggle(event);
+    }, { passive: false });
 
     document.addEventListener('click', e => {
         if (panel == null || panel.hidden || controls.contains(e.target)) return;
@@ -442,11 +503,11 @@ function startBackdropControls () {
     paletteButton?.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
         syncPalette();
-        splatStack.push(10);
+        splatStack.push(isMobile() ? 6 : 10);
     });
 
     splashButton?.addEventListener('click', () => {
-        splatStack.push(parseInt(Math.random() * 18) + 10);
+        splatStack.push(parseInt(Math.random() * (isMobile() ? 8 : 18)) + (isMobile() ? 4 : 10));
     });
 
     captureButton?.addEventListener('click', () => {
@@ -1361,7 +1422,7 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
+multipleSplats(parseInt(Math.random() * (isMobile() ? 5 : 14)) + (isMobile() ? 4 : 5));
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1376,6 +1437,10 @@ function update () {
     if (!config.PAUSED && !document.hidden)
         step(dt);
     render(null);
+    if (!firstFrameReady) {
+        firstFrameReady = true;
+        revealBackdropIfReady();
+    }
     requestAnimationFrame(update);
 }
 
@@ -1664,6 +1729,7 @@ function getCanvasPointerPosition (clientX, clientY) {
 }
 
 window.addEventListener('mousedown', e => {
+    if (isFluidControlEventTarget(e.target)) return;
     const pos = getCanvasPointerPosition(e.clientX, e.clientY);
     let pointer = pointers.find(p => p.id == -1);
     if (pointer == null)
@@ -1672,6 +1738,7 @@ window.addEventListener('mousedown', e => {
 }, { passive: true });
 
 window.addEventListener('mousemove', e => {
+    if (isFluidControlEventTarget(e.target)) return;
     let pointer = pointers[0];
     const pos = getCanvasPointerPosition(e.clientX, e.clientY);
     if (!pointer.down)
@@ -1684,7 +1751,9 @@ window.addEventListener('mouseup', () => {
 });
 
 window.addEventListener('touchstart', e => {
-    if (document.body.classList.contains('fluid-immersive')) e.preventDefault();
+    const fromControls = isFluidControlEventTarget(e.target);
+    if (document.body.classList.contains('fluid-immersive') && !fromControls) e.preventDefault();
+    if (fromControls) return;
     const touches = e.touches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
@@ -1695,7 +1764,9 @@ window.addEventListener('touchstart', e => {
 }, { passive: false });
 
 window.addEventListener('touchmove', e => {
-    if (document.body.classList.contains('fluid-immersive')) e.preventDefault();
+    const fromControls = isFluidControlEventTarget(e.target);
+    if (document.body.classList.contains('fluid-immersive') && !fromControls) e.preventDefault();
+    if (fromControls) return;
     const touches = e.touches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
@@ -1707,6 +1778,11 @@ window.addEventListener('touchmove', e => {
         updatePointerMoveData(pointer, pos.x, pos.y);
     }
 }, { passive: false });
+
+function isFluidControlEventTarget (target) {
+    const element = target?.nodeType === 1 ? target : target?.parentElement;
+    return !!element?.closest?.('[data-fluid-controls]');
+}
 
 window.addEventListener('touchend', e => {
     const touches = e.changedTouches;

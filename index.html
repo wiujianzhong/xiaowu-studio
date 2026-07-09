@@ -23,8 +23,8 @@
       --blue: #8ab6d6;
       --fluid-accent: #ffe457;
       --hero-brightness: .96;
-      --fluid-opacity: .42;
-      --fluid-brightness: 1.08;
+      --fluid-opacity: .38;
+      --fluid-brightness: .98;
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
     }
 
@@ -52,11 +52,19 @@
       display: block;
       width: 100vw;
       height: 100vh;
-      opacity: var(--fluid-opacity);
+      visibility: hidden;
+      opacity: 0;
       mix-blend-mode: normal;
       filter: brightness(var(--fluid-brightness)) saturate(1.32) contrast(1.01);
       pointer-events: none;
       touch-action: none;
+      transition: opacity .28s ease, visibility 0s linear .28s;
+    }
+
+    body.fluid-ready .fluid-backdrop {
+      visibility: visible;
+      opacity: var(--fluid-opacity);
+      transition: opacity .28s ease;
     }
 
     body.fluid-immersive {
@@ -77,15 +85,15 @@
       background: #000;
     }
 
-    body.fluid-immersive .fluid-backdrop {
+    body.fluid-ready.fluid-immersive .fluid-backdrop {
       z-index: 50;
       opacity: var(--fluid-opacity);
-      filter: brightness(.92) saturate(1.36) contrast(.96);
+      filter: brightness(.76) saturate(1.24) contrast(.92);
       pointer-events: auto;
     }
 
     body.fluid-immersive .topbar {
-      z-index: 72;
+      z-index: 96;
       right: max(14px, env(safe-area-inset-right));
       left: auto;
       width: auto;
@@ -102,12 +110,17 @@
     }
 
     body.fluid-immersive .fluid-toggle {
+      position: relative;
+      z-index: 98;
       border-color: rgba(255, 228, 87, .58);
       color: #ffe457;
       background: rgba(0, 0, 0, .72);
+      pointer-events: auto;
+      touch-action: manipulation;
     }
 
     body.fluid-immersive .fluid-panel {
+      z-index: 99;
       background: rgba(0, 0, 0, .88);
     }
 
@@ -1181,8 +1194,8 @@
     @media (max-width: 620px) {
       :root {
         --hero-brightness: .94;
-        --fluid-opacity: .34;
-        --fluid-brightness: 1.1;
+        --fluid-opacity: .30;
+        --fluid-brightness: .96;
       }
 
       .hero-photo {
@@ -1191,7 +1204,6 @@
       }
 
       .fluid-backdrop {
-        opacity: var(--fluid-opacity);
         filter: brightness(var(--fluid-brightness)) saturate(1.16) contrast(1);
       }
 
@@ -1627,7 +1639,7 @@
     </div>
   </div>
 
-  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v5"></script>
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v6"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
