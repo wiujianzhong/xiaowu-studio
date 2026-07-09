@@ -383,7 +383,6 @@ function startBackdropControls () {
     const panelToggle = controls.querySelector('[data-fluid-panel-toggle]');
     const panelToggleText = panelToggle?.querySelector('span');
     const panel = controls.querySelector('[data-fluid-panel]');
-    const resetButton = controls.querySelector('[data-fluid-action="reset"]');
     const powerButton = controls.querySelector('[data-fluid-action="power"]');
     const immersiveButton = controls.querySelector('[data-fluid-action="immersive"]');
     const paletteButton = controls.querySelector('[data-fluid-action="palette"]');
@@ -393,7 +392,7 @@ function startBackdropControls () {
     const backgroundDefault = 96;
     const rootStyles = getComputedStyle(document.documentElement);
     const effectDefault = Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
-    const effectMax = 86;
+    const effectMax = 88;
     let fluidEnabled = true;
     let immersiveEnabled = false;
     let lastPanelTouchExitAt = 0;
@@ -451,7 +450,7 @@ function startBackdropControls () {
     }
 
     function getImmersiveEffect () {
-        if (isAndroidDevice || isIOSDevice) return 68;
+        if (isAndroidDevice || isIOSDevice) return 88;
         return Math.min(effectMax, isMobile() ? 62 : 66);
     }
 
@@ -476,20 +475,6 @@ function startBackdropControls () {
             setEffectBrightness(effectDefault);
             setBackgroundBrightness(backgroundDefault);
         }
-        syncImmersive();
-    }
-
-    function resetFluid () {
-        fluidPaletteIndex = 0;
-        userPaused = false;
-        setFluidEnabled(true);
-        setBackgroundBrightness(backgroundDefault);
-        const immersiveEffect = getImmersiveEffect();
-        setEffectBrightness(immersiveEnabled ? immersiveEffect : effectDefault);
-        syncPalette();
-        applyPauseState();
-        initFramebuffers();
-        multipleSplats(isAndroidDevice ? 2 : isMobile() ? 6 : 18);
         syncImmersive();
     }
 
@@ -525,10 +510,6 @@ function startBackdropControls () {
         if (e.key !== 'Escape') return;
         if (immersiveEnabled) setImmersive(false);
         setPanelOpen(false);
-    });
-
-    resetButton?.addEventListener('click', () => {
-        resetFluid();
     });
 
     powerButton?.addEventListener('click', () => {
@@ -1733,7 +1714,7 @@ function blur (target, temp, iterations) {
 function splatPointer (pointer) {
     let dx = pointer.deltaX * config.SPLAT_FORCE;
     let dy = pointer.deltaY * config.SPLAT_FORCE;
-    const color = boostColor(pointer.color, document.body.classList.contains('fluid-immersive') ? 10.0 : 6.0);
+    const color = boostColor(pointer.color, document.body.classList.contains('fluid-immersive') ? 14.0 : 7.0);
     splat(pointer.texcoordX, pointer.texcoordY, dx, dy, color);
 }
 
