@@ -88,7 +88,7 @@
     body.fluid-ready.fluid-immersive .fluid-backdrop {
       z-index: 50;
       opacity: var(--fluid-opacity);
-      filter: brightness(.76) saturate(1.24) contrast(.92);
+      filter: brightness(.88) saturate(1.68) contrast(.98);
       pointer-events: auto;
     }
 
@@ -468,18 +468,6 @@
       color: #ffe457;
       font-size: 13px;
       font-weight: 760;
-    }
-
-    .fluid-range {
-      display: grid;
-      gap: 8px;
-      color: rgba(246, 240, 227, .68);
-      font-size: 12px;
-    }
-
-    .fluid-range input {
-      width: 100%;
-      accent-color: var(--fluid-accent);
     }
 
     .case-rail {
@@ -1416,14 +1404,6 @@
               <button class="fluid-control" type="button" data-fluid-action="power" aria-pressed="true"><span>关闭特效</span></button>
               <button class="fluid-control" type="button" data-fluid-action="immersive" aria-pressed="false"><span>沉浸式玩耍</span></button>
             </div>
-            <label class="fluid-range">
-              <span>背景亮暗</span>
-              <input type="range" min="70" max="116" value="96" data-fluid-range="background">
-            </label>
-            <label class="fluid-range">
-              <span>特效亮暗</span>
-              <input type="range" min="0" max="86" value="42" data-fluid-range="effect">
-            </label>
           </div>
         </div>
     <nav class="nav" aria-label="主页导航">
@@ -1639,7 +1619,7 @@
     </div>
   </div>
 
-  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v6"></script>
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v7"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");

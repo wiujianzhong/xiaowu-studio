@@ -46,7 +46,7 @@ let config = {
     SPLAT_FORCE: 3600,
     SHADING: true,
     COLORFUL: true,
-    COLOR_UPDATE_SPEED: 6,
+    COLOR_UPDATE_SPEED: 11,
     PAUSED: false,
     BACK_COLOR: { r: 4, g: 1, b: 8 },
     TRANSPARENT: false,
@@ -79,16 +79,19 @@ let splatStack = [];
 pointers.push(new pointerPrototype());
 
 const fluidPalettes = [
-    { name: '五彩霓虹', accent: '#39e68f', strength: 0.18, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
-    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.19, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
-    { name: '糖果混色', accent: '#ff5ac8', strength: 0.18, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
-    { name: '彩虹随机', accent: '#ffe457', strength: 0.16, random: true }
+    { name: '五彩霓虹', accent: '#39e68f', strength: 0.22, colors: ['#00d8ff', '#21ff72', '#ffb000', '#ff3cc7', '#7657ff', '#ff6a22', '#1188ff', '#8aff26'] },
+    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.23, colors: ['#00b7ff', '#00f0ff', '#20ff82', '#22ffd6', '#2878ff', '#7dff28'] },
+    { name: '糖果混色', accent: '#ff5ac8', strength: 0.22, colors: ['#ff35b8', '#ff9f1a', '#754dff', '#00d8ff', '#20ff82', '#ff5a28'] },
+    { name: '彩虹随机', accent: '#ffe457', strength: 0.19, random: true }
 ];
 let fluidPaletteIndex = 0;
 let userPaused = false;
 let backdropReady = false;
 let heroImageReady = false;
 let firstFrameReady = false;
+let immersiveModeActive = false;
+let immersiveSplatTimer = 0;
+let immersiveSplatPhase = 0;
 
 const webglContext = getWebGLContext(canvas);
 const gl = webglContext.gl;
@@ -341,12 +344,10 @@ function startBackdropControls () {
     const splashButton = controls.querySelector('[data-fluid-action="splash"]');
     const captureButton = controls.querySelector('[data-fluid-action="capture"]');
     const pauseButton = controls.querySelector('[data-fluid-action="pause"]');
-    const backgroundRange = controls.querySelector('[data-fluid-range="background"]');
-    const effectRange = controls.querySelector('[data-fluid-range="effect"]');
-    const backgroundDefault = Number(backgroundRange?.value || 96);
+    const backgroundDefault = 96;
     const rootStyles = getComputedStyle(document.documentElement);
     const effectDefault = Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
-    const effectMax = Number(effectRange?.max || 86);
+    const effectMax = 86;
     let fluidEnabled = true;
     let immersiveEnabled = false;
     let lastPanelTouchExitAt = 0;
@@ -412,16 +413,18 @@ function startBackdropControls () {
     function setImmersive (enabled) {
         if (enabled && !backdropReady) return;
         immersiveEnabled = enabled;
+        immersiveModeActive = enabled;
+        immersiveSplatTimer = 0;
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = Math.min(effectMax, isMobile() ? 38 : 44);
-            if (effectRange != null && Number(effectRange.value) < immersiveEffect) {
-                effectRange.value = String(immersiveEffect);
-                setEffectBrightness(immersiveEffect);
-            }
-            splatStack.push(isMobile() ? 12 : 18);
+            const immersiveEffect = Math.min(effectMax, isMobile() ? 54 : 60);
+            setEffectBrightness(immersiveEffect);
+            splatStack.push(isMobile() ? 16 : 24);
             setPanelOpen(false);
+        } else {
+            setEffectBrightness(effectDefault);
+            setBackgroundBrightness(backgroundDefault);
         }
         syncImmersive();
     }
@@ -430,14 +433,8 @@ function startBackdropControls () {
         fluidPaletteIndex = 0;
         userPaused = false;
         setFluidEnabled(true);
-        if (backgroundRange != null) {
-            backgroundRange.value = String(backgroundDefault);
-            setBackgroundBrightness(backgroundDefault);
-        }
-        if (effectRange != null) {
-            effectRange.value = String(effectDefault);
-            setEffectBrightness(effectDefault);
-        }
+        setBackgroundBrightness(backgroundDefault);
+        setEffectBrightness(immersiveEnabled ? Math.min(effectMax, isMobile() ? 54 : 60) : effectDefault);
         syncPalette();
         applyPauseState();
         initFramebuffers();
@@ -492,14 +489,6 @@ function startBackdropControls () {
         setImmersive(!immersiveEnabled);
     });
 
-    backgroundRange?.addEventListener('input', () => {
-        setBackgroundBrightness(backgroundRange.value);
-    });
-
-    effectRange?.addEventListener('input', () => {
-        setEffectBrightness(effectRange.value);
-    });
-
     paletteButton?.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
         syncPalette();
@@ -528,10 +517,7 @@ function startBackdropControls () {
         applyPauseState();
     }
 
-    if (effectRange != null) {
-        effectRange.value = String(effectDefault);
-        setEffectBrightness(effectDefault);
-    }
+    setEffectBrightness(effectDefault);
     setBackgroundBrightness(backgroundDefault);
     syncPalette();
     applyPauseState();
@@ -1433,6 +1419,7 @@ function update () {
     if (resizeCanvas())
         initFramebuffers();
     updateColors(dt);
+    applyImmersiveAmbient(dt);
     applyInputs();
     if (!config.PAUSED && !document.hidden)
         step(dt);
@@ -1485,6 +1472,63 @@ function applyInputs () {
             splatPointer(p);
         }
     });
+}
+
+function applyImmersiveAmbient (dt) {
+    if (!immersiveModeActive || config.PAUSED || document.hidden)
+        return;
+
+    immersiveSplatTimer += dt;
+    const interval = isMobile() ? 0.44 : 0.32;
+    if (immersiveSplatTimer < interval)
+        return;
+
+    immersiveSplatTimer = 0;
+    immersiveSplatPhase += 1;
+
+    if (immersiveSplatPhase % 5 === 0)
+        fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
+
+    const amount = isMobile() ? 2 : 3;
+    const t = immersiveSplatPhase * 0.63;
+    for (let i = 0; i < amount; i++) {
+        const edge = (immersiveSplatPhase + i) % 4;
+        const wave = Math.sin(t + i * 1.7) * 0.22;
+        const drift = Math.cos(t * 0.8 + i) * 0.18;
+        let x;
+        let y;
+        let dx;
+        let dy;
+
+        if (edge === 0) {
+            x = 0.03;
+            y = 0.5 + wave;
+            dx = 3600;
+            dy = 1400 * drift;
+        } else if (edge === 1) {
+            x = 0.97;
+            y = 0.5 - wave;
+            dx = -3600;
+            dy = -1400 * drift;
+        } else if (edge === 2) {
+            x = 0.5 + wave;
+            y = 0.04;
+            dx = 1400 * drift;
+            dy = 3400;
+        } else {
+            x = 0.5 - wave;
+            y = 0.96;
+            dx = -1400 * drift;
+            dy = -3400;
+        }
+
+        const color = generateColor();
+        const boost = isMobile() ? 5.4 : 6.2;
+        color.r *= boost;
+        color.g *= boost;
+        color.b *= boost;
+        splat(Math.max(0.02, Math.min(0.98, x)), Math.max(0.02, Math.min(0.98, y)), dx, dy, color);
+    }
 }
 
 function step (dt) {
@@ -1844,7 +1888,7 @@ function generateColor () {
     const palette = fluidPalettes[fluidPaletteIndex];
     let c;
     if (palette.random) {
-        c = HSVtoRGB(Math.random(), 0.88, 0.9);
+        c = HSVtoRGB(Math.random(), 0.96, 0.84);
     } else {
         c = hexToRGB(palette.colors[parseInt(Math.random() * palette.colors.length)]);
     }
