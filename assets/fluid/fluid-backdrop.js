@@ -38,23 +38,25 @@ const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform =
 const isMobileDevice = isAndroidDevice || isIOSDevice || /Mobi/i.test(userAgent);
 const cpuCores = navigator.hardwareConcurrency || 4;
 const deviceMemory = Number(navigator.deviceMemory) || 4;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const saveDataMode = !!navigator.connection?.saveData;
 const constrainedMobile = isMobileDevice && (isAndroidDevice || cpuCores <= 4 || deviceMemory <= 4);
-const fallbackOnly = isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2);
-const targetFrameInterval = isAndroidDevice ? 1000 / 24 : isMobileDevice ? 1000 / 45 : 1000 / 60;
-const maxFluidPixelRatio = isAndroidDevice ? 1 : isMobileDevice ? 1.5 : 2;
+const fallbackOnly = prefersReducedMotion || saveDataMode || (isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2));
+const targetFrameInterval = isMobileDevice ? 1000 / 24 : 1000 / 30;
+const maxFluidPixelRatio = isMobileDevice ? 1 : 1.5;
 if (isAndroidDevice)
     document.body.classList.add('fluid-android');
 resizeCanvas();
 
 let config = {
-    SIM_RESOLUTION: 72,
-    DYE_RESOLUTION: 512,
+    SIM_RESOLUTION: 56,
+    DYE_RESOLUTION: 384,
     CAPTURE_RESOLUTION: 1024,
     DENSITY_DISSIPATION: 0.96,
     VELOCITY_DISSIPATION: 0.18,
     PRESSURE: 0.8,
-    PRESSURE_ITERATIONS: 20,
-    CURL: 24,
+    PRESSURE_ITERATIONS: 14,
+    CURL: 18,
     SPLAT_RADIUS: 0.18,
     SPLAT_FORCE: 3600,
     SHADING: true,
@@ -136,10 +138,10 @@ if (isAndroidDevice) {
     config.BLOOM = false;
     config.SUNRAYS = false;
 } else if (isMobile()) {
-    config.SIM_RESOLUTION = constrainedMobile ? 48 : 56;
-    config.DYE_RESOLUTION = constrainedMobile ? 256 : 320;
-    config.PRESSURE_ITERATIONS = constrainedMobile ? 12 : 14;
-    config.CURL = constrainedMobile ? 16 : 20;
+    config.SIM_RESOLUTION = constrainedMobile ? 36 : 44;
+    config.DYE_RESOLUTION = constrainedMobile ? 192 : 240;
+    config.PRESSURE_ITERATIONS = constrainedMobile ? 8 : 10;
+    config.CURL = constrainedMobile ? 10 : 14;
     config.SPLAT_RADIUS = 0.13;
     config.SPLAT_FORCE = constrainedMobile ? 2400 : 2800;
     config.BLOOM = false;
@@ -1440,11 +1442,12 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 5 : 14)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 5));
+multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 3 : 7)) + (isAndroidDevice ? 1 : isMobile() ? 3 : 4));
 
 let lastUpdateTime = Date.now();
 let lastFrameTime = 0;
 let lastAndroidTouchMoveAt = 0;
+let lastMouseMoveAt = 0;
 let colorUpdateTimer = 0.0;
 requestAnimationFrame(update);
 
@@ -1456,6 +1459,10 @@ function update (frameTime = performance.now()) {
     lastFrameTime = frameTime;
 
     try {
+        if (config.PAUSED || document.hidden) {
+            lastUpdateTime = Date.now();
+            return;
+        }
         const dt = calcDeltaTime();
         if (resizeCanvas())
             initFramebuffers();
@@ -1780,6 +1787,10 @@ window.addEventListener('mousedown', e => {
 
 window.addEventListener('mousemove', e => {
     if (isFluidControlEventTarget(e.target)) return;
+    const now = Date.now();
+    const immersive = document.body.classList.contains('fluid-immersive');
+    if (!immersive && e.buttons === 0 && now - lastMouseMoveAt < 80) return;
+    lastMouseMoveAt = now;
     let pointer = pointers[0];
     const pos = getCanvasPointerPosition(e.clientX, e.clientY);
     if (!pointer.down)
