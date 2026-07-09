@@ -42,6 +42,8 @@ const constrainedMobile = isMobileDevice && (isAndroidDevice || cpuCores <= 4 ||
 const fallbackOnly = isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2);
 const targetFrameInterval = isAndroidDevice ? 1000 / 30 : isMobileDevice ? 1000 / 45 : 1000 / 60;
 const maxFluidPixelRatio = isAndroidDevice ? 1.2 : isMobileDevice ? 1.5 : 2;
+if (isAndroidDevice)
+    document.body.classList.add('fluid-android');
 resizeCanvas();
 
 let config = {
@@ -121,13 +123,15 @@ canvas.addEventListener('webglcontextlost', event => {
 }, false);
 
 if (isAndroidDevice) {
-    config.SIM_RESOLUTION = 40;
-    config.DYE_RESOLUTION = 224;
+    config.SIM_RESOLUTION = constrainedMobile ? 40 : 48;
+    config.DYE_RESOLUTION = constrainedMobile ? 256 : 320;
+    config.DENSITY_DISSIPATION = 0.9;
+    config.VELOCITY_DISSIPATION = 0.32;
     config.PRESSURE_ITERATIONS = 10;
-    config.CURL = 14;
-    config.SPLAT_RADIUS = 0.12;
-    config.SPLAT_FORCE = 1800;
-    config.COLOR_UPDATE_SPEED = 6;
+    config.CURL = 10;
+    config.SPLAT_RADIUS = 0.08;
+    config.SPLAT_FORCE = 1200;
+    config.COLOR_UPDATE_SPEED = 4;
     config.SHADING = false;
     config.BLOOM = false;
     config.SUNRAYS = false;
@@ -388,7 +392,7 @@ function startBackdropControls () {
     const pauseButton = controls.querySelector('[data-fluid-action="pause"]');
     const backgroundDefault = 96;
     const rootStyles = getComputedStyle(document.documentElement);
-    const effectDefault = Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
+    const effectDefault = isAndroidDevice ? 18 : Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
     const effectMax = 86;
     let fluidEnabled = true;
     let immersiveEnabled = false;
@@ -438,9 +442,10 @@ function startBackdropControls () {
     }
 
     function setEffectBrightness (value) {
-        const numeric = Math.max(0, Math.min(effectMax, Number(value)));
+        const cap = isAndroidDevice ? 28 : effectMax;
+        const numeric = Math.max(0, Math.min(cap, Number(value)));
         const opacity = numeric / 100;
-        const brightness = 0.78 + (numeric / effectMax) * 0.62;
+        const brightness = isAndroidDevice ? 0.76 + (numeric / cap) * 0.22 : 0.78 + (numeric / effectMax) * 0.62;
         document.documentElement.style.setProperty('--fluid-opacity', opacity.toFixed(2));
         document.documentElement.style.setProperty('--fluid-brightness', brightness.toFixed(2));
     }
@@ -458,9 +463,9 @@ function startBackdropControls () {
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = Math.min(effectMax, isMobile() ? 58 : 64);
+            const immersiveEffect = isAndroidDevice ? 26 : Math.min(effectMax, isMobile() ? 58 : 64);
             setEffectBrightness(immersiveEffect);
-            splatStack.push(isAndroidDevice ? 8 : isMobile() ? 12 : 24);
+            splatStack.push(isAndroidDevice ? 3 : isMobile() ? 12 : 24);
             setPanelOpen(false);
         } else {
             setEffectBrightness(effectDefault);
@@ -474,11 +479,12 @@ function startBackdropControls () {
         userPaused = false;
         setFluidEnabled(true);
         setBackgroundBrightness(backgroundDefault);
-        setEffectBrightness(immersiveEnabled ? Math.min(effectMax, isMobile() ? 58 : 64) : effectDefault);
+        const immersiveEffect = isAndroidDevice ? 26 : Math.min(effectMax, isMobile() ? 58 : 64);
+        setEffectBrightness(immersiveEnabled ? immersiveEffect : effectDefault);
         syncPalette();
         applyPauseState();
         initFramebuffers();
-        multipleSplats(isAndroidDevice ? 4 : isMobile() ? 6 : 18);
+        multipleSplats(isAndroidDevice ? 2 : isMobile() ? 6 : 18);
         syncImmersive();
     }
 
@@ -532,11 +538,11 @@ function startBackdropControls () {
     paletteButton?.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
         syncPalette();
-        splatStack.push(isAndroidDevice ? 3 : isMobile() ? 5 : 10);
+        splatStack.push(isAndroidDevice ? 1 : isMobile() ? 5 : 10);
     });
 
     splashButton?.addEventListener('click', () => {
-        splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 4 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 10));
+        splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 2 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 1 : isMobile() ? 4 : 10));
     });
 
     captureButton?.addEventListener('click', () => {
@@ -1448,7 +1454,7 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 3 : isMobile() ? 5 : 14)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 5));
+multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 5 : 14)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 5));
 
 let lastUpdateTime = Date.now();
 let lastFrameTime = 0;
@@ -1727,13 +1733,15 @@ function splatPointer (pointer) {
 function multipleSplats (amount) {
     for (let i = 0; i < amount; i++) {
         const color = generateColor();
-        color.r *= 10.0;
-        color.g *= 10.0;
-        color.b *= 10.0;
+        const colorBoost = isAndroidDevice ? 4.8 : 10.0;
+        color.r *= colorBoost;
+        color.g *= colorBoost;
+        color.b *= colorBoost;
         const x = Math.random();
         const y = Math.random();
-        const dx = 1000 * (Math.random() - 0.5);
-        const dy = 1000 * (Math.random() - 0.5);
+        const force = isAndroidDevice ? 420 : 1000;
+        const dx = force * (Math.random() - 0.5);
+        const dy = force * (Math.random() - 0.5);
         splat(x, y, dx, dy, color);
     }
 }
@@ -1889,7 +1897,7 @@ function generateColor () {
     } else {
         c = hexToRGB(palette.colors[parseInt(Math.random() * palette.colors.length)]);
     }
-    const strength = palette.strength || 0.2;
+    const strength = (palette.strength || 0.2) * (isAndroidDevice ? 0.68 : 1);
     c.r *= strength;
     c.g *= strength;
     c.b *= strength;
