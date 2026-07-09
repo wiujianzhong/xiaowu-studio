@@ -288,10 +288,19 @@ function startBackdropControls () {
     const controls = document.querySelector('[data-fluid-controls]');
     if (controls == null) return;
 
+    const panelToggle = controls.querySelector('[data-fluid-panel-toggle]');
+    const panel = controls.querySelector('[data-fluid-panel]');
+    const resetButton = controls.querySelector('[data-fluid-action="reset"]');
+    const powerButton = controls.querySelector('[data-fluid-action="power"]');
     const paletteButton = controls.querySelector('[data-fluid-action="palette"]');
     const splashButton = controls.querySelector('[data-fluid-action="splash"]');
     const captureButton = controls.querySelector('[data-fluid-action="capture"]');
     const pauseButton = controls.querySelector('[data-fluid-action="pause"]');
+    const backgroundRange = controls.querySelector('[data-fluid-range="background"]');
+    const effectRange = controls.querySelector('[data-fluid-range="effect"]');
+    const backgroundDefault = Number(backgroundRange?.value || 96);
+    const effectDefault = Math.round((parseFloat(getComputedStyle(canvas).opacity) || 0.34) * 100);
+    let fluidEnabled = true;
 
     function syncPalette () {
         const palette = fluidPalettes[fluidPaletteIndex];
@@ -305,6 +314,90 @@ function startBackdropControls () {
         pauseButton.setAttribute('aria-pressed', String(config.PAUSED));
         pauseButton.querySelector('span').textContent = config.PAUSED ? '继续' : '暂停';
     }
+
+    function syncPower () {
+        if (powerButton == null) return;
+        powerButton.setAttribute('aria-pressed', String(fluidEnabled));
+        powerButton.querySelector('span').textContent = fluidEnabled ? '关闭特效' : '打开特效';
+    }
+
+    function applyPauseState () {
+        config.PAUSED = !fluidEnabled || document.hidden || userPaused;
+        syncPause();
+    }
+
+    function setPanelOpen (open) {
+        if (panel == null || panelToggle == null) return;
+        panel.hidden = !open;
+        panelToggle.setAttribute('aria-expanded', String(open));
+    }
+
+    function setBackgroundBrightness (value) {
+        const amount = Math.max(0.7, Math.min(1.16, Number(value) / 100));
+        document.documentElement.style.setProperty('--hero-brightness', amount.toFixed(2));
+    }
+
+    function setEffectBrightness (value) {
+        const numeric = Math.max(0, Math.min(62, Number(value)));
+        const opacity = numeric / 100;
+        const brightness = 0.72 + (numeric / 62) * 0.5;
+        document.documentElement.style.setProperty('--fluid-opacity', opacity.toFixed(2));
+        document.documentElement.style.setProperty('--fluid-brightness', brightness.toFixed(2));
+    }
+
+    function setFluidEnabled (enabled) {
+        fluidEnabled = enabled;
+        canvas.style.display = enabled ? '' : 'none';
+        applyPauseState();
+        syncPower();
+    }
+
+    function resetFluid () {
+        fluidPaletteIndex = 0;
+        userPaused = false;
+        setFluidEnabled(true);
+        if (backgroundRange != null) {
+            backgroundRange.value = String(backgroundDefault);
+            setBackgroundBrightness(backgroundDefault);
+        }
+        if (effectRange != null) {
+            effectRange.value = String(effectDefault);
+            setEffectBrightness(effectDefault);
+        }
+        syncPalette();
+        applyPauseState();
+        initFramebuffers();
+        multipleSplats(18);
+    }
+
+    panelToggle?.addEventListener('click', () => {
+        setPanelOpen(panel?.hidden !== false);
+    });
+
+    document.addEventListener('click', e => {
+        if (panel == null || panel.hidden || controls.contains(e.target)) return;
+        setPanelOpen(false);
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') setPanelOpen(false);
+    });
+
+    resetButton?.addEventListener('click', () => {
+        resetFluid();
+    });
+
+    powerButton?.addEventListener('click', () => {
+        setFluidEnabled(!fluidEnabled);
+    });
+
+    backgroundRange?.addEventListener('input', () => {
+        setBackgroundBrightness(backgroundRange.value);
+    });
+
+    effectRange?.addEventListener('input', () => {
+        setEffectBrightness(effectRange.value);
+    });
 
     paletteButton?.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
@@ -322,22 +415,26 @@ function startBackdropControls () {
 
     pauseButton?.addEventListener('click', () => {
         userPaused = !userPaused;
-        config.PAUSED = userPaused;
-        syncPause();
+        applyPauseState();
     });
 
     document.addEventListener('visibilitychange', () => {
-        config.PAUSED = document.hidden || userPaused;
-        syncPause();
+        applyPauseState();
     });
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         userPaused = true;
-        config.PAUSED = true;
+        applyPauseState();
     }
 
+    if (effectRange != null) {
+        effectRange.value = String(effectDefault);
+        setEffectBrightness(effectDefault);
+    }
+    setBackgroundBrightness(backgroundDefault);
     syncPalette();
-    syncPause();
+    applyPauseState();
+    syncPower();
 }
 
 function captureScreenshot () {

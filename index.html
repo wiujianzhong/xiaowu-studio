@@ -22,6 +22,9 @@
       --red: #e44d38;
       --blue: #8ab6d6;
       --fluid-accent: #c12b7e;
+      --hero-brightness: .96;
+      --fluid-opacity: .34;
+      --fluid-brightness: .94;
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
     }
 
@@ -49,9 +52,9 @@
       display: block;
       width: 100vw;
       height: 100vh;
-      opacity: .34;
+      opacity: var(--fluid-opacity);
       mix-blend-mode: normal;
-      filter: brightness(.94) saturate(1.32) contrast(1.01);
+      filter: brightness(var(--fluid-brightness)) saturate(1.32) contrast(1.01);
       pointer-events: none;
       touch-action: none;
     }
@@ -103,7 +106,7 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
-      filter: saturate(.98) contrast(1.03) brightness(.96);
+      filter: saturate(.98) contrast(1.03) brightness(var(--hero-brightness));
       transform: scale(1.012);
     }
 
@@ -195,11 +198,32 @@
     }
 
     .nav a {
+      position: relative;
+      padding: 4px 0;
       text-decoration: none;
     }
 
-    .nav a:hover {
+    .nav a::after {
+      position: absolute;
+      right: 0;
+      bottom: -3px;
+      left: 0;
+      height: 1px;
+      background: var(--jade);
+      opacity: 0;
+      transform: scaleX(.42);
+      transition: opacity .2s ease, transform .2s ease;
+      content: "";
+    }
+
+    .nav a:hover,
+    .nav a.is-active {
       color: var(--paper);
+    }
+
+    .nav a.is-active::after {
+      opacity: 1;
+      transform: scaleX(1);
     }
 
     .hero-inner {
@@ -282,41 +306,38 @@
       font-size: 15px;
     }
 
-
-
     .fluid-controls {
-      display: none;
-      width: fit-content;
-      max-width: min(560px, calc(100vw - 32px));
-      padding: 6px;
-      border: 1px solid rgba(246, 240, 227, .15);
-      border-radius: 999px;
-      gap: 6px;
-      background: rgba(5, 7, 5, .44);
-      box-shadow: 0 18px 48px rgba(0, 0, 0, .32);
-      -webkit-backdrop-filter: blur(18px) saturate(1.18);
-      backdrop-filter: blur(18px) saturate(1.18);
+      position: relative;
+      z-index: 24;
+      display: grid;
+      margin-left: auto;
     }
 
+    .fluid-toggle,
     .fluid-control {
       display: inline-flex;
-      min-height: 34px;
-      padding: 8px 12px;
-      border: 1px solid transparent;
-      border-radius: 999px;
       align-items: center;
       justify-content: center;
       gap: 7px;
-      color: rgba(246, 240, 227, .68);
-      background: rgba(255, 255, 255, .035);
+      border: 1px solid rgba(246, 240, 227, .16);
+      color: rgba(246, 240, 227, .78);
+      background: rgba(5, 7, 5, .5);
       cursor: pointer;
-      font-size: 10px;
-      letter-spacing: .08em;
+      font-size: 12px;
       white-space: nowrap;
       transition: color .22s ease, border-color .22s ease, background .22s ease, transform .22s ease;
     }
 
-    .fluid-control::before {
+    .fluid-toggle {
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 999px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, .26);
+      -webkit-backdrop-filter: blur(18px) saturate(1.18);
+      backdrop-filter: blur(18px) saturate(1.18);
+    }
+
+    .fluid-toggle::before {
       display: block;
       width: 6px;
       height: 6px;
@@ -326,6 +347,8 @@
       content: "";
     }
 
+    .fluid-toggle[aria-expanded="true"],
+    .fluid-toggle:hover,
     .fluid-control:hover,
     .fluid-control:focus-visible,
     .fluid-control[aria-pressed="true"] {
@@ -334,6 +357,57 @@
       background: rgba(255, 255, 255, .075);
       outline: none;
       transform: translateY(-2px);
+    }
+
+    .fluid-panel {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      display: grid;
+      width: min(304px, calc(100vw - 24px));
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(246, 240, 227, .16);
+      border-radius: 8px;
+      background: rgba(5, 7, 5, .82);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .46);
+      -webkit-backdrop-filter: blur(22px) saturate(1.18);
+      backdrop-filter: blur(22px) saturate(1.18);
+    }
+
+    .fluid-panel[hidden] {
+      display: none;
+    }
+
+    .fluid-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .fluid-control {
+      min-height: 38px;
+      padding: 0 11px;
+      border-radius: 8px;
+      background: rgba(246, 240, 227, .055);
+    }
+
+    .fluid-control[aria-pressed="false"] {
+      border-color: rgba(228, 77, 56, .38);
+      color: rgba(246, 240, 227, .62);
+      background: rgba(228, 77, 56, .08);
+    }
+
+    .fluid-range {
+      display: grid;
+      gap: 8px;
+      color: rgba(246, 240, 227, .68);
+      font-size: 12px;
+    }
+
+    .fluid-range input {
+      width: 100%;
+      accent-color: var(--fluid-accent);
     }
 
     .case-rail {
@@ -1043,14 +1117,20 @@
     }
 
     @media (max-width: 620px) {
+      :root {
+        --hero-brightness: .94;
+        --fluid-opacity: .24;
+        --fluid-brightness: 1;
+      }
+
       .hero-photo {
         object-position: 62% top;
-        filter: saturate(.98) contrast(1.02) brightness(.94);
+        filter: saturate(.98) contrast(1.02) brightness(var(--hero-brightness));
       }
 
       .fluid-backdrop {
-        opacity: .24;
-        filter: brightness(1) saturate(1.16) contrast(1);
+        opacity: var(--fluid-opacity);
+        filter: brightness(var(--fluid-brightness)) saturate(1.16) contrast(1);
       }
 
       .hero::after {
@@ -1060,11 +1140,58 @@
       }
 
       .topbar {
-        width: min(calc(100vw - 22px), 1180px);
+        right: 11px;
+        left: 11px;
+        width: auto;
+        align-items: flex-start;
+        gap: 8px;
+        transform: none;
       }
 
       .nav {
+        position: fixed;
+        right: auto;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        left: 50%;
+        z-index: 24;
+        display: flex;
+        width: min(calc(100vw - 22px), 360px);
+        justify-content: space-between;
+        gap: 0;
+        padding: 7px;
+        border-radius: 999px;
+        background: rgba(5, 7, 5, .74);
+        font-size: 12px;
+        transform: translateX(-50%);
+      }
+
+      .nav a {
+        display: grid;
+        flex: 1;
+        min-height: 34px;
+        place-items: center;
+        border-radius: 999px;
+        padding: 0;
+      }
+
+      .nav a::after {
         display: none;
+      }
+
+      .nav a.is-active {
+        background: rgba(57, 212, 157, .14);
+      }
+
+      .fluid-toggle {
+        min-height: 40px;
+        padding-inline: 12px;
+      }
+
+      .fluid-panel {
+        position: fixed;
+        top: calc(max(64px, env(safe-area-inset-top) + 58px));
+        right: 11px;
+        width: min(calc(100vw - 22px), 320px);
       }
 
       .hero-inner {
@@ -1097,18 +1224,6 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
       }
-
-      .fluid-controls {
-        display: none;
-      }
-
-      .fluid-controls::-webkit-scrollbar { display: none; }
-
-          .fluid-control {
-            min-width: max-content;
-            min-height: 36px;
-            padding-inline: 11px;
-          }
 
           .project-link-panel {
             width: 100%;
@@ -1219,6 +1334,23 @@
             <span>xiaowustudio.cn</span>
           </span>
         </div>
+        <div class="fluid-controls" data-fluid-controls aria-label="流体背板控制">
+          <button class="fluid-toggle" type="button" data-fluid-panel-toggle aria-expanded="false" aria-controls="fluidPanel"><span>流动效果</span></button>
+          <div class="fluid-panel" id="fluidPanel" data-fluid-panel hidden>
+            <div class="fluid-actions">
+              <button class="fluid-control" type="button" data-fluid-action="reset"><span>重置</span></button>
+              <button class="fluid-control" type="button" data-fluid-action="power" aria-pressed="true"><span>关闭特效</span></button>
+            </div>
+            <label class="fluid-range">
+              <span>背景亮暗</span>
+              <input type="range" min="70" max="116" value="96" data-fluid-range="background">
+            </label>
+            <label class="fluid-range">
+              <span>特效亮暗</span>
+              <input type="range" min="0" max="62" value="34" data-fluid-range="effect">
+            </label>
+          </div>
+        </div>
     <nav class="nav" aria-label="主页导航">
       <a href="#cases">项目案例</a>
       <a href="#work">工作方向</a>
@@ -1242,13 +1374,6 @@
             <span class="proof"><b>工具</b> PPT、编码、安装包</span>
             <span class="proof"><b>现场</b> 报表、对账、流程</span>
             <span class="proof"><b>AI</b> 记忆、自动化、协作</span>
-          </div>
-
-          <div class="fluid-controls" data-fluid-controls aria-label="流体背板控制">
-            <button class="fluid-control" type="button" data-fluid-action="palette"><span>深色光谱</span></button>
-            <button class="fluid-control" type="button" data-fluid-action="splash"><span>掀起</span></button>
-            <button class="fluid-control" type="button" data-fluid-action="capture"><span>留影</span></button>
-            <button class="fluid-control" type="button" data-fluid-action="pause" aria-pressed="false"><span>暂停</span></button>
           </div>
         </div>
 
@@ -1323,7 +1448,7 @@
               <span class="case-note">语音开单、客户对账、汇总导出</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo-sound.mp4?v=fitness-action-v2" data-link="https://fitness.xiaowustudio.cn/">
+          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo-sound.mp4?v=fitness-male-v1" data-link="https://fitness.xiaowustudio.cn/">
             <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" decoding="async">
             <span class="case-index">06</span>
             <span class="play-badge" aria-hidden="true">
@@ -1439,7 +1564,7 @@
     </div>
   </div>
 
-  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=touch-fluid-v2"></script>
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v3"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
@@ -1522,6 +1647,8 @@
         videoElement.controls = true;
         videoElement.autoplay = true;
         videoElement.playsInline = true;
+        videoElement.setAttribute("playsinline", "");
+        videoElement.setAttribute("webkit-playsinline", "");
         videoElement.preload = "auto";
         mediaFrame.appendChild(videoElement);
       } else {
@@ -1652,6 +1779,41 @@
         }
 
         setupCaseRail();
+
+        function setupNavTracking() {
+          const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+          const targets = links
+            .map((link) => document.querySelector(link.getAttribute("href")))
+            .filter(Boolean);
+          if (links.length === 0 || targets.length === 0) return;
+
+          function setActive(id) {
+            links.forEach((link) => {
+              link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
+            });
+          }
+
+          const initialTarget = window.location.hash ? document.querySelector(window.location.hash) : targets[0];
+          if (initialTarget) setActive(initialTarget.id);
+
+          links.forEach((link) => {
+            link.addEventListener("click", () => {
+              const target = document.querySelector(link.getAttribute("href"));
+              if (target) setActive(target.id);
+            });
+          });
+
+          if (!("IntersectionObserver" in window)) return;
+          const observer = new IntersectionObserver((entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible && visible.target.id) setActive(visible.target.id);
+          }, { rootMargin: "-42% 0px -42% 0px", threshold: [0, .2, .45] });
+          targets.forEach((target) => observer.observe(target));
+        }
+
+        setupNavTracking();
 
         document.querySelectorAll("[data-close-player]").forEach((button) => {
           button.addEventListener("click", closePlayer);
