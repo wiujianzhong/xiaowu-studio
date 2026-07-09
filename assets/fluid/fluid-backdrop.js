@@ -40,8 +40,8 @@ const cpuCores = navigator.hardwareConcurrency || 4;
 const deviceMemory = Number(navigator.deviceMemory) || 4;
 const constrainedMobile = isMobileDevice && (isAndroidDevice || cpuCores <= 4 || deviceMemory <= 4);
 const fallbackOnly = isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2);
-const targetFrameInterval = isAndroidDevice ? 1000 / 30 : isMobileDevice ? 1000 / 45 : 1000 / 60;
-const maxFluidPixelRatio = isAndroidDevice ? 1.2 : isMobileDevice ? 1.5 : 2;
+const targetFrameInterval = isAndroidDevice ? 1000 / 24 : isMobileDevice ? 1000 / 45 : 1000 / 60;
+const maxFluidPixelRatio = isAndroidDevice ? 1 : isMobileDevice ? 1.5 : 2;
 if (isAndroidDevice)
     document.body.classList.add('fluid-android');
 resizeCanvas();
@@ -123,14 +123,14 @@ canvas.addEventListener('webglcontextlost', event => {
 }, false);
 
 if (isAndroidDevice) {
-    config.SIM_RESOLUTION = constrainedMobile ? 40 : 48;
-    config.DYE_RESOLUTION = constrainedMobile ? 256 : 320;
-    config.DENSITY_DISSIPATION = 0.9;
-    config.VELOCITY_DISSIPATION = 0.32;
+    config.SIM_RESOLUTION = constrainedMobile ? 32 : 40;
+    config.DYE_RESOLUTION = constrainedMobile ? 192 : 224;
+    config.DENSITY_DISSIPATION = 1.15;
+    config.VELOCITY_DISSIPATION = 0.48;
     config.PRESSURE_ITERATIONS = 10;
-    config.CURL = 10;
-    config.SPLAT_RADIUS = 0.08;
-    config.SPLAT_FORCE = 1200;
+    config.CURL = 6;
+    config.SPLAT_RADIUS = 0.065;
+    config.SPLAT_FORCE = 780;
     config.COLOR_UPDATE_SPEED = 4;
     config.SHADING = false;
     config.BLOOM = false;
@@ -392,7 +392,7 @@ function startBackdropControls () {
     const pauseButton = controls.querySelector('[data-fluid-action="pause"]');
     const backgroundDefault = 96;
     const rootStyles = getComputedStyle(document.documentElement);
-    const effectDefault = isAndroidDevice ? 18 : Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
+    const effectDefault = isAndroidDevice ? 10 : Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
     const effectMax = 86;
     let fluidEnabled = true;
     let immersiveEnabled = false;
@@ -442,12 +442,18 @@ function startBackdropControls () {
     }
 
     function setEffectBrightness (value) {
-        const cap = isAndroidDevice ? 28 : effectMax;
+        const cap = isAndroidDevice ? 26 : effectMax;
         const numeric = Math.max(0, Math.min(cap, Number(value)));
         const opacity = numeric / 100;
-        const brightness = isAndroidDevice ? 0.76 + (numeric / cap) * 0.22 : 0.78 + (numeric / effectMax) * 0.62;
+        const brightness = isAndroidDevice ? 0.64 + (numeric / cap) * 0.2 : 0.78 + (numeric / effectMax) * 0.62;
         document.documentElement.style.setProperty('--fluid-opacity', opacity.toFixed(2));
         document.documentElement.style.setProperty('--fluid-brightness', brightness.toFixed(2));
+    }
+
+    function getImmersiveEffect () {
+        if (isAndroidDevice) return 24;
+        if (isIOSDevice) return 68;
+        return Math.min(effectMax, isMobile() ? 62 : 66);
     }
 
     function setFluidEnabled (enabled) {
@@ -463,9 +469,9 @@ function startBackdropControls () {
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = isAndroidDevice ? 26 : Math.min(effectMax, isMobile() ? 58 : 64);
+            const immersiveEffect = getImmersiveEffect();
             setEffectBrightness(immersiveEffect);
-            splatStack.push(isAndroidDevice ? 3 : isMobile() ? 12 : 24);
+            splatStack.push(isAndroidDevice ? 5 : isMobile() ? 12 : 24);
             setPanelOpen(false);
         } else {
             setEffectBrightness(effectDefault);
@@ -479,7 +485,7 @@ function startBackdropControls () {
         userPaused = false;
         setFluidEnabled(true);
         setBackgroundBrightness(backgroundDefault);
-        const immersiveEffect = isAndroidDevice ? 26 : Math.min(effectMax, isMobile() ? 58 : 64);
+        const immersiveEffect = getImmersiveEffect();
         setEffectBrightness(immersiveEnabled ? immersiveEffect : effectDefault);
         syncPalette();
         applyPauseState();
@@ -542,7 +548,7 @@ function startBackdropControls () {
     });
 
     splashButton?.addEventListener('click', () => {
-        splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 2 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 1 : isMobile() ? 4 : 10));
+        splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 1 : isMobile() ? 4 : 10));
     });
 
     captureButton?.addEventListener('click', () => {
@@ -1458,6 +1464,7 @@ multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 5 : 
 
 let lastUpdateTime = Date.now();
 let lastFrameTime = 0;
+let lastAndroidTouchMoveAt = 0;
 let colorUpdateTimer = 0.0;
 requestAnimationFrame(update);
 
@@ -1733,13 +1740,13 @@ function splatPointer (pointer) {
 function multipleSplats (amount) {
     for (let i = 0; i < amount; i++) {
         const color = generateColor();
-        const colorBoost = isAndroidDevice ? 4.8 : 10.0;
+        const colorBoost = isAndroidDevice ? 4.0 : 10.0;
         color.r *= colorBoost;
         color.g *= colorBoost;
         color.b *= colorBoost;
         const x = Math.random();
         const y = Math.random();
-        const force = isAndroidDevice ? 420 : 1000;
+        const force = isAndroidDevice ? 220 : 1000;
         const dx = force * (Math.random() - 0.5);
         const dy = force * (Math.random() - 0.5);
         splat(x, y, dx, dy, color);
@@ -1801,12 +1808,15 @@ window.addEventListener('mouseup', () => {
 
 window.addEventListener('touchstart', e => {
     const fromControls = isFluidControlEventTarget(e.target);
-    if (document.body.classList.contains('fluid-immersive') && !fromControls) e.preventDefault();
+    const immersive = document.body.classList.contains('fluid-immersive');
+    if (isAndroidDevice && !immersive) return;
+    if (immersive && !fromControls) e.preventDefault();
     if (fromControls) return;
     const touches = e.touches;
-    while (touches.length >= pointers.length)
+    const touchCount = isAndroidDevice ? Math.min(touches.length, 1) : touches.length;
+    while (touchCount >= pointers.length)
         pointers.push(new pointerPrototype());
-    for (let i = 0; i < touches.length; i++) {
+    for (let i = 0; i < touchCount; i++) {
         const pos = getCanvasPointerPosition(touches[i].clientX, touches[i].clientY);
         updatePointerDownData(pointers[i + 1], touches[i].identifier, pos.x, pos.y);
     }
@@ -1814,12 +1824,16 @@ window.addEventListener('touchstart', e => {
 
 window.addEventListener('touchmove', e => {
     const fromControls = isFluidControlEventTarget(e.target);
-    if (document.body.classList.contains('fluid-immersive') && !fromControls) e.preventDefault();
+    const immersive = document.body.classList.contains('fluid-immersive');
+    if (isAndroidDevice && !immersive) return;
+    if (immersive && !fromControls) e.preventDefault();
     if (fromControls) return;
+    if (isAndroidDevice && !shouldHandleAndroidTouchMove()) return;
     const touches = e.touches;
-    while (touches.length >= pointers.length)
+    const touchCount = isAndroidDevice ? Math.min(touches.length, 1) : touches.length;
+    while (touchCount >= pointers.length)
         pointers.push(new pointerPrototype());
-    for (let i = 0; i < touches.length; i++) {
+    for (let i = 0; i < touchCount; i++) {
         let pointer = pointers[i + 1];
         const pos = getCanvasPointerPosition(touches[i].clientX, touches[i].clientY);
         if (!pointer.down)
@@ -1827,6 +1841,13 @@ window.addEventListener('touchmove', e => {
         updatePointerMoveData(pointer, pos.x, pos.y);
     }
 }, { passive: false });
+
+function shouldHandleAndroidTouchMove () {
+    const now = performance.now();
+    if (now - lastAndroidTouchMoveAt < 90) return false;
+    lastAndroidTouchMoveAt = now;
+    return true;
+}
 
 function isFluidControlEventTarget (target) {
     const element = target?.nodeType === 1 ? target : target?.parentElement;
@@ -1897,7 +1918,7 @@ function generateColor () {
     } else {
         c = hexToRGB(palette.colors[parseInt(Math.random() * palette.colors.length)]);
     }
-    const strength = (palette.strength || 0.2) * (isAndroidDevice ? 0.68 : 1);
+    const strength = (palette.strength || 0.2) * (isAndroidDevice ? 0.55 : 1);
     c.r *= strength;
     c.g *= strength;
     c.b *= strength;
