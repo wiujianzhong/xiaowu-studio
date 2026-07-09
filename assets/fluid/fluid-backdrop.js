@@ -89,9 +89,6 @@ let userPaused = false;
 let backdropReady = false;
 let heroImageReady = false;
 let firstFrameReady = false;
-let immersiveModeActive = false;
-let immersiveSplatTimer = 0;
-let immersiveSplatPhase = 0;
 
 const webglContext = getWebGLContext(canvas);
 const gl = webglContext.gl;
@@ -380,7 +377,7 @@ function startBackdropControls () {
     }
 
     function applyPauseState () {
-        config.PAUSED = !fluidEnabled || document.hidden || userPaused;
+        config.PAUSED = !fluidEnabled || userPaused;
         syncPause();
     }
 
@@ -413,12 +410,10 @@ function startBackdropControls () {
     function setImmersive (enabled) {
         if (enabled && !backdropReady) return;
         immersiveEnabled = enabled;
-        immersiveModeActive = enabled;
-        immersiveSplatTimer = 0;
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = Math.min(effectMax, isMobile() ? 54 : 60);
+            const immersiveEffect = Math.min(effectMax, isMobile() ? 58 : 64);
             setEffectBrightness(immersiveEffect);
             splatStack.push(isMobile() ? 16 : 24);
             setPanelOpen(false);
@@ -434,7 +429,7 @@ function startBackdropControls () {
         userPaused = false;
         setFluidEnabled(true);
         setBackgroundBrightness(backgroundDefault);
-        setEffectBrightness(immersiveEnabled ? Math.min(effectMax, isMobile() ? 54 : 60) : effectDefault);
+        setEffectBrightness(immersiveEnabled ? Math.min(effectMax, isMobile() ? 58 : 64) : effectDefault);
         syncPalette();
         applyPauseState();
         initFramebuffers();
@@ -1419,9 +1414,8 @@ function update () {
     if (resizeCanvas())
         initFramebuffers();
     updateColors(dt);
-    applyImmersiveAmbient(dt);
     applyInputs();
-    if (!config.PAUSED && !document.hidden)
+    if (shouldRunSimulation())
         step(dt);
     render(null);
     if (!firstFrameReady) {
@@ -1437,6 +1431,10 @@ function calcDeltaTime () {
     dt = Math.min(dt, 0.016666);
     lastUpdateTime = now;
     return dt;
+}
+
+function shouldRunSimulation () {
+    return !config.PAUSED && (!document.hidden || isMobile());
 }
 
 function resizeCanvas () {
@@ -1472,63 +1470,6 @@ function applyInputs () {
             splatPointer(p);
         }
     });
-}
-
-function applyImmersiveAmbient (dt) {
-    if (!immersiveModeActive || config.PAUSED || document.hidden)
-        return;
-
-    immersiveSplatTimer += dt;
-    const interval = isMobile() ? 0.44 : 0.32;
-    if (immersiveSplatTimer < interval)
-        return;
-
-    immersiveSplatTimer = 0;
-    immersiveSplatPhase += 1;
-
-    if (immersiveSplatPhase % 5 === 0)
-        fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
-
-    const amount = isMobile() ? 2 : 3;
-    const t = immersiveSplatPhase * 0.63;
-    for (let i = 0; i < amount; i++) {
-        const edge = (immersiveSplatPhase + i) % 4;
-        const wave = Math.sin(t + i * 1.7) * 0.22;
-        const drift = Math.cos(t * 0.8 + i) * 0.18;
-        let x;
-        let y;
-        let dx;
-        let dy;
-
-        if (edge === 0) {
-            x = 0.03;
-            y = 0.5 + wave;
-            dx = 3600;
-            dy = 1400 * drift;
-        } else if (edge === 1) {
-            x = 0.97;
-            y = 0.5 - wave;
-            dx = -3600;
-            dy = -1400 * drift;
-        } else if (edge === 2) {
-            x = 0.5 + wave;
-            y = 0.04;
-            dx = 1400 * drift;
-            dy = 3400;
-        } else {
-            x = 0.5 - wave;
-            y = 0.96;
-            dx = -1400 * drift;
-            dy = -3400;
-        }
-
-        const color = generateColor();
-        const boost = isMobile() ? 5.4 : 6.2;
-        color.r *= boost;
-        color.g *= boost;
-        color.b *= boost;
-        splat(Math.max(0.02, Math.min(0.98, x)), Math.max(0.02, Math.min(0.98, y)), dx, dy, color);
-    }
 }
 
 function step (dt) {

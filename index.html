@@ -52,19 +52,16 @@
       display: block;
       width: 100vw;
       height: 100vh;
-      visibility: hidden;
       opacity: 0;
       mix-blend-mode: normal;
       filter: brightness(var(--fluid-brightness)) saturate(1.32) contrast(1.01);
       pointer-events: none;
       touch-action: none;
-      transition: opacity .28s ease, visibility 0s linear .28s;
+      transition: opacity .28s ease;
     }
 
     body.fluid-ready .fluid-backdrop {
-      visibility: visible;
       opacity: var(--fluid-opacity);
-      transition: opacity .28s ease;
     }
 
     body.fluid-immersive {
@@ -88,7 +85,7 @@
     body.fluid-ready.fluid-immersive .fluid-backdrop {
       z-index: 50;
       opacity: var(--fluid-opacity);
-      filter: brightness(.88) saturate(1.68) contrast(.98);
+      filter: brightness(.94) saturate(1.72) contrast(1);
       pointer-events: auto;
     }
 
@@ -1619,7 +1616,7 @@
     </div>
   </div>
 
-  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v7"></script>
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v8"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
