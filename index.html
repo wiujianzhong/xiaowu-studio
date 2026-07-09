@@ -49,7 +49,7 @@
       display: block;
       width: 100vw;
       height: 100vh;
-      opacity: .5;
+      opacity: .38;
       mix-blend-mode: normal;
       filter: brightness(.94) saturate(1.32) contrast(1.01);
       pointer-events: none;
@@ -103,7 +103,7 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
-      filter: saturate(.92) contrast(1.04) brightness(.84);
+      filter: saturate(.98) contrast(1.03) brightness(.96);
       transform: scale(1.012);
     }
 
@@ -113,8 +113,8 @@
       z-index: -2;
       content: "";
       background:
-        linear-gradient(90deg, rgba(9, 12, 11, .88) 0%, rgba(9, 12, 11, .64) 34%, rgba(9, 12, 11, .16) 68%, rgba(9, 12, 11, .2) 100%),
-        linear-gradient(180deg, rgba(9, 12, 11, .34) 0%, rgba(9, 12, 11, .08) 48%, rgba(9, 12, 11, .86) 100%);
+        linear-gradient(90deg, rgba(9, 12, 11, .84) 0%, rgba(9, 12, 11, .6) 34%, rgba(9, 12, 11, .08) 68%, rgba(9, 12, 11, .12) 100%),
+        linear-gradient(180deg, rgba(9, 12, 11, .22) 0%, rgba(9, 12, 11, .04) 48%, rgba(9, 12, 11, .8) 100%);
       pointer-events: none;
     }
 
@@ -140,29 +140,26 @@
           padding: 0;
           border: 0;
           background: transparent;
-          cursor: pointer;
+          cursor: default;
           text-decoration: none;
           text-align: left;
-          transition: transform .2s ease, opacity .2s ease;
-        }
-
-        .brand:hover {
-          opacity: .92;
-          transform: translateY(-1px);
         }
 
         .brand-avatar {
-          display: block;
+          display: grid;
           width: 46px;
           height: 46px;
+          place-items: center;
           border: 1px solid rgba(228, 192, 106, .42);
           border-radius: 50%;
           background:
             radial-gradient(circle at 50% 28%, rgba(228, 192, 106, .18), transparent 48%),
             rgba(9, 12, 11, .62);
-          object-fit: cover;
-          object-position: center top;
           box-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+          color: var(--gold);
+          font-size: 22px;
+          font-weight: 840;
+          line-height: 1;
         }
 
         .brand-copy {
@@ -212,16 +209,15 @@
       width: min(1180px, calc(100vw - 32px));
       min-height: 100svh;
       margin: 0 auto;
-      padding: 112px 0 34px;
-      align-content: end;
-      gap: clamp(24px, 5vw, 54px);
+      padding: 104px 0 24px;
+      align-content: center;
+      gap: clamp(18px, 3.6vw, 34px);
     }
 
     .copy {
       display: grid;
-      max-width: 710px;
-      gap: 22px;
-      padding-bottom: clamp(20px, 4vw, 54px);
+      max-width: 660px;
+      gap: 16px;
     }
 
     .eyebrow {
@@ -246,7 +242,7 @@
       max-width: 9.6em;
       margin: 0;
       color: var(--paper);
-      font-size: clamp(46px, 8vw, 112px);
+      font-size: clamp(44px, 7vw, 96px);
       font-weight: 880;
       line-height: .94;
       letter-spacing: 0;
@@ -257,8 +253,8 @@
       max-width: 38em;
       margin: 0;
       color: var(--muted);
-      font-size: clamp(16px, 1.5vw, 20px);
-      line-height: 1.78;
+      font-size: clamp(15px, 1.35vw, 19px);
+      line-height: 1.68;
     }
 
     .proof-row {
@@ -342,18 +338,35 @@
 
     .case-rail {
       position: relative;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(156px, 1fr));
+      display: flex;
       gap: 14px;
       align-items: end;
-      padding: 12px 2px 8px;
+      margin-inline: -12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 18px 12px 20px;
       perspective: 900px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      cursor: grab;
+    }
+
+    .case-rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .case-rail.is-dragging {
+      cursor: grabbing;
+      scroll-snap-type: none;
     }
 
     .case-card {
       position: relative;
       display: block;
-      min-height: 168px;
+      flex: 0 0 clamp(176px, 17.2vw, 228px);
+      min-height: clamp(158px, 16.8vw, 202px);
       padding: 0;
       overflow: hidden;
       border: 1px solid rgba(246, 240, 227, .14);
@@ -369,20 +382,22 @@
       transform-origin: 50% 92%;
       transition: transform .24s ease, border-color .22s ease, box-shadow .22s ease, filter .22s ease;
       appearance: none;
+      scroll-snap-align: start;
+      user-select: none;
     }
 
-    .case-card:nth-child(1) { --tilt: -2.6deg; --drop: 12px; }
-    .case-card:nth-child(2) { --tilt: 1.7deg; --drop: -2px; }
-    .case-card:nth-child(3) { --tilt: -.8deg; --drop: 18px; }
-    .case-card:nth-child(4) { --tilt: 2.4deg; --drop: 5px; }
-    .case-card:nth-child(5) { --tilt: -1.5deg; --drop: 14px; }
-    .case-card:nth-child(6) { --tilt: 1.2deg; --drop: 2px; }
+    .case-card:nth-child(6n+1) { --tilt: -2.6deg; --drop: 12px; }
+    .case-card:nth-child(6n+2) { --tilt: 1.7deg; --drop: -2px; }
+    .case-card:nth-child(6n+3) { --tilt: -.8deg; --drop: 18px; }
+    .case-card:nth-child(6n+4) { --tilt: 2.4deg; --drop: 5px; }
+    .case-card:nth-child(6n+5) { --tilt: -1.5deg; --drop: 14px; }
+    .case-card:nth-child(6n+6) { --tilt: 1.2deg; --drop: 2px; }
 
     .case-card:hover {
       border-color: rgba(228, 192, 106, .52);
       box-shadow: 0 28px 86px rgba(0, 0, 0, .5);
       filter: saturate(1.08);
-      transform: translateY(calc(var(--drop, 0px) - 12px)) rotate(0deg) scale(1.06);
+      transform: translateY(calc(var(--drop, 0px) - 12px)) rotate(0deg) scale(1.1);
       z-index: 4;
     }
 
@@ -995,17 +1010,11 @@
 
     @media (max-width: 980px) {
       .case-rail {
-        grid-template-columns: repeat(6, minmax(220px, 42vw));
-        overflow-x: auto;
         padding: 18px 10px 16px;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
       }
 
-      .case-rail::-webkit-scrollbar { display: none; }
-
       .case-card {
-        scroll-snap-align: start;
+        flex-basis: min(42vw, 260px);
       }
 
           .section-head,
@@ -1035,12 +1044,12 @@
 
     @media (max-width: 620px) {
       .hero-photo {
-        object-position: center top;
-        filter: saturate(.92) contrast(1.02) brightness(.74);
+        object-position: 62% top;
+        filter: saturate(.98) contrast(1.02) brightness(.94);
       }
 
       .fluid-backdrop {
-        opacity: .34;
+        opacity: .24;
         filter: brightness(1) saturate(1.16) contrast(1);
       }
 
@@ -1060,17 +1069,19 @@
 
       .hero-inner {
         width: min(calc(100vw - 22px), 1180px);
-        padding-top: 84px;
+        padding-top: 92px;
+        align-content: start;
+        gap: 18px;
       }
 
       .copy {
-        padding-top: 42svh;
-        padding-bottom: 8px;
+        max-width: 92vw;
+        gap: 13px;
       }
 
       h1 {
         max-width: 7.8em;
-        font-size: clamp(40px, 14vw, 64px);
+        font-size: clamp(38px, 12.8vw, 58px);
       }
 
       .section h2 {
@@ -1088,10 +1099,7 @@
       }
 
       .fluid-controls {
-        width: 100%;
-        overflow-x: auto;
-        border-radius: 16px;
-        scrollbar-width: none;
+        display: none;
       }
 
       .fluid-controls::-webkit-scrollbar { display: none; }
@@ -1143,10 +1151,13 @@
       }
 
       .case-rail {
-        grid-template-columns: repeat(6, 76vw);
+        margin-inline: -8px;
+        margin-top: 18px;
+        padding-inline: 8px;
       }
 
       .case-card {
+        flex-basis: 76vw;
         min-height: 190px;
       }
 
@@ -1201,13 +1212,13 @@
 <body>
       <canvas class="fluid-backdrop" id="fluidBackdrop" aria-hidden="true"></canvas>
       <header class="topbar">
-        <button class="brand" type="button" data-profile-open aria-haspopup="dialog" aria-controls="profileModal" aria-label="查看伍建忠简介">
-          <img class="brand-avatar" src="assets/profile/xiaowu-cowboy-avatar-v1.png" alt="伍建忠头像" width="46" height="46">
+        <div class="brand" aria-label="小伍工作室">
+          <span class="brand-avatar" aria-hidden="true">伍</span>
           <span class="brand-copy">
             <strong>小伍工作室</strong>
-            <span>点击看伍建忠简介</span>
+            <span>xiaowustudio.cn</span>
           </span>
-        </button>
+        </div>
     <nav class="nav" aria-label="主页导航">
       <a href="#cases">项目案例</a>
       <a href="#work">工作方向</a>
@@ -1241,9 +1252,9 @@
           </div>
         </div>
 
-        <div class="case-rail" id="cases" aria-label="重点项目预览">
-          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="assets/story/wechat-ai-super-assistant-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/wechat-ai-super-assistant-natural.mp4">
-            <img src="assets/story/wechat-ai-super-assistant-poster.jpg" alt="微信 AI 超级助手界面" loading="lazy" decoding="async">
+        <div class="case-rail" id="cases" data-case-rail aria-label="重点项目预览">
+          <button class="case-card" type="button" data-title="微信 AI 超级助手" data-note="消息、群聊、客户资料统一处理" data-poster="assets/story/wechat-ai-super-assistant-poster.jpg" data-video="assets/story/wechat-ai-super-assistant-natural.mp4">
+            <img src="assets/story/wechat-ai-super-assistant-poster.jpg" alt="微信 AI 超级助手界面" decoding="async">
             <span class="case-index">01</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1256,8 +1267,8 @@
               <span class="case-note">消息、群聊、客户资料统一处理</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="assets/story/ppt-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/ppt-closed-loop-narrated.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
-            <img src="assets/story/ppt-result-real.jpg" alt="整改 PPT 真实页面" loading="lazy" decoding="async">
+          <button class="case-card" type="button" data-title="整改 PPT 一键生成" data-note="从照片和说明直接变成汇报材料" data-poster="assets/story/ppt-result-real.jpg" data-video="assets/story/ppt-closed-loop-narrated.mp4" data-link="https://jiaxin-ppt.xiaowustudio.cn/">
+            <img src="assets/story/ppt-result-real.jpg" alt="整改 PPT 真实页面" decoding="async">
             <span class="case-index">02</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1270,8 +1281,8 @@
               <span class="case-note">从照片和说明直接变成汇报材料</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="assets/story/tax-result-real.jpg" data-link="https://swbm.xiaowustudio.cn/">
-            <img src="assets/story/tax-result-real.jpg" alt="税务编码匹配表格" loading="lazy" decoding="async">
+          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="assets/story/tax-result-real.jpg" data-video="assets/story/tax-code-demo-sound.mp4" data-link="https://swbm.xiaowustudio.cn/">
+            <img src="assets/story/tax-result-real.jpg" alt="税务编码匹配表格" decoding="async">
             <span class="case-index">03</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1284,8 +1295,8 @@
               <span class="case-note">批量核对、修正、导入前检查</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="assets/story/gesture-sword-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/gesture-sword-self-sound.mp4" data-link="https://sword.xiaowustudio.cn/">
-            <img src="assets/story/gesture-sword-poster.jpg" alt="手势操控剑阵项目" loading="lazy" decoding="async">
+          <button class="case-card" type="button" data-title="手势操控大庚剑阵" data-note="游戏感、粒子效果、移动端体验" data-poster="assets/story/gesture-sword-poster.jpg" data-video="assets/story/gesture-sword-self-sound.mp4" data-link="https://sword.xiaowustudio.cn/">
+            <img src="assets/story/gesture-sword-poster.jpg" alt="手势操控剑阵项目" decoding="async">
             <span class="case-index">04</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1298,8 +1309,8 @@
               <span class="case-note">游戏感、粒子效果、移动端体验</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出" data-poster="assets/story/delivery-report-poster.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3" data-link="https://delivery.xiaowustudio.cn/">
-            <img src="assets/story/delivery-report-poster.jpg" alt="AI 送货助手报表界面" loading="lazy" decoding="async">
+          <button class="case-card" type="button" data-title="AI 送货助手" data-note="语音开单、客户对账、汇总导出" data-poster="assets/story/delivery-report-poster.jpg" data-video="assets/story/delivery-report-board.mp4?v=delivery-yunxi-v3" data-link="https://delivery.xiaowustudio.cn/">
+            <img src="assets/story/delivery-report-poster.jpg" alt="AI 送货助手报表界面" decoding="async">
             <span class="case-index">05</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1312,8 +1323,8 @@
               <span class="case-note">语音开单、客户对账、汇总导出</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo.mp4" data-link="https://fitness.xiaowustudio.cn/">
-            <img src="assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" loading="lazy" decoding="async">
+          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="assets/story/fitness-library-poster.png" data-video="assets/story/fitness-chest-demo-sound.mp4" data-link="https://fitness.xiaowustudio.cn/">
+            <img src="assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" decoding="async">
             <span class="case-index">06</span>
             <span class="play-badge" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1409,38 +1420,6 @@
         </section>
       </main>
 
-      <div class="profile-modal" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
-	    <button class="profile-backdrop" type="button" data-profile-close aria-label="关闭简介遮罩"></button>
-        <section class="profile-shell" aria-label="伍建忠简介">
-          <button class="profile-close" type="button" data-profile-close aria-label="关闭伍建忠简介">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="profile-portrait">
-            <img src="assets/profile/xiaowu-cowboy-profile-v1.png" alt="伍建忠年轻风趣头像" width="720" height="720">
-          </div>
-          <div class="profile-copy">
-            <p class="profile-kicker">WU JIANZHONG / 小伍工作室</p>
-            <h2 id="profileTitle">懂现场，也愿意把工具做得有意思。</h2>
-            <p>我是伍建忠。小伍工作室主要把工作现场里的重复劳动、资料整理、报表生成、移动端交互和 AI 助手做成能真正使用的网页工具。</p>
-            <p>我也熟悉清梳设备、新技术、乌斯特异纤机、乌斯特各类仪器和棉纺工艺，所以更容易从真实场景里找到软件该解决的问题。</p>
-            <div class="profile-skills" aria-label="伍建忠擅长方向">
-              <span>清梳设备</span>
-              <span>乌斯特异纤机</span>
-              <span>棉纺工艺</span>
-              <span>AI 助手</span>
-              <span>网页工具</span>
-              <span>移动端交互</span>
-            </div>
-            <div class="profile-actions">
-              <a href="tel:19009925522">电话联系</a>
-              <button type="button" data-copy-wechat data-wechat="19009925522">复制微信号</button>
-            </div>
-          </div>
-        </section>
-      </div>
-
       <div class="player-modal" id="playerModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
     <button class="modal-backdrop" type="button" data-close-player aria-label="关闭预览"></button>
     <div class="player-shell">
@@ -1470,14 +1449,13 @@
       document.body.appendChild(script);
     }
 
-    if (window.matchMedia("(max-width: 720px)").matches) {
-      window.addEventListener("load", () => {
-        const loadLater = window.requestIdleCallback || ((callback) => setTimeout(callback, 900));
-        loadLater(loadFluidBackdrop);
-      }, { once: true });
-    } else {
-      loadFluidBackdrop();
-    }
+    window.addEventListener("load", () => {
+      if (window.matchMedia("(max-width: 620px)").matches) return;
+      const loadLater = window.requestIdleCallback
+        ? (callback) => window.requestIdleCallback(callback, { timeout: 1600 })
+        : (callback) => window.setTimeout(callback, 700);
+      loadLater(loadFluidBackdrop);
+    }, { once: true });
   </script>
   <script>
     const modal = document.getElementById("playerModal");
@@ -1485,23 +1463,63 @@
         const playerTitle = document.getElementById("playerTitle");
         const playerNote = document.getElementById("playerNote");
         const playerLink = document.getElementById("playerLink");
-        const profileModal = document.getElementById("profileModal");
+        const remoteAssetBase = "https://wiujianzhong.github.io/xiaowu-studio/";
+        const warmedMedia = new Set();
+        let audioUnlocker = null;
 
-        function openProfile() {
-          profileModal.setAttribute("aria-hidden", "false");
-          document.body.classList.add("modal-open");
+        function resolveMediaSource(source) {
+          if (!source) return "";
+          if (/^https?:\/\//.test(source)) return source;
+          if (window.location.hostname === "xiaowustudio.cn") {
+            return `${remoteAssetBase}${source}`;
+          }
+          return source;
         }
 
-        function closeProfile() {
-          profileModal.setAttribute("aria-hidden", "true");
-          document.body.classList.remove("modal-open");
+        function warmMedia(card) {
+          const source = resolveMediaSource(card.dataset.video);
+          if (!source || warmedMedia.has(source)) return;
+          warmedMedia.add(source);
+          const link = document.createElement("link");
+          link.rel = "preload";
+          link.as = "video";
+          link.href = source;
+          document.head.appendChild(link);
+        }
+
+        function unlockAudio() {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          if (!audioUnlocker) audioUnlocker = new AudioContext();
+          if (audioUnlocker.state === "suspended") {
+            audioUnlocker.resume().catch(() => {});
+          }
+        }
+
+        function startVideo(videoElement) {
+          videoElement.volume = 1;
+          videoElement.muted = false;
+          videoElement.dataset.playStatus = "starting";
+          const playback = videoElement.play();
+          videoElement.removeAttribute("muted");
+          if (playback && typeof playback.catch === "function") {
+            playback.then(() => {
+              videoElement.dataset.playStatus = "playing";
+            }).catch((error) => {
+              videoElement.dataset.playStatus = error && error.name ? error.name : "blocked";
+              videoElement.muted = true;
+              videoElement.play().then(() => {
+                videoElement.dataset.playStatus = "fallback-muted";
+              }).catch(() => {});
+            });
+          }
         }
 
         function openPlayer(card) {
           const title = card.dataset.title;
           const note = card.dataset.note;
       const poster = card.dataset.poster;
-      const video = card.dataset.video;
+      const video = resolveMediaSource(card.dataset.video);
       const link = card.dataset.link;
 
       playerTitle.textContent = title;
@@ -1513,13 +1531,26 @@
         playerLink.hidden = true;
         playerLink.removeAttribute("href");
       }
-      mediaFrame.innerHTML = video
-        ? `<video src="${video}" poster="${poster}" controls autoplay muted playsinline></video>`
-        : `<img src="${poster}" alt="${title}预览图">`;
+      mediaFrame.innerHTML = "";
+      if (video) {
+        const videoElement = document.createElement("video");
+        videoElement.src = video;
+        videoElement.poster = poster;
+        videoElement.controls = true;
+        videoElement.autoplay = true;
+        videoElement.playsInline = true;
+        videoElement.preload = "auto";
+        mediaFrame.appendChild(videoElement);
+      } else {
+        const image = document.createElement("img");
+        image.src = poster;
+        image.alt = `${title}预览图`;
+        mediaFrame.appendChild(image);
+      }
       modal.setAttribute("aria-hidden", "false");
       document.body.classList.add("modal-open");
       const videoElement = mediaFrame.querySelector("video");
-      if (videoElement) videoElement.play().catch(() => {});
+      if (videoElement) startVideo(videoElement);
     }
 
     function closePlayer() {
@@ -1530,20 +1561,117 @@
       mediaFrame.innerHTML = "";
     }
 
-    document.querySelectorAll(".case-card").forEach((card) => {
-      card.addEventListener("click", () => openPlayer(card));
-    });
+        function setupCaseRail() {
+          const rail = document.querySelector("[data-case-rail]");
+          if (!rail) return;
+          const cards = Array.from(rail.querySelectorAll(".case-card"));
+          if (cards.length === 0) return;
+
+          function cloneCard(card) {
+            const clone = card.cloneNode(true);
+            clone.setAttribute("aria-hidden", "true");
+            clone.tabIndex = -1;
+            return clone;
+          }
+
+          cards.slice().reverse().forEach((card) => {
+            rail.insertBefore(cloneCard(card), rail.firstChild);
+          });
+          cards.forEach((card) => {
+            rail.appendChild(cloneCard(card));
+          });
+
+          const segmentWidth = () => rail.scrollWidth / 3;
+          window.requestAnimationFrame(() => {
+            rail.scrollLeft = segmentWidth();
+          });
+
+          let scrollFrame = 0;
+          rail.addEventListener("scroll", () => {
+            if (scrollFrame) return;
+            scrollFrame = window.requestAnimationFrame(() => {
+              const width = segmentWidth();
+              if (width > 0 && rail.scrollLeft < width * .45) {
+                rail.scrollLeft += width;
+              } else if (width > 0 && rail.scrollLeft > width * 1.55) {
+                rail.scrollLeft -= width;
+              }
+              scrollFrame = 0;
+            });
+          }, { passive: true });
+
+          let dragging = false;
+          let dragged = false;
+          let suppressClick = false;
+          let startX = 0;
+          let startScroll = 0;
+          let pointerCard = null;
+
+          rail.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0) return;
+            unlockAudio();
+            dragging = true;
+            dragged = false;
+            pointerCard = event.target.closest(".case-card");
+            startX = event.clientX;
+            startScroll = rail.scrollLeft;
+            rail.classList.add("is-dragging");
+            rail.setPointerCapture(event.pointerId);
+          });
+
+          rail.addEventListener("pointermove", (event) => {
+            if (!dragging) return;
+            const delta = event.clientX - startX;
+            if (Math.abs(delta) > 5) dragged = true;
+            if (!dragged) return;
+            rail.scrollLeft = startScroll - delta;
+            event.preventDefault();
+          });
+
+          function stopDragging(event) {
+            if (!dragging) return;
+            dragging = false;
+            rail.classList.remove("is-dragging");
+            if (rail.hasPointerCapture(event.pointerId)) {
+              rail.releasePointerCapture(event.pointerId);
+            }
+            if (dragged) {
+              suppressClick = true;
+              window.setTimeout(() => {
+                suppressClick = false;
+              }, 0);
+            } else if (pointerCard && rail.contains(pointerCard)) {
+              suppressClick = true;
+              openPlayer(pointerCard);
+              window.setTimeout(() => {
+                suppressClick = false;
+              }, 0);
+            }
+            pointerCard = null;
+          }
+
+          rail.addEventListener("pointerup", stopDragging);
+          rail.addEventListener("pointercancel", stopDragging);
+          rail.addEventListener("pointerover", (event) => {
+            const card = event.target.closest(".case-card");
+            if (card && rail.contains(card)) warmMedia(card);
+          });
+          rail.addEventListener("click", (event) => {
+            const card = event.target.closest(".case-card");
+            if (!card || !rail.contains(card)) return;
+            if (suppressClick) {
+              event.preventDefault();
+              return;
+            }
+            unlockAudio();
+            openPlayer(card);
+          });
+        }
+
+        setupCaseRail();
 
         document.querySelectorAll("[data-close-player]").forEach((button) => {
           button.addEventListener("click", closePlayer);
-        });
-
-        document.querySelectorAll("[data-profile-open]").forEach((button) => {
-          button.addEventListener("click", openProfile);
-        });
-
-        document.querySelectorAll("[data-profile-close]").forEach((button) => {
-          button.addEventListener("click", closeProfile);
         });
 
         document.querySelectorAll("[data-copy-wechat]").forEach((button) => {
@@ -1565,7 +1693,6 @@
         document.addEventListener("keydown", (event) => {
           if (event.key !== "Escape") return;
           if (modal.getAttribute("aria-hidden") === "false") closePlayer();
-          if (profileModal.getAttribute("aria-hidden") === "false") closeProfile();
         });
       </script>
 </body>
