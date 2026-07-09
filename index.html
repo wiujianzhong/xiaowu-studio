@@ -65,7 +65,7 @@
     }
 
     body.fluid-android .fluid-backdrop {
-      filter: brightness(var(--fluid-brightness)) saturate(.62) contrast(.9);
+      filter: brightness(var(--fluid-brightness)) saturate(1.16) contrast(1);
     }
 
     body.fluid-fallback .fluid-backdrop {
@@ -128,7 +128,7 @@
     }
 
     body.fluid-ready.fluid-android.fluid-immersive .fluid-backdrop {
-      filter: brightness(.9) saturate(.94) contrast(.92);
+      filter: brightness(1.06) saturate(1.82) contrast(1.02);
     }
 
     body.fluid-immersive .topbar {
@@ -1773,7 +1773,7 @@
     </div>
   </div>
 
-  <script src="assets/fluid/fluid-backdrop.js?v=fluid-android-scroll-v3"></script>
+  <script src="assets/fluid/fluid-backdrop.js?v=fluid-mobile-brightness-v4"></script>
   <script>
     (() => {
       const toggleText = document.querySelector("[data-fluid-panel-toggle] span");

@@ -392,7 +392,7 @@ function startBackdropControls () {
     const pauseButton = controls.querySelector('[data-fluid-action="pause"]');
     const backgroundDefault = 96;
     const rootStyles = getComputedStyle(document.documentElement);
-    const effectDefault = isAndroidDevice ? 10 : Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
+    const effectDefault = Math.round((parseFloat(rootStyles.getPropertyValue('--fluid-opacity')) || 0.34) * 100);
     const effectMax = 86;
     let fluidEnabled = true;
     let immersiveEnabled = false;
@@ -442,17 +442,16 @@ function startBackdropControls () {
     }
 
     function setEffectBrightness (value) {
-        const cap = isAndroidDevice ? 26 : effectMax;
+        const cap = effectMax;
         const numeric = Math.max(0, Math.min(cap, Number(value)));
         const opacity = numeric / 100;
-        const brightness = isAndroidDevice ? 0.64 + (numeric / cap) * 0.2 : 0.78 + (numeric / effectMax) * 0.62;
+        const brightness = 0.78 + (numeric / effectMax) * 0.62;
         document.documentElement.style.setProperty('--fluid-opacity', opacity.toFixed(2));
         document.documentElement.style.setProperty('--fluid-brightness', brightness.toFixed(2));
     }
 
     function getImmersiveEffect () {
-        if (isAndroidDevice) return 24;
-        if (isIOSDevice) return 68;
+        if (isAndroidDevice || isIOSDevice) return 68;
         return Math.min(effectMax, isMobile() ? 62 : 66);
     }
 
@@ -1734,16 +1733,13 @@ function blur (target, temp, iterations) {
 function splatPointer (pointer) {
     let dx = pointer.deltaX * config.SPLAT_FORCE;
     let dy = pointer.deltaY * config.SPLAT_FORCE;
-    splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color);
+    const color = boostColor(pointer.color, document.body.classList.contains('fluid-immersive') ? 10.0 : 6.0);
+    splat(pointer.texcoordX, pointer.texcoordY, dx, dy, color);
 }
 
 function multipleSplats (amount) {
     for (let i = 0; i < amount; i++) {
-        const color = generateColor();
-        const colorBoost = isAndroidDevice ? 4.0 : 10.0;
-        color.r *= colorBoost;
-        color.g *= colorBoost;
-        color.b *= colorBoost;
+        const color = boostColor(generateColor(), 10.0);
         const x = Math.random();
         const y = Math.random();
         const force = isAndroidDevice ? 220 : 1000;
@@ -1751,6 +1747,14 @@ function multipleSplats (amount) {
         const dy = force * (Math.random() - 0.5);
         splat(x, y, dx, dy, color);
     }
+}
+
+function boostColor (color, amount) {
+    return {
+        r: color.r * amount,
+        g: color.g * amount,
+        b: color.b * amount
+    };
 }
 
 function splat (x, y, dx, dy, color) {
@@ -1918,7 +1922,7 @@ function generateColor () {
     } else {
         c = hexToRGB(palette.colors[parseInt(Math.random() * palette.colors.length)]);
     }
-    const strength = (palette.strength || 0.2) * (isAndroidDevice ? 0.55 : 1);
+    const strength = palette.strength || 0.2;
     c.r *= strength;
     c.g *= strength;
     c.b *= strength;
