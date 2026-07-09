@@ -79,10 +79,10 @@ let splatStack = [];
 pointers.push(new pointerPrototype());
 
 const fluidPalettes = [
-    { name: '五彩霓虹', accent: '#ffe457', strength: 0.36, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
-    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.34, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
-    { name: '糖果混色', accent: '#ff5ac8', strength: 0.34, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
-    { name: '彩虹随机', accent: '#ffe457', strength: 0.28, random: true }
+    { name: '五彩霓虹', accent: '#39e68f', strength: 0.23, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
+    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.24, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
+    { name: '糖果混色', accent: '#ff5ac8', strength: 0.23, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
+    { name: '彩虹随机', accent: '#ffe457', strength: 0.2, random: true }
 ];
 let fluidPaletteIndex = 0;
 let userPaused = false;
@@ -288,6 +288,7 @@ function startBackdropControls () {
     if (controls == null) return;
 
     const panelToggle = controls.querySelector('[data-fluid-panel-toggle]');
+    const panelToggleText = panelToggle?.querySelector('span');
     const panel = controls.querySelector('[data-fluid-panel]');
     const resetButton = controls.querySelector('[data-fluid-action="reset"]');
     const powerButton = controls.querySelector('[data-fluid-action="power"]');
@@ -327,6 +328,8 @@ function startBackdropControls () {
         if (immersiveButton == null) return;
         immersiveButton.setAttribute('aria-pressed', String(immersiveEnabled));
         immersiveButton.querySelector('span').textContent = immersiveEnabled ? '退出沉浸' : '沉浸式玩耍';
+        if (panelToggleText != null)
+            panelToggleText.textContent = immersiveEnabled ? '退出流光' : '流动效果';
     }
 
     function applyPauseState () {
@@ -365,7 +368,7 @@ function startBackdropControls () {
         document.body.classList.toggle('fluid-immersive', enabled);
         if (enabled) {
             setFluidEnabled(true);
-            const immersiveEffect = Math.min(effectMax, 76);
+            const immersiveEffect = Math.min(effectMax, 48);
             if (effectRange != null && Number(effectRange.value) < immersiveEffect) {
                 effectRange.value = String(immersiveEffect);
                 setEffectBrightness(immersiveEffect);
@@ -396,6 +399,11 @@ function startBackdropControls () {
     }
 
     panelToggle?.addEventListener('click', () => {
+        if (immersiveEnabled) {
+            setImmersive(false);
+            setPanelOpen(false);
+            return;
+        }
         setPanelOpen(panel?.hidden !== false);
     });
 
@@ -415,6 +423,7 @@ function startBackdropControls () {
     });
 
     powerButton?.addEventListener('click', () => {
+        if (immersiveEnabled && fluidEnabled) setImmersive(false);
         setFluidEnabled(!fluidEnabled);
     });
 
@@ -1759,7 +1768,7 @@ function generateColor () {
     const palette = fluidPalettes[fluidPaletteIndex];
     let c;
     if (palette.random) {
-        c = HSVtoRGB(Math.random(), 1.0, 1.0);
+        c = HSVtoRGB(Math.random(), 0.88, 0.9);
     } else {
         c = hexToRGB(palette.colors[parseInt(Math.random() * palette.colors.length)]);
     }

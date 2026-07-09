@@ -80,11 +80,12 @@
     body.fluid-immersive .fluid-backdrop {
       z-index: 50;
       opacity: var(--fluid-opacity);
-      filter: brightness(1.18) saturate(1.78) contrast(1.06);
+      filter: brightness(.92) saturate(1.36) contrast(.96);
       pointer-events: auto;
     }
 
     body.fluid-immersive .topbar {
+      z-index: 72;
       right: max(14px, env(safe-area-inset-right));
       left: auto;
       width: auto;
@@ -92,10 +93,12 @@
       background: transparent;
       box-shadow: none;
       transform: none;
+      pointer-events: none;
     }
 
     body.fluid-immersive .fluid-controls {
       margin-left: 0;
+      pointer-events: auto;
     }
 
     body.fluid-immersive .fluid-toggle {
@@ -1624,7 +1627,7 @@
     </div>
   </div>
 
-  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v4"></script>
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=fluid-control-v5"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
