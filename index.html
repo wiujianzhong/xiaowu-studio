@@ -691,10 +691,6 @@
       cursor: grabbing;
     }
 
-    .case-rail.is-paused .case-card {
-      animation-play-state: paused;
-    }
-
     .case-card {
       position: relative;
       display: block;
@@ -2185,8 +2181,8 @@
             lastAutoTime = time;
             const paused = isPaused() || document.visibilityState !== "visible";
             if (!paused) {
-              const speed = reducedMotion.matches ? .018 : mobileMotion.matches ? .052 : .026;
-              const pulse = 1 + Math.sin(time / 920) * .14 + Math.sin(time / 1680) * .06;
+              const speed = reducedMotion.matches ? .04 : mobileMotion.matches ? .13 : .052;
+              const pulse = 1 + Math.sin(time / 760) * .12 + Math.sin(time / 1380) * .05;
               rail.scrollLeft += delta * speed * pulse;
               normalizePosition();
             }
