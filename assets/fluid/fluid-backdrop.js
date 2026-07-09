@@ -31,6 +31,17 @@ window.ga = window.ga || function () {};
 
 const canvas = document.getElementById('fluidBackdrop');
 if (canvas == null) return;
+
+const userAgent = navigator.userAgent || '';
+const isAndroidDevice = /Android/i.test(userAgent);
+const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isMobileDevice = isAndroidDevice || isIOSDevice || /Mobi/i.test(userAgent);
+const cpuCores = navigator.hardwareConcurrency || 4;
+const deviceMemory = Number(navigator.deviceMemory) || 4;
+const constrainedMobile = isMobileDevice && (isAndroidDevice || cpuCores <= 4 || deviceMemory <= 4);
+const fallbackOnly = isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2);
+const targetFrameInterval = isAndroidDevice ? 1000 / 30 : isMobileDevice ? 1000 / 45 : 1000 / 60;
+const maxFluidPixelRatio = isAndroidDevice ? 1.2 : isMobileDevice ? 1.5 : 2;
 resizeCanvas();
 
 let config = {
@@ -89,24 +100,49 @@ let userPaused = false;
 let backdropReady = false;
 let heroImageReady = false;
 let firstFrameReady = false;
+let fallbackActive = false;
+
+if (fallbackOnly) {
+    enableFluidFallback('android-fallback');
+    return;
+}
 
 const webglContext = getWebGLContext(canvas);
 const gl = webglContext.gl;
 const ext = webglContext.ext;
 if (gl == null || ext == null || ext.formatRGBA == null) {
-    canvas.dataset.fluidStatus = 'unsupported';
+    enableFluidFallback('unsupported');
     return;
 }
 
-if (isMobile()) {
-    config.SIM_RESOLUTION = 64;
-    config.DYE_RESOLUTION = 384;
-    config.SPLAT_RADIUS = 0.15;
+canvas.addEventListener('webglcontextlost', event => {
+    event.preventDefault();
+    enableFluidFallback('context-lost');
+}, false);
+
+if (isAndroidDevice) {
+    config.SIM_RESOLUTION = 40;
+    config.DYE_RESOLUTION = 224;
+    config.PRESSURE_ITERATIONS = 10;
+    config.CURL = 14;
+    config.SPLAT_RADIUS = 0.12;
+    config.SPLAT_FORCE = 1800;
+    config.COLOR_UPDATE_SPEED = 6;
+    config.SHADING = false;
+    config.BLOOM = false;
+    config.SUNRAYS = false;
+} else if (isMobile()) {
+    config.SIM_RESOLUTION = constrainedMobile ? 48 : 56;
+    config.DYE_RESOLUTION = constrainedMobile ? 256 : 320;
+    config.PRESSURE_ITERATIONS = constrainedMobile ? 12 : 14;
+    config.CURL = constrainedMobile ? 16 : 20;
+    config.SPLAT_RADIUS = 0.13;
+    config.SPLAT_FORCE = constrainedMobile ? 2400 : 2800;
     config.BLOOM = false;
     config.SUNRAYS = false;
 }
 if (!ext.supportLinearFiltering) {
-    config.DYE_RESOLUTION = 512;
+    config.DYE_RESOLUTION = Math.min(config.DYE_RESOLUTION, isMobile() ? 224 : 512);
     config.SHADING = false;
     config.BLOOM = false;
     config.SUNRAYS = false;
@@ -141,7 +177,8 @@ function waitForHeroImageReady () {
             decodeImage().then(resolve);
         }, { once: true });
         image.addEventListener('error', () => {
-            canvas.dataset.fluidStatus = 'waiting-hero';
+            canvas.dataset.fluidStatus = 'hero-error';
+            resolve();
         }, { once: true });
     });
 }
@@ -324,7 +361,15 @@ function startGUI () {
 }
 
 function isMobile () {
-    return /Mobi|Android/i.test(navigator.userAgent);
+    return isMobileDevice;
+}
+
+function enableFluidFallback (status) {
+    if (fallbackActive) return;
+    fallbackActive = true;
+    canvas.dataset.fluidStatus = status;
+    document.body.classList.add('fluid-fallback', 'fluid-ready');
+    document.querySelector('[data-fluid-controls]')?.setAttribute('hidden', '');
 }
 
 function startBackdropControls () {
@@ -415,7 +460,7 @@ function startBackdropControls () {
             setFluidEnabled(true);
             const immersiveEffect = Math.min(effectMax, isMobile() ? 58 : 64);
             setEffectBrightness(immersiveEffect);
-            splatStack.push(isMobile() ? 16 : 24);
+            splatStack.push(isAndroidDevice ? 8 : isMobile() ? 12 : 24);
             setPanelOpen(false);
         } else {
             setEffectBrightness(effectDefault);
@@ -433,7 +478,7 @@ function startBackdropControls () {
         syncPalette();
         applyPauseState();
         initFramebuffers();
-        multipleSplats(isMobile() ? 8 : 18);
+        multipleSplats(isAndroidDevice ? 4 : isMobile() ? 6 : 18);
         syncImmersive();
     }
 
@@ -487,11 +532,11 @@ function startBackdropControls () {
     paletteButton?.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
         syncPalette();
-        splatStack.push(isMobile() ? 6 : 10);
+        splatStack.push(isAndroidDevice ? 3 : isMobile() ? 5 : 10);
     });
 
     splashButton?.addEventListener('click', () => {
-        splatStack.push(parseInt(Math.random() * (isMobile() ? 8 : 18)) + (isMobile() ? 4 : 10));
+        splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 4 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 10));
     });
 
     captureButton?.addEventListener('click', () => {
@@ -1403,38 +1448,49 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * (isMobile() ? 5 : 14)) + (isMobile() ? 4 : 5));
+multipleSplats(parseInt(Math.random() * (isAndroidDevice ? 3 : isMobile() ? 5 : 14)) + (isAndroidDevice ? 2 : isMobile() ? 4 : 5));
 
 let lastUpdateTime = Date.now();
+let lastFrameTime = 0;
 let colorUpdateTimer = 0.0;
-update();
+requestAnimationFrame(update);
 
-function update () {
-    const dt = calcDeltaTime();
-    if (resizeCanvas())
-        initFramebuffers();
-    updateColors(dt);
-    applyInputs();
-    if (shouldRunSimulation())
-        step(dt);
-    render(null);
-    if (!firstFrameReady) {
-        firstFrameReady = true;
-        revealBackdropIfReady();
-    }
+function update (frameTime = performance.now()) {
+    if (fallbackActive) return;
     requestAnimationFrame(update);
+    if (frameTime - lastFrameTime < targetFrameInterval)
+        return;
+    lastFrameTime = frameTime;
+
+    try {
+        const dt = calcDeltaTime();
+        if (resizeCanvas())
+            initFramebuffers();
+        updateColors(dt);
+        applyInputs();
+        if (shouldRunSimulation())
+            step(dt);
+        render(null);
+        if (!firstFrameReady) {
+            firstFrameReady = true;
+            revealBackdropIfReady();
+        }
+    } catch (error) {
+        console.warn('Fluid backdrop fallback:', error);
+        enableFluidFallback('render-error');
+    }
 }
 
 function calcDeltaTime () {
     let now = Date.now();
     let dt = (now - lastUpdateTime) / 1000;
-    dt = Math.min(dt, 0.016666);
+    dt = Math.min(dt, isMobile() ? 0.033333 : 0.016666);
     lastUpdateTime = now;
     return dt;
 }
 
 function shouldRunSimulation () {
-    return !config.PAUSED && (!document.hidden || isMobile());
+    return !config.PAUSED && !document.hidden;
 }
 
 function resizeCanvas () {
@@ -1910,8 +1966,8 @@ function getTextureScale (texture, width, height) {
 }
 
 function scaleByPixelRatio (input) {
-    let pixelRatio = window.devicePixelRatio || 1;
-    return Math.floor(input * pixelRatio);
+    let pixelRatio = Math.min(window.devicePixelRatio || 1, maxFluidPixelRatio);
+    return Math.max(1, Math.floor(input * pixelRatio));
 }
 
 function hashCode (s) {
