@@ -34,8 +34,8 @@ if (canvas == null) return;
 resizeCanvas();
 
 let config = {
-    SIM_RESOLUTION: 96,
-    DYE_RESOLUTION: 768,
+    SIM_RESOLUTION: 72,
+    DYE_RESOLUTION: 512,
     CAPTURE_RESOLUTION: 1024,
     DENSITY_DISSIPATION: 0.96,
     VELOCITY_DISSIPATION: 0.18,
@@ -43,14 +43,14 @@ let config = {
     PRESSURE_ITERATIONS: 20,
     CURL: 24,
     SPLAT_RADIUS: 0.22,
-    SPLAT_FORCE: 4600,
+    SPLAT_FORCE: 3600,
     SHADING: true,
     COLORFUL: true,
     COLOR_UPDATE_SPEED: 6,
     PAUSED: false,
     BACK_COLOR: { r: 4, g: 1, b: 8 },
     TRANSPARENT: false,
-    BLOOM: true,
+    BLOOM: false,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
     BLOOM_INTENSITY: 0.18,

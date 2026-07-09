@@ -46,10 +46,10 @@
       position: fixed;
       inset: 0;
       z-index: 2;
-      display: none;
+      display: block;
       width: 100vw;
       height: 100vh;
-      opacity: .38;
+      opacity: .34;
       mix-blend-mode: normal;
       filter: brightness(.94) saturate(1.32) contrast(1.01);
       pointer-events: none;
@@ -1281,7 +1281,7 @@
               <span class="case-note">从照片和说明直接变成汇报材料</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-code-demo-sound.mp4" data-link="https://swbm.xiaowustudio.cn/">
+          <button class="case-card" type="button" data-title="税收分类编码匹配" data-note="批量核对、修正、导入前检查" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-result-real.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-code-demo-sound.mp4?v=tax-feedback-v2" data-link="https://swbm.xiaowustudio.cn/">
             <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/tax-result-real.jpg" alt="税务编码匹配表格" decoding="async">
             <span class="case-index">03</span>
             <span class="play-badge" aria-hidden="true">
@@ -1323,7 +1323,7 @@
               <span class="case-note">语音开单、客户对账、汇总导出</span>
             </span>
           </button>
-          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo-sound.mp4" data-link="https://fitness.xiaowustudio.cn/">
+          <button class="case-card" type="button" data-title="小伍健身动作库" data-note="动作筛选、中文步骤、手机查看演示" data-poster="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-chest-demo-sound.mp4?v=fitness-action-v2" data-link="https://fitness.xiaowustudio.cn/">
             <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/story/fitness-library-poster.png" alt="小伍健身动作库网页截图" decoding="async">
             <span class="case-index">06</span>
             <span class="play-badge" aria-hidden="true">
@@ -1439,6 +1439,7 @@
     </div>
   </div>
 
+  <script src="https://wiujianzhong.github.io/xiaowu-studio/assets/fluid/fluid-backdrop.js?v=touch-fluid-v2"></script>
   <script>
     const modal = document.getElementById("playerModal");
         const mediaFrame = document.getElementById("mediaFrame");
