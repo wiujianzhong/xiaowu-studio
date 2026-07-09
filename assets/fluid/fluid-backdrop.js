@@ -79,11 +79,10 @@ let splatStack = [];
 pointers.push(new pointerPrototype());
 
 const fluidPalettes = [
-    { name: '深色光谱', accent: '#c12b7e', strength: 0.24, colors: ['#5a2cff', '#7b2cff', '#a12bcb', '#c12b7e', '#d43d5f', '#e45a24', '#b6741b', '#1f788b', '#168064'] },
-    { name: '紫红橙', accent: '#ff6a3d', strength: 0.25, colors: ['#7a24d6', '#a82a9a', '#c51f78', '#dc365e', '#ee5726', '#b63b2a'] },
-    { name: 'XIAO 小5', accent: '#ff4f9a', strength: 0.24, colors: ['#d53f8c', '#9333ea', '#b238ff', '#d82f7d', '#e85d2a', '#3f3bd8', '#14846f'] },
-    { name: '暗金赤橙', accent: '#ff9b3d', strength: 0.24, colors: ['#d66b1f', '#b94720', '#9b255f', '#6d2acc', '#2358a8', '#7a6018'] },
-    { name: '夜航随机', accent: '#b25cff', strength: 0.18, random: true }
+    { name: '五彩霓虹', accent: '#ffe457', strength: 0.36, colors: ['#1ee8ff', '#26ff8d', '#ffe457', '#ff5ac8', '#7b61ff', '#ff7a3d', '#00a3ff', '#a7ff3d'] },
+    { name: '蓝绿电光', accent: '#1ee8ff', strength: 0.34, colors: ['#00c2ff', '#1ee8ff', '#26ff8d', '#4dffdf', '#38a3ff', '#a7ff3d'] },
+    { name: '糖果混色', accent: '#ff5ac8', strength: 0.34, colors: ['#ff5ac8', '#ffe457', '#7b61ff', '#00e5ff', '#26ff8d', '#ff7a3d'] },
+    { name: '彩虹随机', accent: '#ffe457', strength: 0.28, random: true }
 ];
 let fluidPaletteIndex = 0;
 let userPaused = false;
@@ -292,6 +291,7 @@ function startBackdropControls () {
     const panel = controls.querySelector('[data-fluid-panel]');
     const resetButton = controls.querySelector('[data-fluid-action="reset"]');
     const powerButton = controls.querySelector('[data-fluid-action="power"]');
+    const immersiveButton = controls.querySelector('[data-fluid-action="immersive"]');
     const paletteButton = controls.querySelector('[data-fluid-action="palette"]');
     const splashButton = controls.querySelector('[data-fluid-action="splash"]');
     const captureButton = controls.querySelector('[data-fluid-action="capture"]');
@@ -300,7 +300,9 @@ function startBackdropControls () {
     const effectRange = controls.querySelector('[data-fluid-range="effect"]');
     const backgroundDefault = Number(backgroundRange?.value || 96);
     const effectDefault = Math.round((parseFloat(getComputedStyle(canvas).opacity) || 0.34) * 100);
+    const effectMax = Number(effectRange?.max || 86);
     let fluidEnabled = true;
+    let immersiveEnabled = false;
 
     function syncPalette () {
         const palette = fluidPalettes[fluidPaletteIndex];
@@ -321,6 +323,12 @@ function startBackdropControls () {
         powerButton.querySelector('span').textContent = fluidEnabled ? '关闭特效' : '打开特效';
     }
 
+    function syncImmersive () {
+        if (immersiveButton == null) return;
+        immersiveButton.setAttribute('aria-pressed', String(immersiveEnabled));
+        immersiveButton.querySelector('span').textContent = immersiveEnabled ? '退出沉浸' : '沉浸式玩耍';
+    }
+
     function applyPauseState () {
         config.PAUSED = !fluidEnabled || document.hidden || userPaused;
         syncPause();
@@ -338,9 +346,9 @@ function startBackdropControls () {
     }
 
     function setEffectBrightness (value) {
-        const numeric = Math.max(0, Math.min(62, Number(value)));
+        const numeric = Math.max(0, Math.min(effectMax, Number(value)));
         const opacity = numeric / 100;
-        const brightness = 0.72 + (numeric / 62) * 0.5;
+        const brightness = 0.78 + (numeric / effectMax) * 0.62;
         document.documentElement.style.setProperty('--fluid-opacity', opacity.toFixed(2));
         document.documentElement.style.setProperty('--fluid-brightness', brightness.toFixed(2));
     }
@@ -350,6 +358,22 @@ function startBackdropControls () {
         canvas.style.display = enabled ? '' : 'none';
         applyPauseState();
         syncPower();
+    }
+
+    function setImmersive (enabled) {
+        immersiveEnabled = enabled;
+        document.body.classList.toggle('fluid-immersive', enabled);
+        if (enabled) {
+            setFluidEnabled(true);
+            const immersiveEffect = Math.min(effectMax, 76);
+            if (effectRange != null && Number(effectRange.value) < immersiveEffect) {
+                effectRange.value = String(immersiveEffect);
+                setEffectBrightness(immersiveEffect);
+            }
+            splatStack.push(26);
+            setPanelOpen(false);
+        }
+        syncImmersive();
     }
 
     function resetFluid () {
@@ -368,6 +392,7 @@ function startBackdropControls () {
         applyPauseState();
         initFramebuffers();
         multipleSplats(18);
+        syncImmersive();
     }
 
     panelToggle?.addEventListener('click', () => {
@@ -380,7 +405,9 @@ function startBackdropControls () {
     });
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') setPanelOpen(false);
+        if (e.key !== 'Escape') return;
+        if (immersiveEnabled) setImmersive(false);
+        setPanelOpen(false);
     });
 
     resetButton?.addEventListener('click', () => {
@@ -389,6 +416,10 @@ function startBackdropControls () {
 
     powerButton?.addEventListener('click', () => {
         setFluidEnabled(!fluidEnabled);
+    });
+
+    immersiveButton?.addEventListener('click', () => {
+        setImmersive(!immersiveEnabled);
     });
 
     backgroundRange?.addEventListener('input', () => {
@@ -435,6 +466,7 @@ function startBackdropControls () {
     syncPalette();
     applyPauseState();
     syncPower();
+    syncImmersive();
 }
 
 function captureScreenshot () {
@@ -1643,6 +1675,7 @@ window.addEventListener('mouseup', () => {
 });
 
 window.addEventListener('touchstart', e => {
+    if (document.body.classList.contains('fluid-immersive')) e.preventDefault();
     const touches = e.touches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
@@ -1650,9 +1683,10 @@ window.addEventListener('touchstart', e => {
         const pos = getCanvasPointerPosition(touches[i].clientX, touches[i].clientY);
         updatePointerDownData(pointers[i + 1], touches[i].identifier, pos.x, pos.y);
     }
-}, { passive: true });
+}, { passive: false });
 
 window.addEventListener('touchmove', e => {
+    if (document.body.classList.contains('fluid-immersive')) e.preventDefault();
     const touches = e.touches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
@@ -1663,7 +1697,7 @@ window.addEventListener('touchmove', e => {
             updatePointerDownData(pointer, touches[i].identifier, pos.x, pos.y);
         updatePointerMoveData(pointer, pos.x, pos.y);
     }
-}, { passive: true });
+}, { passive: false });
 
 window.addEventListener('touchend', e => {
     const touches = e.changedTouches;
