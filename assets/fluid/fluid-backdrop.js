@@ -34,18 +34,24 @@ if (canvas == null) return;
 
 const userAgent = navigator.userAgent || '';
 const isAndroidDevice = /Android/i.test(userAgent);
+const isWeChatBrowser = /MicroMessenger/i.test(userAgent);
 const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isMobileDevice = isAndroidDevice || isIOSDevice || /Mobi/i.test(userAgent);
-const cpuCores = navigator.hardwareConcurrency || 4;
-const deviceMemory = Number(navigator.deviceMemory) || 4;
+const cpuCores = Number(navigator.hardwareConcurrency) || 0;
+const deviceMemory = Number(navigator.deviceMemory) || 0;
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const saveDataMode = !!navigator.connection?.saveData;
-const constrainedMobile = isMobileDevice && (isAndroidDevice || cpuCores <= 4 || deviceMemory <= 4);
-const fallbackOnly = prefersReducedMotion || saveDataMode || (isAndroidDevice && (cpuCores <= 2 || deviceMemory <= 2));
-const targetFrameInterval = isMobileDevice ? 1000 / 24 : 1000 / 30;
+const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+const saveDataMode = !!(connection && connection.saveData);
+const weakHardware = (cpuCores > 0 && cpuCores <= 4) || (deviceMemory > 0 && deviceMemory <= 4);
+const constrainedMobile = isMobileDevice && (isAndroidDevice || weakHardware);
+const forcedCssFallback = document.documentElement.classList.contains('fluid-css-fallback');
+const fallbackOnly = forcedCssFallback || prefersReducedMotion || saveDataMode || (isAndroidDevice && isWeChatBrowser) || (isAndroidDevice && weakHardware);
+const targetFrameInterval = isAndroidDevice ? 1000 / 20 : isMobileDevice ? 1000 / 24 : 1000 / 30;
 const maxFluidPixelRatio = isMobileDevice ? 1 : 1.5;
 if (isAndroidDevice)
     document.body.classList.add('fluid-android');
+if (fallbackOnly)
+    document.body.classList.add('performance-lite');
 resizeCanvas();
 
 let config = {
@@ -176,9 +182,9 @@ function waitForHeroImageReady () {
     };
 
     if (image.complete && image.naturalWidth > 0)
-        return decodeImage();
+        return Promise.race([decodeImage(), heroImageTimeout()]);
 
-    return new Promise(resolve => {
+    const imageReady = new Promise(resolve => {
         image.addEventListener('load', () => {
             decodeImage().then(resolve);
         }, { once: true });
@@ -187,6 +193,11 @@ function waitForHeroImageReady () {
             resolve();
         }, { once: true });
     });
+    return Promise.race([imageReady, heroImageTimeout()]);
+}
+
+function heroImageTimeout () {
+    return new Promise(resolve => window.setTimeout(resolve, 1600));
 }
 
 function revealBackdropIfReady () {
@@ -375,7 +386,9 @@ function enableFluidFallback (status) {
     fallbackActive = true;
     canvas.dataset.fluidStatus = status;
     document.body.classList.add('fluid-fallback', 'fluid-ready');
-    document.querySelector('[data-fluid-controls]')?.setAttribute('hidden', '');
+    const controls = document.querySelector('[data-fluid-controls]');
+    if (controls != null)
+        controls.setAttribute('hidden', '');
 }
 
 function startBackdropControls () {
@@ -383,7 +396,7 @@ function startBackdropControls () {
     if (controls == null) return;
 
     const panelToggle = controls.querySelector('[data-fluid-panel-toggle]');
-    const panelToggleText = panelToggle?.querySelector('span');
+    const panelToggleText = panelToggle == null ? null : panelToggle.querySelector('span');
     const panel = controls.querySelector('[data-fluid-panel]');
     const powerButton = controls.querySelector('[data-fluid-action="power"]');
     const immersiveButton = controls.querySelector('[data-fluid-action="immersive"]');
@@ -482,24 +495,24 @@ function startBackdropControls () {
 
     function exitImmersiveFromToggle (event) {
         if (!immersiveEnabled) return false;
-        event?.preventDefault?.();
-        event?.stopPropagation?.();
+        if (event != null && typeof event.preventDefault === 'function') event.preventDefault();
+        if (event != null && typeof event.stopPropagation === 'function') event.stopPropagation();
         lastPanelTouchExitAt = Date.now();
         setImmersive(false);
         setPanelOpen(false);
         return true;
     }
 
-    panelToggle?.addEventListener('click', event => {
+    if (panelToggle != null) panelToggle.addEventListener('click', event => {
         if (Date.now() - lastPanelTouchExitAt < 450) {
             event.preventDefault();
             return;
         }
         if (exitImmersiveFromToggle(event)) return;
-        setPanelOpen(panel?.hidden !== false);
+        setPanelOpen(panel == null || panel.hidden !== false);
     });
 
-    panelToggle?.addEventListener('touchend', event => {
+    if (panelToggle != null) panelToggle.addEventListener('touchend', event => {
         exitImmersiveFromToggle(event);
     }, { passive: false });
 
@@ -514,30 +527,30 @@ function startBackdropControls () {
         setPanelOpen(false);
     });
 
-    powerButton?.addEventListener('click', () => {
+    if (powerButton != null) powerButton.addEventListener('click', () => {
         if (immersiveEnabled && fluidEnabled) setImmersive(false);
         setFluidEnabled(!fluidEnabled);
     });
 
-    immersiveButton?.addEventListener('click', () => {
+    if (immersiveButton != null) immersiveButton.addEventListener('click', () => {
         setImmersive(!immersiveEnabled);
     });
 
-    paletteButton?.addEventListener('click', () => {
+    if (paletteButton != null) paletteButton.addEventListener('click', () => {
         fluidPaletteIndex = (fluidPaletteIndex + 1) % fluidPalettes.length;
         syncPalette();
         splatStack.push(isAndroidDevice ? 1 : isMobile() ? 5 : 10);
     });
 
-    splashButton?.addEventListener('click', () => {
+    if (splashButton != null) splashButton.addEventListener('click', () => {
         splatStack.push(parseInt(Math.random() * (isAndroidDevice ? 1 : isMobile() ? 8 : 18)) + (isAndroidDevice ? 1 : isMobile() ? 4 : 10));
     });
 
-    captureButton?.addEventListener('click', () => {
+    if (captureButton != null) captureButton.addEventListener('click', () => {
         captureScreenshot();
     });
 
-    pauseButton?.addEventListener('click', () => {
+    if (pauseButton != null) pauseButton.addEventListener('click', () => {
         userPaused = !userPaused;
         applyPauseState();
     });
@@ -1846,8 +1859,8 @@ function shouldHandleAndroidTouchMove () {
 }
 
 function isFluidControlEventTarget (target) {
-    const element = target?.nodeType === 1 ? target : target?.parentElement;
-    return !!element?.closest?.('[data-fluid-controls]');
+    const element = target && target.nodeType === 1 ? target : target && target.parentElement;
+    return !!(element && typeof element.closest === 'function' && element.closest('[data-fluid-controls]'));
 }
 
 window.addEventListener('touchend', e => {

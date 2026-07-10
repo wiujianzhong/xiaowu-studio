@@ -10,6 +10,18 @@
   <script>
     (() => {
       if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      const ua = navigator.userAgent || "";
+      const isAndroid = /Android/i.test(ua);
+      const isWechat = /MicroMessenger/i.test(ua);
+      const cores = Number(navigator.hardwareConcurrency) || 0;
+      const memory = Number(navigator.deviceMemory) || 0;
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const weakAndroid = isAndroid && ((cores > 0 && cores <= 4) || (memory > 0 && memory <= 4));
+      const useLightEffects = (isAndroid && isWechat) || weakAndroid || Boolean(connection && connection.saveData) || reducedMotion;
+      if (useLightEffects) {
+        document.documentElement.classList.add("performance-lite", "fluid-css-fallback");
+      }
       const cleanUrl = `${window.location.pathname}${window.location.search}`;
       if (window.location.hash) history.replaceState(null, document.title, cleanUrl);
       const scrollHome = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -43,6 +55,10 @@
 
     * {
       box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
     }
 
     html {
@@ -81,18 +97,28 @@
       filter: brightness(var(--fluid-brightness)) saturate(1.16) contrast(1);
     }
 
-    body.fluid-fallback .fluid-backdrop {
+    body.fluid-fallback .fluid-backdrop,
+    html.fluid-css-fallback .fluid-backdrop {
       inset: -8%;
       width: auto;
       height: auto;
       background:
-        linear-gradient(118deg, transparent 0 18%, rgba(57, 230, 143, .16) 28%, transparent 42% 100%),
-        linear-gradient(62deg, transparent 0 34%, rgba(0, 216, 255, .12) 45%, transparent 58% 100%),
-        linear-gradient(152deg, transparent 0 46%, rgba(255, 176, 0, .1) 58%, transparent 72% 100%),
-        radial-gradient(ellipse at 78% 24%, rgba(117, 77, 255, .12), transparent 34%);
+        linear-gradient(118deg, transparent 0 18%, rgba(57, 230, 143, .3) 28%, transparent 42% 100%),
+        linear-gradient(62deg, transparent 0 34%, rgba(0, 216, 255, .24) 45%, transparent 58% 100%),
+        linear-gradient(152deg, transparent 0 46%, rgba(255, 176, 0, .2) 58%, transparent 72% 100%),
+        radial-gradient(ellipse at 78% 24%, rgba(117, 77, 255, .2), transparent 34%);
       transform: translate3d(0, 0, 0) scale(1.04);
       animation: fluidFallbackDrift 18s ease-in-out infinite alternate;
       will-change: transform, opacity;
+    }
+
+    html.fluid-css-fallback .fluid-backdrop {
+      opacity: .38;
+      filter: none;
+    }
+
+    html.fluid-css-fallback .fluid-controls {
+      display: none !important;
     }
 
     @keyframes fluidFallbackDrift {
@@ -110,9 +136,45 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      body.fluid-fallback .fluid-backdrop {
+      body.fluid-fallback .fluid-backdrop,
+      html.fluid-css-fallback .fluid-backdrop {
         animation: none;
       }
+    }
+
+    html.performance-lite {
+      scroll-behavior: auto;
+    }
+
+    html.performance-lite .nav,
+    html.performance-lite .proof,
+    html.performance-lite .fluid-toggle,
+    html.performance-lite .fluid-panel,
+    html.performance-lite .play-badge,
+    html.performance-lite .case-tag,
+    html.performance-lite .case-action {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html.performance-lite .fluid-toggle,
+    html.performance-lite .fluid-control[data-fluid-action="immersive"]::before,
+    html.performance-lite .case-flow::before,
+    html.performance-lite .case-card {
+      animation: none;
+    }
+
+    html.performance-lite .fluid-toggle,
+    html.performance-lite .case-card {
+      will-change: auto;
+    }
+
+    html.performance-lite .case-rail {
+      scroll-snap-type: x proximity;
+    }
+
+    html.performance-lite .case-card {
+      scroll-snap-align: start;
     }
 
     body.fluid-immersive {
@@ -1241,6 +1303,8 @@
       width: min(1180px, calc(100vw - 32px));
       margin: 0 auto;
       padding: 82px 0 92px;
+      content-visibility: auto;
+      contain-intrinsic-size: 1px 680px;
     }
 
     .section-head {
@@ -1726,7 +1790,7 @@
   <main>
     <section class="hero" aria-labelledby="title">
       <picture class="hero-picture">
-        <source media="(max-width: 620px)" srcset="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
+        <source media="(max-width: 620px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
         <img class="hero-photo" src="assets/hero/xiaowu-holding-phone-retouched-v3-optimized.jpg" alt="伍建忠手持手机站在山路前的主视觉" fetchpriority="high" decoding="async">
       </picture>
       <div class="hero-inner">
@@ -1958,7 +2022,7 @@
               </div>
             </div>
             <figure class="contact-qr">
-              <img src="https://wiujianzhong.github.io/xiaowu-studio/assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy" decoding="async">
+              <img src="assets/contact/wechat-qr.jpg" alt="伍建忠微信二维码" loading="lazy" decoding="async">
               <figcaption>扫码添加微信 · 伍建忠</figcaption>
             </figure>
           </div>
@@ -1984,7 +2048,7 @@
     </div>
   </div>
 
-  <script src="assets/fluid/fluid-backdrop.js?v=fluid-immersive-88-v5"></script>
+  <script src="assets/fluid/fluid-backdrop.js?v=fluid-immersive-88-v6"></script>
   <script>
     (() => {
       const toggleText = document.querySelector("[data-fluid-panel-toggle] span");
@@ -2097,6 +2161,7 @@
           const flow = rail.closest(".case-flow") || rail;
           const cards = Array.from(rail.querySelectorAll(".case-card"));
           if (cards.length === 0) return;
+          const liteMode = document.documentElement.classList.contains("performance-lite");
           const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
           const mobileMotion = window.matchMedia("(max-width: 620px)");
 
@@ -2110,19 +2175,24 @@
             return clone;
           }
 
-          cards.slice().reverse().forEach((card) => {
-            rail.insertBefore(cloneCard(card), rail.firstChild);
-          });
-          cards.forEach((card) => {
-            rail.appendChild(cloneCard(card));
-          });
+          if (!liteMode) {
+            cards.slice().reverse().forEach((card) => {
+              rail.insertBefore(cloneCard(card), rail.firstChild);
+            });
+            cards.forEach((card) => {
+              rail.appendChild(cloneCard(card));
+            });
+          }
 
           const segmentWidth = () => rail.scrollWidth / 3;
-          window.requestAnimationFrame(() => {
-            rail.scrollLeft = segmentWidth();
-          });
+          if (!liteMode) {
+            window.requestAnimationFrame(() => {
+              rail.scrollLeft = segmentWidth();
+            });
+          }
 
           function normalizePosition() {
+            if (liteMode) return;
             const width = segmentWidth();
             if (width <= 0) return;
             if (rail.scrollLeft < width * .45) {
@@ -2204,7 +2274,7 @@
             queueAutoScroll(nextDelay);
           }
 
-          queueAutoScroll();
+          if (!liteMode) queueAutoScroll();
 
           if ("IntersectionObserver" in window) {
             const railObserver = new IntersectionObserver((entries) => {
