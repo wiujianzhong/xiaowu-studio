@@ -5,6 +5,12 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 
 class HomepageHandler(SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("X-Frame-Options", "SAMEORIGIN")
+        super().end_headers()
+
     def do_GET(self):
         if self.path == "/health":
             body = json.dumps(
