@@ -131,6 +131,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .hero-video {
+        display: none;
+      }
+
       body.fluid-fallback .fluid-backdrop,
       html.fluid-css-fallback .fluid-backdrop {
         animation: none;
@@ -178,6 +182,7 @@
     }
 
     body.fluid-immersive .hero-picture,
+    body.fluid-immersive .hero-video,
     body.fluid-immersive .hero-inner,
     body.fluid-immersive .hero::before,
     body.fluid-immersive .nav,
@@ -269,8 +274,20 @@
     .hero-picture {
       position: absolute;
       inset: 0;
-      z-index: -3;
+      z-index: -4;
       overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(1.05) contrast(1.06) brightness(.72);
+      transform: scale(1.012);
     }
 
     .hero-photo {
@@ -1784,6 +1801,9 @@
 
   <main>
     <section class="hero" aria-labelledby="title">
+      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/hero/xiaowu-homepage-bg-gemini-poster.jpg" aria-hidden="true">
+        <source src="assets/hero/xiaowu-homepage-bg-gemini.mp4" type="video/mp4">
+      </video>
       <picture class="hero-picture">
         <source media="(max-width: 620px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
         <img class="hero-photo" src="assets/hero/xiaowu-holding-phone-retouched-v3-optimized.jpg" alt="伍建忠手持手机站在山路前的主视觉" fetchpriority="high" decoding="async">
