@@ -34,7 +34,6 @@ if (canvas == null) return;
 
 const userAgent = navigator.userAgent || '';
 const isAndroidDevice = /Android/i.test(userAgent);
-const isWeChatBrowser = /MicroMessenger/i.test(userAgent);
 const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isMobileDevice = isAndroidDevice || isIOSDevice || /Mobi/i.test(userAgent);
 const cpuCores = Number(navigator.hardwareConcurrency) || 0;
@@ -43,9 +42,10 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 const saveDataMode = !!(connection && connection.saveData);
 const weakHardware = (cpuCores > 0 && cpuCores <= 4) || (deviceMemory > 0 && deviceMemory <= 4);
+const veryWeakHardware = (cpuCores > 0 && cpuCores <= 2) || (deviceMemory > 0 && deviceMemory <= 2);
 const constrainedMobile = isMobileDevice && (isAndroidDevice || weakHardware);
 const forcedCssFallback = document.documentElement.classList.contains('fluid-css-fallback');
-const fallbackOnly = forcedCssFallback || prefersReducedMotion || saveDataMode || (isAndroidDevice && isWeChatBrowser) || (isAndroidDevice && weakHardware);
+const fallbackOnly = forcedCssFallback || prefersReducedMotion || saveDataMode || (isAndroidDevice && veryWeakHardware);
 const targetFrameInterval = isAndroidDevice ? 1000 / 20 : isMobileDevice ? 1000 / 24 : 1000 / 30;
 const maxFluidPixelRatio = isMobileDevice ? 1 : 1.5;
 if (isAndroidDevice)
@@ -111,6 +111,7 @@ let backdropReady = false;
 let heroImageReady = false;
 let firstFrameReady = false;
 let fallbackActive = false;
+let controlsStarted = false;
 
 if (fallbackOnly) {
     enableFluidFallback('android-fallback');
@@ -384,16 +385,18 @@ function isMobile () {
 function enableFluidFallback (status) {
     if (fallbackActive) return;
     fallbackActive = true;
+    backdropReady = true;
     canvas.dataset.fluidStatus = status;
-    document.body.classList.add('fluid-fallback', 'fluid-ready');
-    const controls = document.querySelector('[data-fluid-controls]');
-    if (controls != null)
-        controls.setAttribute('hidden', '');
+    document.documentElement.classList.add('fluid-css-fallback', 'performance-lite');
+    document.body.classList.add('fluid-fallback', 'fluid-ready', 'performance-lite');
+    startBackdropControls();
 }
 
 function startBackdropControls () {
+    if (controlsStarted) return;
     const controls = document.querySelector('[data-fluid-controls]');
     if (controls == null) return;
+    controlsStarted = true;
 
     const panelToggle = controls.querySelector('[data-fluid-panel-toggle]');
     const panelToggleText = panelToggle == null ? null : panelToggle.querySelector('span');

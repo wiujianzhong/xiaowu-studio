@@ -12,13 +12,12 @@
       if ("scrollRestoration" in history) history.scrollRestoration = "manual";
       const ua = navigator.userAgent || "";
       const isAndroid = /Android/i.test(ua);
-      const isWechat = /MicroMessenger/i.test(ua);
       const cores = Number(navigator.hardwareConcurrency) || 0;
       const memory = Number(navigator.deviceMemory) || 0;
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
       const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const weakAndroid = isAndroid && ((cores > 0 && cores <= 4) || (memory > 0 && memory <= 4));
-      const useLightEffects = (isAndroid && isWechat) || weakAndroid || Boolean(connection && connection.saveData) || reducedMotion;
+      const veryWeakAndroid = isAndroid && ((cores > 0 && cores <= 2) || (memory > 0 && memory <= 2));
+      const useLightEffects = veryWeakAndroid || Boolean(connection && connection.saveData) || reducedMotion;
       if (useLightEffects) {
         document.documentElement.classList.add("performance-lite", "fluid-css-fallback");
       }
@@ -115,10 +114,6 @@
     html.fluid-css-fallback .fluid-backdrop {
       opacity: .38;
       filter: none;
-    }
-
-    html.fluid-css-fallback .fluid-controls {
-      display: none !important;
     }
 
     @keyframes fluidFallbackDrift {
@@ -2048,7 +2043,7 @@
     </div>
   </div>
 
-  <script src="assets/fluid/fluid-backdrop.js?v=fluid-immersive-88-v6"></script>
+  <script src="assets/fluid/fluid-backdrop.js?v=fluid-immersive-88-v7"></script>
   <script>
     (() => {
       const toggleText = document.querySelector("[data-fluid-panel-toggle] span");
