@@ -781,8 +781,7 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
-      touch-action: pan-y;
-      touch-action: pan-y pinch-zoom;
+      touch-action: pan-x pan-y pinch-zoom;
       cursor: grab;
     }
 
@@ -2453,28 +2452,33 @@
     function setupPlayerSwipe() {
       const shell = modal.querySelector(".player-shell");
       if (!shell) return;
-      let pointerId = null;
-      let startX = 0;
-      let startY = 0;
+      let startX = null;
+      let startY = null;
 
-      shell.addEventListener("pointerdown", (event) => {
-        if (event.pointerType === "mouse" || event.target.closest("a, button")) return;
-        pointerId = event.pointerId;
-        startX = event.clientX;
-        startY = event.clientY;
-      });
-
-      shell.addEventListener("pointerup", (event) => {
-        if (event.pointerId !== pointerId) return;
-        const deltaX = event.clientX - startX;
-        const deltaY = event.clientY - startY;
-        pointerId = null;
+      function finishSwipe(endX, endY) {
+        if (startX === null || startY === null) return;
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        startX = null;
+        startY = null;
         if (Math.abs(deltaX) < 52 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) return;
         openAdjacentPlayer(deltaX < 0 ? 1 : -1);
-      });
+      }
 
-      shell.addEventListener("pointercancel", () => {
-        pointerId = null;
+      shell.addEventListener("touchstart", (event) => {
+        if (event.touches.length !== 1 || event.target.closest("a, button")) return;
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+      }, { passive: true });
+
+      shell.addEventListener("touchend", (event) => {
+        if (event.changedTouches.length !== 1) return;
+        finishSwipe(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+      }, { passive: true });
+
+      shell.addEventListener("touchcancel", () => {
+        startX = null;
+        startY = null;
       });
     }
 
@@ -2528,6 +2532,10 @@
 
           let scrollFrame = 0;
           rail.addEventListener("scroll", () => {
+            if (dragging && Math.abs(rail.scrollLeft - startScroll) > 5) {
+              dragged = true;
+              clearPressedCard();
+            }
             if (scrollFrame) return;
             scrollFrame = window.requestAnimationFrame(() => {
               normalizePosition();
@@ -2546,6 +2554,12 @@
           let pointerCard = null;
           let pointerAction = null;
           let pressedCard = null;
+          let touchId = null;
+          let touchAxis = null;
+          let touchMoved = false;
+          let touchStartX = 0;
+          let touchStartY = 0;
+          let touchStartScroll = 0;
           let lastAutoTime = 0;
           let railVisible = true;
           let pausedState = null;
@@ -2570,6 +2584,13 @@
             if (!pressedCard) return;
             pressedCard.classList.remove("is-pressed");
             pressedCard = null;
+          }
+
+          function findTouch(touches, identifier) {
+            for (let index = 0; index < touches.length; index += 1) {
+              if (touches[index].identifier === identifier) return touches[index];
+            }
+            return null;
           }
 
           function queueAutoScroll(delay = 0) {
@@ -2610,7 +2631,70 @@
             syncPausedState();
           }
 
+          rail.addEventListener("touchstart", (event) => {
+            if (event.touches.length !== 1) return;
+            const touch = event.touches[0];
+            touchId = touch.identifier;
+            touchAxis = null;
+            touchMoved = false;
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            touchStartScroll = rail.scrollLeft;
+            startScroll = rail.scrollLeft;
+            pressedCard = event.target.closest(".case-card");
+            if (pressedCard) pressedCard.classList.add("is-pressed");
+            dragging = true;
+            dragged = false;
+            rail.classList.add("is-dragging");
+            syncPausedState();
+          }, { passive: true });
+
+          rail.addEventListener("touchmove", (event) => {
+            const touch = findTouch(event.touches, touchId);
+            if (!touch) return;
+            const deltaX = touch.clientX - touchStartX;
+            const deltaY = touch.clientY - touchStartY;
+            if (!touchAxis && Math.max(Math.abs(deltaX), Math.abs(deltaY)) > 6) {
+              touchAxis = Math.abs(deltaX) > Math.abs(deltaY) ? "x" : "y";
+              clearPressedCard();
+            }
+            if (touchAxis !== "x") return;
+            touchMoved = true;
+            dragged = true;
+            const activeElement = document.activeElement;
+            if (activeElement instanceof HTMLElement && rail.contains(activeElement)) activeElement.blur();
+
+            const observedScroll = rail.scrollLeft;
+            const expectedScroll = touchStartScroll - deltaX;
+            window.requestAnimationFrame(() => {
+              if (touchId === null || touchAxis !== "x") return;
+              if (Math.abs(rail.scrollLeft - observedScroll) < 1) rail.scrollLeft = expectedScroll;
+            });
+          }, { passive: true });
+
+          function finishTouch(event) {
+            if (touchId === null || !findTouch(event.changedTouches, touchId)) return;
+            clearPressedCard();
+            touchId = null;
+            touchAxis = null;
+            dragging = false;
+            rail.classList.remove("is-dragging");
+            if (touchMoved) {
+              suppressClick = true;
+              pauseBriefly(1200);
+              window.setTimeout(() => {
+                suppressClick = false;
+              }, 450);
+            }
+            touchMoved = false;
+            syncPausedState();
+          }
+
+          rail.addEventListener("touchend", finishTouch, { passive: true });
+          rail.addEventListener("touchcancel", finishTouch, { passive: true });
+
           rail.addEventListener("pointerdown", (event) => {
+            if (event.pointerType === "touch") return;
             if (event.pointerType === "mouse" && event.button !== 0) return;
             keyboardFocus = false;
             pressedCard = event.target.closest(".case-card");
@@ -2629,11 +2713,11 @@
             startScroll = rail.scrollLeft;
             rail.classList.add("is-dragging");
             syncPausedState();
-            rail.setPointerCapture(event.pointerId);
+            if (event.pointerType !== "touch") rail.setPointerCapture(event.pointerId);
           });
 
           rail.addEventListener("pointermove", (event) => {
-            if (!dragging) return;
+            if (!dragging || event.pointerType === "touch") return;
             const delta = event.clientX - startX;
             if (Math.abs(delta) > 5 && !dragged) {
               dragged = true;
@@ -2673,8 +2757,20 @@
             syncPausedState();
           }
 
+          function cancelDragging(event) {
+            clearPressedCard();
+            if (!dragging) return;
+            dragging = false;
+            rail.classList.remove("is-dragging");
+            if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
+            pointerCard = null;
+            pointerAction = null;
+            pauseBriefly(1200);
+            syncPausedState();
+          }
+
           rail.addEventListener("pointerup", stopDragging);
-          rail.addEventListener("pointercancel", stopDragging);
+          rail.addEventListener("pointercancel", cancelDragging);
           rail.addEventListener("pointerleave", () => {
             clearPressedCard();
           });
@@ -2690,6 +2786,10 @@
             pauseBriefly(1200);
           }, { passive: true });
           rail.addEventListener("click", (event) => {
+            if (suppressClick) {
+              event.preventDefault();
+              return;
+            }
             if (event.target.closest(".case-open.is-disabled")) {
               event.preventDefault();
               return;
@@ -2697,10 +2797,6 @@
             if (event.target.closest(".case-open")) return;
             const card = event.target.closest(".case-card");
             if (!card || !rail.contains(card)) return;
-            if (suppressClick) {
-              event.preventDefault();
-              return;
-            }
             unlockAudio();
             openPlayer(card);
           });
