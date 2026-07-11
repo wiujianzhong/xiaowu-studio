@@ -1166,6 +1166,7 @@
       max-height: min(86svh, 760px);
       grid-template-rows: auto minmax(0, 1fr);
       overflow: hidden;
+      touch-action: pan-y pinch-zoom;
       border: 1px solid rgba(57, 212, 157, .46);
       border-radius: 2px;
       background: #050807;
@@ -2352,6 +2353,8 @@
         const playerLink = document.getElementById("playerLink");
         const remoteAssetBase = "https://wiujianzhong.github.io/xiaowu-studio/";
         let audioUnlocker = null;
+        let playerCards = [];
+        let activePlayerIndex = -1;
 
         function resolveMediaSource(source) {
           if (!source) return "";
@@ -2393,6 +2396,8 @@
         function openPlayer(card) {
           const title = card.dataset.title;
           const note = card.dataset.note;
+      const cardIndex = playerCards.findIndex((item) => item.dataset.title === title);
+      if (cardIndex >= 0) activePlayerIndex = cardIndex;
       const poster = resolveMediaSource(card.dataset.poster);
       const video = resolveMediaSource(card.dataset.video);
       const link = card.dataset.link;
@@ -2438,12 +2443,48 @@
       mediaFrame.innerHTML = "";
     }
 
+    function openAdjacentPlayer(offset) {
+      if (playerCards.length < 2 || modal.getAttribute("aria-hidden") !== "false") return;
+      const currentIndex = activePlayerIndex >= 0 ? activePlayerIndex : 0;
+      const nextIndex = (currentIndex + offset + playerCards.length) % playerCards.length;
+      openPlayer(playerCards[nextIndex]);
+    }
+
+    function setupPlayerSwipe() {
+      const shell = modal.querySelector(".player-shell");
+      if (!shell) return;
+      let pointerId = null;
+      let startX = 0;
+      let startY = 0;
+
+      shell.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" || event.target.closest("a, button")) return;
+        pointerId = event.pointerId;
+        startX = event.clientX;
+        startY = event.clientY;
+      });
+
+      shell.addEventListener("pointerup", (event) => {
+        if (event.pointerId !== pointerId) return;
+        const deltaX = event.clientX - startX;
+        const deltaY = event.clientY - startY;
+        pointerId = null;
+        if (Math.abs(deltaX) < 52 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) return;
+        openAdjacentPlayer(deltaX < 0 ? 1 : -1);
+      });
+
+      shell.addEventListener("pointercancel", () => {
+        pointerId = null;
+      });
+    }
+
         function setupCaseRail() {
           const rail = document.querySelector("[data-case-rail]");
           if (!rail) return;
           const flow = rail.closest(".case-flow") || rail;
           const cards = Array.from(rail.querySelectorAll(".case-card"));
           if (cards.length === 0) return;
+          playerCards = cards;
           const liteMode = document.documentElement.classList.contains("performance-lite");
           const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
           const mobileMotion = window.matchMedia("(max-width: 620px)");
@@ -2503,6 +2544,7 @@
           let startX = 0;
           let startScroll = 0;
           let pointerCard = null;
+          let pointerAction = null;
           let pressedCard = null;
           let lastAutoTime = 0;
           let railVisible = true;
@@ -2573,7 +2615,8 @@
             keyboardFocus = false;
             pressedCard = event.target.closest(".case-card");
             if (pressedCard) pressedCard.classList.add("is-pressed");
-            if (event.target.closest(".case-action")) {
+            const action = event.target.closest(".case-action");
+            if (action && event.pointerType === "mouse") {
               pauseBriefly();
               return;
             }
@@ -2581,6 +2624,7 @@
             dragging = true;
             dragged = false;
             pointerCard = event.target.closest(".case-card");
+            pointerAction = action;
             startX = event.clientX;
             startScroll = rail.scrollLeft;
             rail.classList.add("is-dragging");
@@ -2591,7 +2635,12 @@
           rail.addEventListener("pointermove", (event) => {
             if (!dragging) return;
             const delta = event.clientX - startX;
-            if (Math.abs(delta) > 5) dragged = true;
+            if (Math.abs(delta) > 5 && !dragged) {
+              dragged = true;
+              clearPressedCard();
+              const activeElement = document.activeElement;
+              if (activeElement instanceof HTMLElement && rail.contains(activeElement)) activeElement.blur();
+            }
             if (!dragged) return;
             rail.scrollLeft = startScroll - delta;
             event.preventDefault();
@@ -2611,7 +2660,7 @@
               window.setTimeout(() => {
                 suppressClick = false;
               }, 0);
-            } else if (pointerCard && rail.contains(pointerCard)) {
+            } else if (!pointerAction && pointerCard && rail.contains(pointerCard)) {
               suppressClick = true;
               openPlayer(pointerCard);
               pauseBriefly(1200);
@@ -2620,6 +2669,7 @@
               }, 0);
             }
             pointerCard = null;
+            pointerAction = null;
             syncPausedState();
           }
 
@@ -2671,6 +2721,7 @@
         }
 
         setupCaseRail();
+        setupPlayerSwipe();
 
         function setupNavTracking() {
           const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
