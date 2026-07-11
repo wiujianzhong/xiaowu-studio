@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0d1210">
+  <meta name="theme-color" content="#111713">
   <meta name="description" content="小伍工作室：把现场问题做成 AI 与 Web 工具。">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://wiujianzhong.github.io">
   <title>小伍工作室｜让信息替你工作</title>
   <script>
@@ -34,8 +36,8 @@
   <style>
     :root {
       color-scheme: dark;
-      --ink: #0d1210;
-      --ink-soft: #151d19;
+      --ink: #111713;
+      --ink-soft: #19211d;
       --paper: #f6f0e3;
       --muted: rgba(246, 240, 227, .66);
       --faint: rgba(246, 240, 227, .42);
@@ -46,7 +48,7 @@
       --red: #e44d38;
       --blue: #8ab6d6;
       --fluid-accent: #ffe457;
-      --hero-brightness: .96;
+      --hero-brightness: 1.02;
       --fluid-opacity: .30;
       --fluid-brightness: .98;
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
@@ -252,6 +254,7 @@
 
     .hero {
       position: relative;
+      min-height: 100vh;
       min-height: 100svh;
       isolation: isolate;
       overflow: hidden;
@@ -286,7 +289,7 @@
       height: 100%;
       object-fit: cover;
       object-position: center;
-      filter: saturate(1.06) contrast(1.04) brightness(.82);
+      filter: saturate(1.08) contrast(1.06) brightness(.98);
       transform: scale(1.012);
     }
 
@@ -307,8 +310,8 @@
       z-index: -2;
       content: "";
       background:
-        linear-gradient(90deg, rgba(9, 12, 11, .76) 0%, rgba(9, 12, 11, .5) 34%, rgba(9, 12, 11, .05) 68%, rgba(9, 12, 11, .08) 100%),
-        linear-gradient(180deg, rgba(9, 12, 11, .16) 0%, rgba(9, 12, 11, .02) 48%, rgba(9, 12, 11, .7) 100%);
+        linear-gradient(90deg, rgba(9, 12, 11, .62) 0%, rgba(9, 12, 11, .38) 34%, rgba(9, 12, 11, .03) 68%, rgba(9, 12, 11, .06) 100%),
+        linear-gradient(180deg, rgba(9, 12, 11, .1) 0%, transparent 48%, rgba(9, 12, 11, .56) 100%);
       pointer-events: none;
     }
 
@@ -422,6 +425,7 @@
       z-index: 3;
       display: grid;
       width: min(1180px, calc(100vw - 32px));
+      min-height: 100vh;
       min-height: 100svh;
       margin: 0 auto;
       padding: 104px 0 24px;
@@ -777,6 +781,8 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
+      touch-action: pan-y;
+      touch-action: pan-y pinch-zoom;
       cursor: grab;
     }
 
@@ -1497,6 +1503,7 @@
     .media-frame img {
       display: block;
       max-width: 100%;
+      max-height: calc(86vh - 76px);
       max-height: calc(86svh - 76px);
       object-fit: contain;
     }
@@ -1715,7 +1722,7 @@
 
     @media (max-width: 620px) {
       :root {
-        --hero-brightness: .94;
+        --hero-brightness: 1;
         --fluid-opacity: .30;
         --fluid-brightness: .96;
       }
@@ -1735,8 +1742,8 @@
 
       .hero::after {
         background:
-          linear-gradient(180deg, rgba(9, 12, 11, .46) 0%, rgba(9, 12, 11, .16) 30%, rgba(9, 12, 11, .68) 60%, rgba(9, 12, 11, .86) 100%),
-          linear-gradient(90deg, rgba(9, 12, 11, .56), rgba(9, 12, 11, .08));
+          linear-gradient(180deg, rgba(9, 12, 11, .38) 0%, rgba(9, 12, 11, .12) 30%, rgba(9, 12, 11, .56) 60%, rgba(9, 12, 11, .74) 100%),
+          linear-gradient(90deg, rgba(9, 12, 11, .45), rgba(9, 12, 11, .06));
       }
 
       .topbar {
@@ -1893,6 +1900,8 @@
       .case-card {
         flex-basis: 76vw;
         min-width: 264px;
+        animation: none;
+        will-change: auto;
       }
 
       .case-copy {
@@ -1997,8 +2006,9 @@
 
   <main>
     <section class="hero" aria-labelledby="title">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/hero/xiaowu-homepage-bg-robot-v2-poster.jpg" aria-hidden="true">
-        <source src="assets/hero/xiaowu-homepage-bg-robot-v2.mp4" type="video/mp4">
+      <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="assets/hero/xiaowu-homepage-bg-robot-v2-hd-poster.jpg" aria-hidden="true">
+        <source media="(max-width: 620px)" src="assets/hero/xiaowu-homepage-bg-robot-v2.mp4" type="video/mp4">
+        <source src="assets/hero/xiaowu-homepage-bg-robot-v2-hd.mp4" type="video/mp4">
       </video>
       <picture class="hero-picture">
         <source media="(max-width: 620px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
@@ -2487,7 +2497,6 @@
           let dragging = false;
           let dragged = false;
           let suppressClick = false;
-          let hoverPaused = false;
           let focusPaused = false;
           let keyboardFocus = false;
           let manualPauseUntil = 0;
@@ -2500,7 +2509,7 @@
           let pausedState = null;
 
           function isPaused() {
-            return !railVisible || hoverPaused || focusPaused || dragging || Date.now() < manualPauseUntil;
+            return !railVisible || focusPaused || dragging || Date.now() < manualPauseUntil;
           }
 
           function syncPausedState() {
@@ -2618,14 +2627,6 @@
           rail.addEventListener("pointercancel", stopDragging);
           rail.addEventListener("pointerleave", () => {
             clearPressedCard();
-            hoverPaused = false;
-            syncPausedState();
-          });
-          rail.addEventListener("pointerenter", (event) => {
-            if (event.pointerType === "mouse") {
-              hoverPaused = true;
-              syncPausedState();
-            }
           });
           rail.addEventListener("focusin", () => {
             focusPaused = keyboardFocus;
