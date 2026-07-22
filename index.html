@@ -1573,6 +1573,171 @@
           font-size: 13px;
         }
 
+        .project-details {
+          padding-top: 28px;
+        }
+
+        .project-detail-list {
+          border-bottom: 1px solid var(--line);
+        }
+
+        .project-detail {
+          --project-accent: var(--jade);
+          display: grid;
+          grid-template-columns: minmax(0, .86fr) minmax(420px, 1.14fr);
+          gap: clamp(32px, 6vw, 78px);
+          align-items: center;
+          padding: clamp(46px, 7vw, 82px) 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .project-detail:nth-child(even) .project-detail-copy {
+          grid-column: 2;
+        }
+
+        .project-detail:nth-child(even) .project-detail-visual {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .project-detail-copy {
+          display: grid;
+          align-content: center;
+          gap: 18px;
+        }
+
+        .project-detail-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px 16px;
+          color: var(--project-accent);
+          font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+          font-size: 11px;
+          letter-spacing: .12em;
+        }
+
+        .project-detail h3 {
+          max-width: 8.6em;
+          margin: 0;
+          font-size: clamp(34px, 4.8vw, 66px);
+          line-height: 1.02;
+        }
+
+        .project-detail-intro {
+          max-width: 41em;
+          margin: 0;
+          color: var(--muted);
+          font-size: 15px;
+          line-height: 1.72;
+        }
+
+        .project-detail-facts {
+          display: grid;
+          margin: 2px 0 0;
+          border-top: 1px solid rgba(246, 240, 227, .13);
+        }
+
+        .project-detail-facts div {
+          display: grid;
+          grid-template-columns: 88px minmax(0, 1fr);
+          gap: 16px;
+          padding: 11px 0;
+          border-bottom: 1px solid rgba(246, 240, 227, .09);
+        }
+
+        .project-detail-facts dt {
+          color: var(--faint);
+          font-size: 12px;
+        }
+
+        .project-detail-facts dd {
+          margin: 0;
+          color: rgba(246, 240, 227, .84);
+          font-size: 13px;
+          line-height: 1.55;
+        }
+
+        .project-detail-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .project-detail-actions a,
+        .project-detail-actions button {
+          display: inline-flex;
+          min-height: 42px;
+          align-items: center;
+          justify-content: center;
+          padding: 0 16px;
+          border: 1px solid color-mix(in srgb, var(--project-accent) 42%, transparent);
+          border-radius: 2px;
+          background: color-mix(in srgb, var(--project-accent) 12%, transparent);
+          color: var(--paper);
+          font: inherit;
+          font-size: 13px;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .project-detail-actions a:hover,
+        .project-detail-actions button:hover,
+        .project-detail-actions a:focus-visible,
+        .project-detail-actions button:focus-visible {
+          border-color: var(--project-accent);
+          outline: none;
+        }
+
+        .project-detail-visual {
+          position: relative;
+          overflow: hidden;
+          aspect-ratio: 16 / 9;
+          border: 1px solid rgba(246, 240, 227, .14);
+          background: #050706;
+          box-shadow: 0 28px 76px rgba(0, 0, 0, .34);
+        }
+
+        .project-detail-visual::after {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, transparent 44%, rgba(3, 5, 4, .72));
+          content: "";
+          pointer-events: none;
+        }
+
+        .project-detail-visual img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .project-detail-play {
+          position: absolute;
+          z-index: 2;
+          right: 18px;
+          bottom: 18px;
+          display: inline-flex;
+          min-height: 42px;
+          align-items: center;
+          gap: 9px;
+          padding: 0 15px;
+          border: 1px solid rgba(246, 240, 227, .28);
+          border-radius: 999px;
+          background: rgba(5, 7, 6, .78);
+          color: var(--paper);
+          font: inherit;
+          font-size: 12px;
+          cursor: pointer;
+          backdrop-filter: blur(12px);
+        }
+
+        .project-detail-play::before {
+          color: var(--project-accent);
+          content: "▶";
+          font-size: 10px;
+        }
+
         .capability-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1697,8 +1862,25 @@
 
           .section-head,
           .work-item,
+          .project-detail,
           .contact-layout {
             grid-template-columns: 1fr;
+          }
+
+          .project-detail:nth-child(even) .project-detail-copy,
+          .project-detail:nth-child(even) .project-detail-visual {
+            grid-column: auto;
+            grid-row: auto;
+          }
+
+          .project-detail-copy,
+          .project-detail:nth-child(even) .project-detail-copy {
+            order: 1;
+          }
+
+          .project-detail-visual,
+          .project-detail:nth-child(even) .project-detail-visual {
+            order: 2;
           }
 
           .capability-grid {
@@ -1964,6 +2146,33 @@
         width: min(calc(100vw - 22px), 1180px);
         padding-top: 58px;
       }
+
+      .project-details {
+        padding-top: 18px;
+      }
+
+      .project-detail {
+        gap: 26px;
+        padding: 42px 0;
+      }
+
+      .project-detail h3 {
+        max-width: 9em;
+        font-size: clamp(32px, 10vw, 44px);
+      }
+
+      .project-detail-intro {
+        font-size: 14px;
+      }
+
+      .project-detail-facts div {
+        grid-template-columns: 70px minmax(0, 1fr);
+      }
+
+      .project-detail-play {
+        right: 12px;
+        bottom: 12px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2024,9 +2233,75 @@
 
         <div class="case-flow" id="cases" aria-label="重点项目作品流">
           <div class="case-rail" data-case-rail>
+            <article class="case-card" tabindex="0" data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/jwf0019a-3d/">
+              <img src="assets/generated/portfolio/jwf0019a-spotlight-cover.png" alt="JWF0019A 设备超级知识库项目封面" decoding="async" loading="lazy">
+              <span class="case-index">01</span>
+              <span class="play-badge" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
+                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="case-copy">
+                <span class="case-type">3D KNOWLEDGE</span>
+                <span class="case-title">JWF0019A 设备超级知识库</span>
+                <span class="case-note">设备一拆，原理就懂。</span>
+                <span class="case-tags" aria-label="项目标签">
+                  <span class="case-tag">设备数字化</span>
+                </span>
+                <div class="case-actions">
+                  <button class="case-action case-demo" type="button" data-open-demo>播放讲解</button>
+                  <a class="case-action case-open" href="https://wiujianzhong.github.io/kunpeng-yuechao/jwf0019a-3d/" target="_blank" rel="noreferrer">打开项目</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="case-card" tabindex="0" data-title="纺织机械零件图册" data-note="三万零件，一搜即得。" data-poster="assets/generated/portfolio/textile3d-spotlight-cover.png" data-video="assets/videos/project-spotlights/textile3d-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/textile3d/">
+              <img src="assets/generated/portfolio/textile3d-spotlight-cover.png" alt="纺织机械零件图册项目封面" decoding="async" loading="lazy">
+              <span class="case-index">02</span>
+              <span class="play-badge" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
+                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="case-copy">
+                <span class="case-type">INDUSTRIAL LIBRARY</span>
+                <span class="case-title">纺织机械零件图册</span>
+                <span class="case-note">三万零件，一搜即得。</span>
+                <span class="case-tags" aria-label="项目标签">
+                  <span class="case-tag">零件检索</span>
+                </span>
+                <div class="case-actions">
+                  <button class="case-action case-demo" type="button" data-open-demo>播放讲解</button>
+                  <a class="case-action case-open" href="https://wiujianzhong.github.io/kunpeng-yuechao/textile3d/" target="_blank" rel="noreferrer">打开项目</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="case-card" tabindex="0" data-title="AI 投标文件助手" data-note="投标初稿，自动组卷。" data-poster="assets/generated/portfolio/bid-assistant-spotlight-cover.png" data-video="assets/videos/project-spotlights/bid-assistant-spotlight-promo.mp4">
+              <img src="assets/generated/portfolio/bid-assistant-spotlight-cover.png" alt="AI 投标文件助手项目封面" decoding="async" loading="lazy">
+              <span class="case-index">03</span>
+              <span class="play-badge" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
+                  <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="case-copy">
+                <span class="case-type">BID ASSISTANT</span>
+                <span class="case-title">AI 投标文件助手</span>
+                <span class="case-note">投标初稿，自动组卷。</span>
+                <span class="case-tags" aria-label="项目标签">
+                  <span class="case-tag">资料组卷</span>
+                </span>
+                <div class="case-actions">
+                  <button class="case-action case-demo" type="button" data-open-demo>播放讲解</button>
+                  <span class="case-action case-open is-disabled" aria-disabled="true">内测中</span>
+                </div>
+              </div>
+            </article>
+
             <article class="case-card" tabindex="0" data-title="整改 PPT 一键生成" data-note="现场照片，一键成稿。" data-poster="assets/generated/portfolio/ppt-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/ppt-spotlight-promo.mp4" data-link="https://jx.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/ppt-cover-thumb.jpg" alt="整改 PPT 一键生成项目封面" decoding="async" loading="lazy">
-              <span class="case-index">01</span>
+              <span class="case-index">04</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2048,7 +2323,7 @@
 
             <article class="case-card" tabindex="0" data-title="税收分类编码匹配" data-note="商品表格，编码核对通过。" data-poster="assets/generated/portfolio/tax-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/tax-spotlight-promo.mp4" data-link="https://swbm.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/tax-cover-thumb.jpg" alt="税收分类编码匹配项目封面" decoding="async" loading="lazy">
-              <span class="case-index">02</span>
+              <span class="case-index">05</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2070,7 +2345,7 @@
 
             <article class="case-card" tabindex="0" data-title="AI 送货助手" data-note="送货、语音、对账一屏汇总。" data-poster="assets/generated/portfolio/delivery-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/delivery-spotlight-promo.mp4" data-link="https://gys.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/delivery-cover-thumb.jpg" alt="AI 送货助手项目封面" decoding="async" loading="lazy">
-              <span class="case-index">03</span>
+              <span class="case-index">06</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2092,7 +2367,7 @@
 
             <article class="case-card" tabindex="0" data-title="手势操控大庚剑阵" data-note="手势划过，剑光成阵。" data-poster="assets/generated/portfolio/sword-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/sword-spotlight-promo.mp4" data-link="https://sword.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/sword-cover-thumb.jpg" alt="手势操控大庚剑阵项目封面" decoding="async" loading="lazy">
-              <span class="case-index">04</span>
+              <span class="case-index">07</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2114,7 +2389,7 @@
 
             <article class="case-card" tabindex="0" data-title="微信 AI 超级助手" data-note="消息汇聚成客户第二大脑。" data-poster="assets/generated/portfolio/wechat-ai-brain-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/wechat-spotlight-promo.mp4">
               <img src="assets/generated/portfolio/wechat-ai-brain-cover-thumb.jpg" alt="微信 AI 超级助手项目封面" decoding="async" loading="lazy">
-              <span class="case-index">05</span>
+              <span class="case-index">08</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2136,7 +2411,7 @@
 
             <article class="case-card" tabindex="0" data-title="小伍健身动作库" data-note="动作残影，训练卡片。" data-poster="assets/generated/portfolio/fitness-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/fitness-spotlight-promo.mp4" data-link="https://jsdz.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/fitness-cover-thumb.jpg" alt="小伍健身动作库项目封面" decoding="async" loading="lazy">
-              <span class="case-index">06</span>
+              <span class="case-index">09</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2158,7 +2433,7 @@
 
             <article class="case-card" tabindex="0" data-title="圣诞树手势互动" data-note="手势点亮发光圣诞树。" data-poster="assets/generated/portfolio/xmas-cover-thumb.jpg" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/xmas-spotlight-promo.mp4" data-link="https://xmas.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/xmas-cover-thumb.jpg" alt="圣诞树手势互动项目封面" decoding="async" loading="lazy">
-              <span class="case-index">07</span>
+              <span class="case-index">10</span>
               <span class="play-badge" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
                   <path d="M8 5v14l11-7-11-7Z" fill="currentColor"/>
@@ -2182,6 +2457,80 @@
           </div>
         </section>
 
+        <section class="section project-details" id="project-details" aria-labelledby="project-details-title">
+          <div class="section-head">
+            <h2 id="project-details-title">最近在做。</h2>
+            <p>不只放一张封面。把问题、能力、证据和当前状态讲清楚。</p>
+          </div>
+          <div class="project-detail-list">
+            <article class="project-detail" style="--project-accent:#a3e635">
+              <div class="project-detail-copy">
+                <div class="project-detail-meta"><span>工业设备数字化</span><span>可体验 Demo</span></div>
+                <h3>设备一拆，原理就懂。</h3>
+                <p class="project-detail-intro">把 JWF0019A 的整机结构、分步拆解、工作原理和故障知识放进同一个网页。设备人员不用在模型、说明书和经验之间来回切换。</p>
+                <dl class="project-detail-facts">
+                  <div><dt>解决痛点</dt><dd>结构难讲、培训靠口述、故障资料分散。</dd></div>
+                  <div><dt>核心能力</dt><dd>可旋转 3D、分步拆解、原理讲解、故障入口。</dd></div>
+                  <div><dt>真实证据</dt><dd>6432 面正式低面模型，14 篇知识卡，8 类故障入口。</dd></div>
+                  <div><dt>适合对象</dt><dd>设备主管、维修工程师、现场培训人员。</dd></div>
+                </dl>
+                <div class="project-detail-actions">
+                  <button type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/jwf0019a-3d/">播放视频讲解</button>
+                  <a href="https://wiujianzhong.github.io/kunpeng-yuechao/jwf0019a-3d/" target="_blank" rel="noreferrer">打开体验 Demo</a>
+                </div>
+              </div>
+              <figure class="project-detail-visual">
+                <img src="assets/generated/portfolio/jwf0019a-spotlight-cover.png" alt="JWF0019A 设备超级知识库视频封面" loading="lazy" decoding="async">
+                <button class="project-detail-play" type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/jwf0019a-3d/">26 秒讲解</button>
+              </figure>
+            </article>
+
+            <article class="project-detail" style="--project-accent:#52b788">
+              <div class="project-detail-copy">
+                <div class="project-detail-meta"><span>工业资料检索</span><span>公开演示版</span></div>
+                <h3>三万零件，一搜即得。</h3>
+                <p class="project-detail-intro">把厚重的厂家手册变成可搜索的高清零件图册。输入名称、件号或物料编码，就能回到对应原页，并把需要的零件加入申报清单。</p>
+                <dl class="project-detail-facts">
+                  <div><dt>解决痛点</dt><dd>手册多、型号杂、靠人工翻页找图。</dd></div>
+                  <div><dt>核心能力</dt><dd>跨手册检索、高清原页定位、申报清单汇总。</dd></div>
+                  <div><dt>真实证据</dt><dd>29,793 条设备零件资料，保留厂家原图依据。</dd></div>
+                  <div><dt>适合对象</dt><dd>设备维修、仓库管理、备件申报与采购协同。</dd></div>
+                </dl>
+                <div class="project-detail-actions">
+                  <button type="button" data-feature-play data-title="纺织机械零件图册" data-note="三万零件，一搜即得。" data-poster="assets/generated/portfolio/textile3d-spotlight-cover.png" data-video="assets/videos/project-spotlights/textile3d-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/textile3d/">播放视频讲解</button>
+                  <a href="https://wiujianzhong.github.io/kunpeng-yuechao/textile3d/" target="_blank" rel="noreferrer">打开公开演示</a>
+                </div>
+              </div>
+              <figure class="project-detail-visual">
+                <img src="assets/generated/portfolio/textile3d-spotlight-cover.png" alt="纺织机械零件图册视频封面" loading="lazy" decoding="async">
+                <button class="project-detail-play" type="button" data-feature-play data-title="纺织机械零件图册" data-note="三万零件，一搜即得。" data-poster="assets/generated/portfolio/textile3d-spotlight-cover.png" data-video="assets/videos/project-spotlights/textile3d-spotlight-promo.mp4" data-link="https://wiujianzhong.github.io/kunpeng-yuechao/textile3d/">26 秒讲解</button>
+              </figure>
+            </article>
+
+            <article class="project-detail" style="--project-accent:#d9a441">
+              <div class="project-detail-copy">
+                <div class="project-detail-meta"><span>文档自动化</span><span>企业资料库 MVP</span></div>
+                <h3>投标初稿，自动组卷。</h3>
+                <p class="project-detail-intro">读取招标要求，从企业资料库筛选证照、人员和业绩材料，生成可编辑 Word 初稿，再检查名称、工期、响应和模板残留。</p>
+                <dl class="project-detail-facts">
+                  <div><dt>解决痛点</dt><dd>资料散、组卷慢、临近截止容易漏项。</dd></div>
+                  <div><dt>核心能力</dt><dd>资料库增量同步、自动筛选、DOCX 初稿、最终审标。</dd></div>
+                  <div><dt>交付边界</dt><dd>报价、签章和最终提交仍由投标负责人确认。</dd></div>
+                  <div><dt>适合对象</dt><dd>投标专员、资料员、项目负责人和中小企业。</dd></div>
+                </dl>
+                <div class="project-detail-actions">
+                  <button type="button" data-feature-play data-title="AI 投标文件助手" data-note="投标初稿，自动组卷。" data-poster="assets/generated/portfolio/bid-assistant-spotlight-cover.png" data-video="assets/videos/project-spotlights/bid-assistant-spotlight-promo.mp4">播放视频讲解</button>
+                  <a href="#contact">内测合作咨询</a>
+                </div>
+              </div>
+              <figure class="project-detail-visual">
+                <img src="assets/generated/portfolio/bid-assistant-spotlight-cover.png" alt="AI 投标文件助手视频封面" loading="lazy" decoding="async">
+                <button class="project-detail-play" type="button" data-feature-play data-title="AI 投标文件助手" data-note="投标初稿，自动组卷。" data-poster="assets/generated/portfolio/bid-assistant-spotlight-cover.png" data-video="assets/videos/project-spotlights/bid-assistant-spotlight-promo.mp4">26 秒讲解</button>
+              </figure>
+            </article>
+          </div>
+        </section>
+
         <section class="section" id="work" aria-labelledby="work-title">
           <div class="section-head">
             <h2 id="work-title">工具矩阵。</h2>
@@ -2190,27 +2539,27 @@
           <div class="capability-grid">
             <article class="capability-card">
               <b>01 / OFFICE</b>
-              <h3>PPT 与资料自动化</h3>
-              <p>照片、表格、报告，少复制，多成稿。</p>
-              <div class="capability-tags"><span>PPT 一键生成</span><span>Excel 批处理</span><span>资料整理</span></div>
+              <h3>PPT 与文档自动化</h3>
+              <p>照片、表格、投标资料，少复制，多成稿。</p>
+              <div class="capability-tags"><span>PPT 一键生成</span><span>投标初稿</span><span>报告成稿</span></div>
             </article>
             <article class="capability-card">
               <b>02 / DATA</b>
-              <h3>数据核对小系统</h3>
-              <p>编码、对账、送货记录，先机器过一遍。</p>
-              <div class="capability-tags"><span>税务编码</span><span>客户对账</span><span>汇总导出</span></div>
+              <h3>数据核对与报表</h3>
+              <p>编码、清单与对账资料，先机器过一遍。</p>
+              <div class="capability-tags"><span>税务编码</span><span>零件检索</span><span>供应商对账</span></div>
             </article>
             <article class="capability-card">
               <b>03 / FACTORY</b>
-              <h3>纺织现场经验</h3>
-              <p>懂设备、懂流程，更容易把问题说准。</p>
-              <div class="capability-tags"><span>清梳设备</span><span>乌斯特异纤机</span><span>棉纺工艺</span></div>
+              <h3>工业设备数字化</h3>
+              <p>把设备结构、零件图册和现场经验做成可用系统。</p>
+              <div class="capability-tags"><span>3D 设备</span><span>零件图册</span><span>纺织现场</span></div>
             </article>
             <article class="capability-card">
               <b>04 / AI</b>
               <h3>AI 助手与知识库</h3>
               <p>把聊天、文档、记录接成可用记忆。</p>
-              <div class="capability-tags"><span>微信 AI 助手</span><span>知识库</span><span>自动提醒</span></div>
+              <div class="capability-tags"><span>设备知识库</span><span>企业资料库</span><span>故障诊断</span></div>
             </article>
             <article class="capability-card">
               <b>05 / MOBILE</b>
@@ -2818,6 +3167,13 @@
 
         setupCaseRail();
         setupPlayerSwipe();
+
+        document.querySelectorAll("[data-feature-play]").forEach((button) => {
+          button.addEventListener("click", () => {
+            unlockAudio();
+            openPlayer(button);
+          });
+        });
 
         function setupNavTracking() {
           const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
