@@ -183,7 +183,6 @@
       background: #000;
     }
 
-    body.fluid-immersive .hero-picture,
     body.fluid-immersive .hero-video,
     body.fluid-immersive .hero-inner,
     body.fluid-immersive .hero::before,
@@ -274,13 +273,6 @@
       opacity: .68;
     }
 
-    .hero-picture {
-      position: absolute;
-      inset: 0;
-      z-index: -4;
-      overflow: hidden;
-    }
-
     .hero-video {
       position: absolute;
       inset: 0;
@@ -290,17 +282,6 @@
       object-fit: cover;
       object-position: center;
       filter: saturate(1.08) contrast(1.06) brightness(.98);
-      transform: scale(1.012);
-    }
-
-    .hero-photo {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      filter: saturate(.98) contrast(1.03) brightness(var(--hero-brightness));
       transform: scale(1.012);
     }
 
@@ -1913,11 +1894,6 @@
         object-position: 82% center;
       }
 
-      .hero-photo {
-        object-position: 62% top;
-        filter: saturate(.98) contrast(1.02) brightness(var(--hero-brightness));
-      }
-
       .fluid-backdrop {
         filter: brightness(var(--fluid-brightness)) saturate(1.16) contrast(1);
       }
@@ -2216,13 +2192,9 @@
   <main>
     <section class="hero" aria-labelledby="title">
       <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="assets/hero/xiaowu-homepage-bg-robot-v2-hd-poster.jpg" aria-hidden="true">
-        <source media="(max-width: 620px)" src="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/xiaowu-homepage-bg-robot-v2.mp4" type="video/mp4">
-        <source src="https://wiujianzhong.github.io/xiaowu-studio/assets/hero/xiaowu-homepage-bg-robot-v2-hd.mp4" type="video/mp4">
+        <source media="(max-width: 620px)" src="assets/hero/xiaowu-homepage-bg-robot-v2.mp4" type="video/mp4">
+        <source src="assets/hero/xiaowu-homepage-bg-robot-v2-hd.mp4" type="video/mp4">
       </video>
-      <picture class="hero-picture">
-        <source media="(max-width: 620px)" srcset="assets/hero/xiaowu-holding-phone-mobile-v3.jpg">
-        <img class="hero-photo" src="assets/hero/xiaowu-holding-phone-retouched-v3-optimized.jpg" alt="伍建忠手持手机站在山路前的主视觉" fetchpriority="high" decoding="async">
-      </picture>
       <div class="hero-inner">
         <div class="copy">
           <span class="eyebrow">小伍工作室 / 伍建忠</span>
@@ -2233,7 +2205,7 @@
 
         <div class="case-flow" id="cases" aria-label="重点项目作品流">
           <div class="case-rail" data-case-rail>
-            <article class="case-card" tabindex="0" data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">
+            <article class="case-card" tabindex="0" data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">
               <img src="assets/generated/portfolio/jwf0019a-spotlight-cover.png" alt="JWF0019A 设备超级知识库项目封面" decoding="async" loading="lazy">
               <span class="case-index">01</span>
               <span class="play-badge" aria-hidden="true">
@@ -2475,13 +2447,13 @@
                   <div><dt>适合对象</dt><dd>设备主管、维修工程师、现场培训人员。</dd></div>
                 </dl>
                 <div class="project-detail-actions">
-                  <button type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">播放视频讲解</button>
+                  <button type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">播放视频讲解</button>
                   <a href="https://jwf19.xiaowustudio.cn/" target="_blank" rel="noreferrer">打开体验 Demo</a>
                 </div>
               </div>
               <figure class="project-detail-visual">
                 <img src="assets/generated/portfolio/jwf0019a-spotlight-cover.png" alt="JWF0019A 设备超级知识库视频封面" loading="lazy" decoding="async">
-                <button class="project-detail-play" type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">26 秒讲解</button>
+                <button class="project-detail-play" type="button" data-feature-play data-title="JWF0019A 设备超级知识库" data-note="设备一拆，原理就懂。" data-poster="assets/generated/portfolio/jwf0019a-spotlight-cover.png" data-video="assets/videos/project-spotlights/jwf0019a-spotlight-promo.mp4" data-link="https://jwf19.xiaowustudio.cn/">26 秒讲解</button>
               </figure>
             </article>
 
@@ -2699,17 +2671,12 @@
         const playerTitle = document.getElementById("playerTitle");
         const playerNote = document.getElementById("playerNote");
         const playerLink = document.getElementById("playerLink");
-        const remoteAssetBase = "https://wiujianzhong.github.io/xiaowu-studio/";
         let audioUnlocker = null;
         let playerCards = [];
         let activePlayerIndex = -1;
 
         function resolveMediaSource(source) {
           if (!source) return "";
-          if (/^https?:\/\//.test(source)) return source;
-          if (window.location.hostname === "xiaowustudio.cn") {
-            return `${remoteAssetBase}${source}`;
-          }
           return source;
         }
 
@@ -2968,7 +2935,7 @@
             queueAutoScroll(nextDelay);
           }
 
-          if (!liteMode) queueAutoScroll();
+          if (!liteMode && !mobileMotion.matches) queueAutoScroll();
 
           if ("IntersectionObserver" in window) {
             const railObserver = new IntersectionObserver((entries) => {
