@@ -1719,6 +1719,81 @@
           font-size: 10px;
         }
 
+        .creative-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 18px;
+        }
+
+        .creative-card {
+          --creative-accent: var(--jade);
+          overflow: hidden;
+          border: 1px solid rgba(246, 240, 227, .14);
+          border-radius: 12px;
+          background: rgba(246, 240, 227, .04);
+        }
+
+        .creative-media {
+          position: relative;
+          aspect-ratio: 16 / 9;
+          overflow: hidden;
+          background: #050706;
+        }
+
+        .creative-media video {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .creative-copy {
+          display: grid;
+          gap: 13px;
+          padding: clamp(20px, 3vw, 30px);
+        }
+
+        .creative-meta {
+          color: var(--creative-accent);
+          font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+          font-size: 11px;
+          letter-spacing: .12em;
+        }
+
+        .creative-card h3 {
+          margin: 0;
+          font-size: clamp(24px, 3vw, 36px);
+          line-height: 1.16;
+        }
+
+        .creative-card p {
+          margin: 0;
+          color: var(--muted);
+          font-size: 14px;
+          line-height: 1.68;
+        }
+
+        .creative-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .creative-tags span {
+          padding: 6px 9px;
+          border: 1px solid color-mix(in srgb, var(--creative-accent) 34%, transparent);
+          border-radius: 999px;
+          color: rgba(246, 240, 227, .78);
+          font-size: 11px;
+        }
+
+        .creative-link {
+          width: fit-content;
+          color: var(--creative-accent);
+          font-size: 13px;
+          text-underline-offset: 5px;
+        }
+
         .capability-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1866,6 +1941,10 @@
 
           .capability-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .creative-grid {
+            grid-template-columns: 1fr;
           }
 
           .contact-qr {
@@ -2503,6 +2582,43 @@
           </div>
         </section>
 
+        <section class="section" id="creative" aria-labelledby="creative-title">
+          <div class="section-head">
+            <h2 id="creative-title">影像创作。</h2>
+            <p>从设备建模到人物故事，把复杂内容做成能看懂、愿意看的影像。</p>
+          </div>
+          <div class="creative-grid">
+            <article class="creative-card" style="--creative-accent:#4de0a3">
+              <div class="creative-media">
+                <video autoplay muted loop playsinline webkit-playsinline controls preload="metadata" poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/textile-training-3d-poster.jpg" aria-label="纺织培训基地 3D 建模漫游片段">
+                  <source src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/textile-training-3d-preview.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="creative-copy">
+                <span class="creative-meta">3D MODELING / EXPLAINER</span>
+                <h3>纺织培训基地 3D 建模漫游</h3>
+                <p>从空间规划、设备建模到漫游镜头与讲解，均为独立设计与制作。</p>
+                <div class="creative-tags"><span>原创建模</span><span>空间漫游</span><span>视频讲解</span></div>
+                <a class="creative-link" href="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/textile-training-3d-full.mp4" target="_blank" rel="noreferrer">观看完整版 ↗</a>
+              </div>
+            </article>
+            <article class="creative-card" style="--creative-accent:#d9a441">
+              <div class="creative-media">
+                <video autoplay muted loop playsinline webkit-playsinline controls preload="metadata" poster="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/farewell-story-poster.jpg" aria-label="经纬岁月退休送别片片段">
+                  <source src="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/farewell-story-preview.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="creative-copy">
+                <span class="creative-meta">FAREWELL / STORY FILM</span>
+                <h3>《经纬岁月》退休送别片</h3>
+                <p>为退休同事定制纪念影像，把岗位足迹、师徒传承和真实照片编成一条克制温暖的故事线。</p>
+                <div class="creative-tags"><span>人物叙事</span><span>照片编排</span><span>情绪节奏</span></div>
+                <a class="creative-link" href="https://wiujianzhong.github.io/xiaowu-studio/assets/videos/creative/farewell-story-full.mp4" target="_blank" rel="noreferrer">观看完整版 ↗</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section class="section" id="work" aria-labelledby="work-title">
           <div class="section-head">
             <h2 id="work-title">工具矩阵。</h2>
@@ -2541,9 +2657,9 @@
             </article>
             <article class="capability-card">
               <b>06 / PLAY</b>
-              <h3>手势互动演示</h3>
-              <p>让工具不只可用，也更愿意被点开。</p>
-              <div class="capability-tags"><span>手势游戏</span><span>WebGL</span><span>演示视频</span></div>
+              <h3>影像创作与互动</h3>
+              <p>从 3D 漫游到人物故事，让复杂内容更愿意被看完。</p>
+              <div class="capability-tags"><span>3D 漫游</span><span>人物短片</span><span>手势互动</span></div>
             </article>
           </div>
         </section>
